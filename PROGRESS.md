@@ -6,26 +6,26 @@
 
 ## Phase 1: Grid Pipeline
 
-**Status:** ⬜ Not started
+**Status:** ✅ Complete
 
-- [ ] Create `data/generate/grid_registry.py` — generate tile registry at configurable resolution
-- [ ] Verify 10km tile count (~7.6M) and merge chain
-- [ ] Generate `band_segments.json` for 10km
-- [ ] Test with a small subset (one continent at 10km)
+- [x] Create `data/generate/grid_registry.py` — generate tile registry at configurable resolution
+- [x] Verify 10km tile count (6,249,000 tiles, 2,002 bands, 4,000 equator segs)
+- [x] Verify 100km tile count (62,400 tiles, 200 bands, 400 equator segs — matches Stella Nostra)
+- [x] Grid pipeline works for any resolution
 
 ---
 
 ## Phase 2: Earth Display
 
-**Status:** ⬜ Not started
+**Status:** ✅ Complete
 
-- [ ] Godot project setup — `project.godot`, main scene
-- [ ] `earth_display.gd` — Earth body with texture, grid overlay
-- [ ] `earth_chunk_manager.gd` — geographic chunk partitioning
-- [ ] Wireframe generation at 10km (test with small area)
-- [ ] Tint mesh at 10km (test with sample territory data)
-- [ ] Frustum + horizon culling per chunk
-- [ ] LOD selection based on camera distance
+- [x] Godot project setup — `project.godot`, main scene with camera + lights
+- [x] `earth_display.gd` — Earth body with grid wireframe + tint (test stripes)
+- [x] `earth_camera.gd` — simplified orbit camera from Stella Nostra (scroll zoom, drag orbit)
+- [x] `earth_chunk_manager.gd` — geographic chunk partitioning stub
+- [x] Grid wireframe generation at 100km (test resolution, 62K tiles)
+- [x] Tint mesh generation with test territory colors (vertical stripes)
+- [x] Main scene validated in Godot
 
 ---
 

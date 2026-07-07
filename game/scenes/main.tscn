@@ -1,14 +1,23 @@
-# Historia Terrarum — Main Scene
-# Earth body with grid overlay, camera, and territory display.
-
-[gd_scene load_steps=2 format=3 uid="uid://historia_terrarum_main"]
+[gd_scene load_steps=4 format=3 uid="uid://historia_terrarum_main"]
 
 [ext_resource type="Script" path="res://scripts/planetary/earth_display.gd" id="1_earth_display"]
+[ext_resource type="Script" path="res://scripts/camera/earth_camera.gd" id="2_earth_camera"]
 
 [node name="Main" type="Node3D"]
 
 [node name="EarthSystem" type="Node3D" parent="."]
+script = ExtResource("1_earth_display")
 
-[node name="EarthBody" type="MeshInstance3D" parent="EarthSystem"]
-# Placeholder Earth sphere — will be replaced by earth_display.gd
-mesh = SubResource("SphereMesh_placeholder")
+[node name="EarthCamera" type="Camera3D" parent="."]
+script = ExtResource("2_earth_camera")
+current = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0, 1, 0, 0, 0)
+light_energy = 2.0
+shadow_enabled = false
+
+[node name="AmbientLight" type="WorldEnvironment" parent="."]
+environment/background_mode = 2  # Sky
+environment/ambient_light_source = 3  # Color
+environment/ambient_light_color = Color(0.15, 0.15, 0.2, 1)

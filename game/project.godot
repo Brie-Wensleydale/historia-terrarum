@@ -4,6 +4,8 @@
 config_version=5
 
 [application]
+
+run/main_scene="res://scenes/main.tscn"
 config/name="Historia Terrarum"
 config/description="Grand strategy game — control a nation throughout history on a 10km Earth grid."
 config/version="0.1.0"
