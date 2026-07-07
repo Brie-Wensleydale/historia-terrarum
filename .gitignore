@@ -29,6 +29,7 @@ data/shapefiles/
 .DS_Store
 Thumbs.db
 desktop.ini
+.hermes-tmp*/
 
 # IDE
 .vscode/
