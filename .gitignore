@@ -1,0 +1,37 @@
+# Godot
+game/.godot/
+game/.import/
+*.translation
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Generated data (large files, regenerated from pipeline)
+data/output/grid_10km/
+data/output/grid_20km/
+data/output/grid_40km/
+data/output/grid_80km/
+data/output/grid_160km/
+data/output/*.json
+
+# Shapefiles (large GIS data, downloaded separately)
+data/shapefiles/
+*.shp
+*.shx
+*.dbf
+*.prj
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

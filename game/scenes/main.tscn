@@ -1,0 +1,14 @@
+# Historia Terrarum — Main Scene
+# Earth body with grid overlay, camera, and territory display.
+
+[gd_scene load_steps=2 format=3 uid="uid://historia_terrarum_main"]
+
+[ext_resource type="Script" path="res://scripts/planetary/earth_display.gd" id="1_earth_display"]
+
+[node name="Main" type="Node3D"]
+
+[node name="EarthSystem" type="Node3D" parent="."]
+
+[node name="EarthBody" type="MeshInstance3D" parent="EarthSystem"]
+# Placeholder Earth sphere — will be replaced by earth_display.gd
+mesh = SubResource("SphereMesh_placeholder")

@@ -1,0 +1,37 @@
+; Historia Terrarum — Grand Strategy Game
+; Godot 4.6.3
+
+config_version=5
+
+[application]
+config/name="Historia Terrarum"
+config/description="Grand strategy game — control a nation throughout history on a 10km Earth grid."
+config/version="0.1.0"
+
+[rendering]
+renderer/rendering_method="forward_plus"
+textures/canvas_textures/default_texture_filter=0
+anti_aliasing/quality/msaa_3d=2
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)
+
+[display]
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+
+[input]
+zoom_in={
+	"deadzone": 0.5,
+	"events": [Object(InputEventMouseButton, "button_index": 4)]
+}
+zoom_out={
+	"deadzone": 0.5,
+	"events": [Object(InputEventMouseButton, "button_index": 5)]
+}
+orbit={
+	"deadzone": 0.5,
+	"events": [Object(InputEventMouseButton, "button_index": 2)]
+}
+pan={
+	"deadzone": 0.5,
+	"events": [Object(InputEventMouseButton, "button_index": 1)]
+}
