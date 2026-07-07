@@ -26,6 +26,21 @@
 - [x] Grid wireframe generation at 100km (test resolution, 62K tiles)
 - [x] Tint mesh generation with test territory colors (vertical stripes)
 - [x] Main scene validated in Godot
+- [x] Earth texture from Stella Nostra applied (4K, uv1_offset alignment)
+
+---
+
+## Phase 2b: Static Overlays (Coastlines + Rivers)
+
+**Status:** ✅ Complete
+
+- [x] Natural Earth 10m shapefiles downloaded (coastline + rivers)
+- [x] `coastline_gen.py` — extract + simplify to 3 LODs (4,133 rings)
+- [x] `grid_graph.py` — grid vertex graph for river A* pathfinding
+- [x] `river_gen.py` — snap 1,213 rivers to grid cell edges (89,685 edges)
+- [x] `coastline_overlay.gd` — LOD-switching LineStrip renderer
+- [x] `river_overlay.gd` — cell-edge river LineStrip renderer
+- [x] Overlays integrated into earth_display.gd layer stack
 
 ---
 

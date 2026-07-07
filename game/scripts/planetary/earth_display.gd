@@ -9,6 +9,8 @@ const BASE_CELL_KM := 100.0  # Start with 100km for testing (7.6K tiles, fast)
 var _earth_body: MeshInstance3D
 var _grid_mesh: MeshInstance3D
 var _tint_mesh: MeshInstance3D
+var _coastline_overlay: Node
+var _river_overlay: Node
 var _band_structure: Dictionary = {}
 var _tile_colors: Dictionary = {}
 
@@ -18,6 +20,8 @@ func _ready() -> void:
 	_generate_test_tile_colors()
 	_create_grid()
 	_create_tint()
+	_create_coastlines()
+	_create_rivers()
 	print("Earth display ready. Grid: %d bands, %d tiles" % [
 		_band_structure.get("total_bands", 0),
 		SphericalGridGenerator.count_tiles(_band_structure),
@@ -29,20 +33,31 @@ func _setup_earth_body() -> void:
 	var sphere_mesh := SphereMesh.new()
 	sphere_mesh.radius = EARTH_RADIUS_KM
 	sphere_mesh.height = EARTH_RADIUS_KM * 2.0
-	sphere_mesh.radial_segments = 128
-	sphere_mesh.rings = 64
+	sphere_mesh.radial_segments = 256
+	sphere_mesh.rings = 128
 	sphere_mesh.is_double_sided = false
 
 	_earth_body = MeshInstance3D.new()
 	_earth_body.name = "EarthBody"
 	_earth_body.mesh = sphere_mesh
 
-	# Blue Earth placeholder material
+	# Load real Earth texture from assets
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.15, 0.25, 0.55)  # Ocean blue
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	_earth_body.material_override = mat
 
+	var tex_path := "res://assets/textures/planet/earth/earth_color_4k.png"
+	if ResourceLoader.exists(tex_path):
+		var tex: Texture2D = load(tex_path)
+		mat.albedo_texture = tex
+		mat.albedo_color = Color.WHITE
+		# UV offset: align texture prime meridian with model 0° (matches Stella Nostra)
+		mat.uv1_offset.x = 0.25
+		print("Earth texture loaded: %s" % tex_path)
+	else:
+		mat.albedo_color = Color(0.15, 0.25, 0.55)  # Blue fallback
+		print("Earth texture not found — using blue placeholder")
+
+	_earth_body.material_override = mat
 	add_child(_earth_body)
 
 
@@ -136,3 +151,26 @@ func focus_on_lat_lon(lat_deg: float, lon_deg: float) -> Dictionary:
 		point, EARTH_RADIUS_KM, total_bands, band_segs,
 	)
 	return cell
+
+
+func _create_coastlines() -> void:
+	var coastline_script := load("res://scripts/planetary/coastline_overlay.gd")
+	_coastline_overlay = Node.new()
+	_coastline_overlay.name = "CoastlineOverlay"
+	_coastline_overlay.set_script(coastline_script)
+	add_child(_coastline_overlay)
+
+
+func _create_rivers() -> void:
+	var river_script := load("res://scripts/planetary/river_overlay.gd")
+	_river_overlay = Node.new()
+	_river_overlay.name = "RiverOverlay"
+	_river_overlay.set_script(river_script)
+	add_child(_river_overlay)
+	# Initialize with band structure after a frame (needs _ready to fire first)
+	call_deferred("_init_river_overlay")
+
+
+func _init_river_overlay() -> void:
+	if _river_overlay and _river_overlay.has_method("initialize"):
+		_river_overlay.initialize(_band_structure)
