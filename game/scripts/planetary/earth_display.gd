@@ -11,13 +11,17 @@ var _grid_mesh: MeshInstance3D
 var _tint_mesh: MeshInstance3D
 var _coastline_overlay: Node
 var _river_overlay: Node
+var _palette_manager: Node
 var _band_structure: Dictionary = {}
+# Encoded tile colors: palette index packed in vertex color R channel.
+# Color(idx/255.0, 0, 0, 1.0) — the shader decodes this to look up display color.
 var _tile_colors: Dictionary = {}
 
 
 func _ready() -> void:
 	_setup_earth_body()
-	_generate_test_tile_colors()
+	_setup_palette_manager()
+	_assign_test_indices()
 	_create_grid()
 	_create_tint()
 	_create_coastlines()
@@ -61,23 +65,22 @@ func _setup_earth_body() -> void:
 	add_child(_earth_body)
 
 
-func _generate_test_tile_colors() -> void:
-	# Generate a simple test pattern: vertical stripes every 30°
-	# This lets us verify the grid aligns with geometry
+func _setup_palette_manager() -> void:
+	var pm_script := load("res://scripts/data/palette_manager.gd")
+	_palette_manager = Node.new()
+	_palette_manager.name = "PaletteManager"
+	_palette_manager.set_script(pm_script)
+	add_child(_palette_manager)
+
+
+func _assign_test_indices() -> void:
+	# Assign palette indices to tiles, encoded in vertex color R channel.
+	# Index 0 = ocean (transparent), indices 1-6 = test "countries".
 	_band_structure = SphericalGridGenerator.compute_band_structure(EARTH_RADIUS_KM, BASE_CELL_KM)
 	var band_segs: Array = _band_structure["band_segs"]
 	var total_bands: int = _band_structure["total_bands"]
 
-	# Define a few test "countries" as longitude bands
-	var test_colors := [
-		Color(0.8, 0.2, 0.2),  # Red
-		Color(0.2, 0.6, 0.2),  # Green
-		Color(0.2, 0.2, 0.8),  # Blue
-		Color(0.8, 0.7, 0.1),  # Gold
-		Color(0.6, 0.2, 0.6),  # Purple
-		Color(0.2, 0.6, 0.6),  # Teal
-	]
-	var num_colors: int = test_colors.size()
+	var num_countries := 6  # palette indices 1-6
 
 	for b_idx in range(total_bands):
 		var grid_segs: int = band_segs[b_idx]
@@ -92,12 +95,13 @@ func _generate_test_tile_colors() -> void:
 			var sparser_s: int = s / ratio
 			var tile_id: String = "B%d_%d" % [b_idx, sparser_s]
 
-			# Assign color based on longitude: each 60° band gets a color
+			# Assign color based on longitude: each 60° band gets a palette index
 			var lon_frac: float = float(s) / float(grid_segs)
-			var color_idx: int = int(lon_frac * num_colors) % num_colors
-			_tile_colors[tile_id] = test_colors[color_idx]
+			var idx: int = int(lon_frac * num_countries) % num_countries + 1
+			# Encode palette index as Color R channel — shader decodes it
+			_tile_colors[tile_id] = Color(idx / 255.0, 0.0, 0.0, 1.0)
 
-	print("Generated %d test tile colors (vertical stripes)" % _tile_colors.size())
+	print("Assigned %d test tile indices (6 vertical stripes via palette R-channel)" % _tile_colors.size())
 
 
 func _create_grid() -> void:
@@ -125,13 +129,26 @@ func _create_tint() -> void:
 		"Earth",
 		EARTH_RADIUS_KM,
 		BASE_CELL_KM,
-		_tile_colors,
+		_tile_colors,  # Now encoded as palette indices in R channel
 		band_segs_dict,
 	)
 	if _tint_mesh:
+		# Apply solid_tint shader material (palette-index lookup from vertex color)
+		var shader_mat := ShaderMaterial.new()
+		var shader := load("res://shaders/solid_tint.gdshader")
+		shader_mat.shader = shader
+		_tint_mesh.material_override = shader_mat
+
+		# Register with palette manager (deferred — PM needs to be in tree)
+		call_deferred("_register_tint_material")
+
 		_tint_mesh.visible = true
-		add_child(_tint_mesh)
-		print("Tint mesh created")
+		print("Tint mesh created with solid_tint shader (palette-index)")
+
+
+func _register_tint_material() -> void:
+	if _tint_mesh and _tint_mesh.material_override and _palette_manager:
+		_palette_manager.register_material(_tint_mesh.material_override)
 
 
 ## Focus camera on a lat/lon position
@@ -151,6 +168,12 @@ func focus_on_lat_lon(lat_deg: float, lon_deg: float) -> Dictionary:
 		point, EARTH_RADIUS_KM, total_bands, band_segs,
 	)
 	return cell
+
+
+## Toggle display mode (hooked up to UI or debug keys later)
+func set_display_mode(mode: String) -> void:
+	if _palette_manager and _palette_manager.has_method("set_display_mode"):
+		_palette_manager.set_display_mode(mode)
 
 
 func _create_coastlines() -> void:
