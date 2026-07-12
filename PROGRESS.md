@@ -46,13 +46,15 @@
 
 ## Phase 3: Palette Shader
 
-**Status:** ⬜ Not started
+**Status:** ✅ Complete
 
-- [ ] `territory_palette.gdshader` — palette-index lookup shader
-- [ ] Solid quad fast path (vertex color)
-- [ ] Textured quad path (palette-index texture atlas)
-- [ ] MultiMesh batching for solid + textured quads
-- [ ] Highlight palette swap (country selection)
+- [x] `solid_tint.gdshader` — palette-index from vertex color R channel (solid quads)
+- [x] `territory_palette.gdshader` — palette-index texture lookup (mixed quads)
+- [x] `palette_manager.gd` — 256-color palette arrays, zero-cost display mode switching
+- [x] `palette_texture_gen.gd` — R8 palette-index texture generator utility
+- [x] `earth_display.gd` integration — ShaderMaterial replaces StandardMaterial3D for tint
+- [x] Highlight palette swap (bright/dim blend via highlight_mix uniform)
+- [ ] MultiMesh batching (deferred to Phase 5 LOD — batch with chunk system)
 
 ---
 
