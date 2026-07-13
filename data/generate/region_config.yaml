@@ -28,7 +28,7 @@ adm_2:
 # Adjacency-guaranteed via shapely.touches() on admin-2 polygons.
 auto_split:
   max_tiles: 5000       # split any region larger than this
-  min_cluster: 2500     # aim for contiguous clusters ≥ this size
+  min_cluster: 500      # aim for contiguous clusters ≥ this (lower allows smaller provinces to split)
 
 # ── Admin-0: Whole country = one region ──
 # Countries ≤ ~2,000 km² that don't benefit from subdivision.

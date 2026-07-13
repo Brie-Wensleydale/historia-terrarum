@@ -882,7 +882,7 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
                 new_countries[cluster_name] = country
                 new_parents[cluster_name] = rid
 
-            # Keep parent as empty region
+            # Keep parent with unmatched tiles
             if rid not in new_assignments:
                 new_assignments[rid] = unmatched
                 new_names[rid] = rname
@@ -891,7 +891,11 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
             print(f"    → {len(clusters)} contiguous clusters"
                   f"{f' (+{unsplit_tiles} unmatched tiles in parent)' if unsplit_tiles else ''}")
         else:
-            print(f"    → only {len(clusters)} cluster(s) produced, keeping original region")
+            # Only 1 cluster — not enough to split meaningfully, use geometric
+            print(f"    → only 1 cluster with agglomerative, falling back to geometric split")
+            _geometric_split_province(prov_poly, rid, rname, country, tile_list,
+                                      tile_latlon, registry, max_tiles_val,
+                                      new_assignments, new_names, new_countries, new_parents)
 
     # Copy non-split regions
     copies = 0
