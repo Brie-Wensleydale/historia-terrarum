@@ -506,11 +506,11 @@ def apply_one_tile_rule(assignments, region_names, region_countries, region_pare
     if not missing:
         return assignments
 
-    assigned_tile_ids = set()
+    assigned_tile_list = set()
     for tiles_list in assignments.values():
-        assigned_tile_ids.update(tiles_list)
+        assigned_tile_list.update(tiles_list)
 
-    unassigned_tiles = [t for t in tiles if t["id"] not in assigned_tile_ids]
+    unassigned_tiles = [t for t in tiles if t["id"] not in assigned_tile_list]
 
     for rid, tname, cdata in missing:
         poly = cdata["polygon"]
@@ -538,7 +538,7 @@ def apply_one_tile_rule(assignments, region_names, region_countries, region_pare
     return assignments
 
 
-def _geometric_split_province(prov_poly, rid, rname, country, tile_ids, tile_latlon,
+def _geometric_split_province(prov_poly, rid, rname, country, tile_list, tile_latlon,
                                registry, max_tiles, new_assignments, new_names,
                                new_countries, new_parents):
     """
@@ -546,7 +546,7 @@ def _geometric_split_province(prov_poly, rid, rname, country, tile_ids, tile_lat
     into N ≈ ceil(tiles/max_tiles) sub-regions using recursive BSP.
     Each sub-region's tiles are assigned by spatial containment.
     """
-    n_splits = max(2, math.ceil(len(tile_ids) / max_tiles))
+    n_splits = max(2, math.ceil(len(tile_list) / max_tiles))
     if n_splits < 2:
         return
 
@@ -590,7 +590,7 @@ def _geometric_split_province(prov_poly, rid, rname, country, tile_ids, tile_lat
     # Assign tiles to sub-polygons
     from shapely.geometry import Point
     sub_tiles = {i: [] for i in range(len(sub_polys))}
-    for tid in tile_ids:
+    for tid in tile_list:
         lat, lon = tile_latlon.get(tid, (0, 0))
         pt = Point(lon, lat)
         for i, sp in enumerate(sub_polys):
@@ -612,7 +612,7 @@ def _geometric_split_province(prov_poly, rid, rname, country, tile_ids, tile_lat
     all_matched = set()
     for tiles in sub_tiles.values():
         all_matched.update(tiles)
-    unmatched = [t for t in tile_ids if t not in all_matched]
+    unmatched = [t for t in tile_list if t not in all_matched]
     if rid not in new_assignments:
         new_assignments[rid] = unmatched
         new_names[rid] = rname
@@ -677,12 +677,12 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
     new_parents = {}
 
     splittable = []
-    for rid, tile_ids in assignments.items():
+    for rid, tile_list in assignments.items():
         # Only split top-level regions (no parent) — children of adm_2 are already granular
         if rid in region_parents and region_parents[rid]:
             continue
-        if len(tile_ids) > max_tiles_val:
-            splittable.append((rid, len(tile_ids), region_names.get(rid, rid),
+        if len(tile_list) > max_tiles_val:
+            splittable.append((rid, len(tile_list), region_names.get(rid, rid),
                                region_countries.get(rid, "Unknown")))
 
     if not splittable:
@@ -696,6 +696,9 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
 
     for rid, tile_count, rname, country in splittable:
         print(f"\n  Splitting {rname} ({tile_count:,} tiles) [{country}]...")
+
+        # Get the actual tile list for this region
+        tile_list = assignments[rid]
 
         # Find the admin-1 polygon (keyed by country + sanitized name)
         prov_poly = province_polygons.get((country.lower(), rid))
@@ -722,13 +725,13 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
                     # Fall through to clustering code below
                 else:
                     print(f", GADM also insufficient ({len(gadm_prov)}), geometric split")
-                    _geometric_split_province(prov_poly, rid, rname, country, tile_ids,
+                    _geometric_split_province(prov_poly, rid, rname, country, tile_list,
                                               tile_latlon, registry, max_tiles_val,
                                               new_assignments, new_names, new_countries, new_parents)
                     continue
             elif len(province_counties) == 0 and prov_poly is not None:
                 print(f", falling back to geometric split")
-                _geometric_split_province(prov_poly, rid, rname, country, tile_ids,
+                _geometric_split_province(prov_poly, rid, rname, country, tile_list,
                                           tile_latlon, registry, max_tiles_val,
                                           new_assignments, new_names, new_countries, new_parents)
             else:
@@ -740,16 +743,16 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
         # Count tiles per county using the pre-computed tile_to_county dict
         # (from the main 3-point test — avoids re-testing millions of tiles)
         county_tile_count = dd(int)
-        county_tile_ids = dd(list)
+        county_tile_list = dd(list)
         matched = 0
-        for tid in tile_ids:
+        for tid in tile_list:
             cname = tile_to_county.get(tid) if tile_to_county else None
             if cname and cname in province_counties:
                 county_tile_count[cname] += 1
-                county_tile_ids[cname].append(tid)
+                county_tile_list[cname].append(tid)
                 matched += 1
 
-        print(f"    {matched:,}/{len(tile_ids):,} tiles matched to counties ({100*matched/max(len(tile_ids),1):.1f}%)")
+        print(f"    {matched:,}/{len(tile_list):,} tiles matched to counties ({100*matched/max(len(tile_list),1):.1f}%)")
 
         # Filter: only counties with tiles
         active_counties = {c: n for c, n in county_tile_count.items() if n > 0}
@@ -802,7 +805,7 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
             comp_clusters = {}
             for cname in comp:
                 comp_clusters[cname] = {
-                    "tiles": county_tile_ids.get(cname, []),
+                    "tiles": county_tile_list.get(cname, []),
                     "tile_count": county_tile_count.get(cname, 0),
                     "counties": {cname},
                     "neighbors": set(adjacency.get(cname, set())) & comp,
@@ -867,7 +870,7 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
         matched_tiles = set()
         for cdata in clusters.values():
             matched_tiles.update(cdata["tiles"])
-        unmatched = [t for t in tile_ids if t not in matched_tiles]
+        unmatched = [t for t in tile_list if t not in matched_tiles]
         if unmatched:
             unsplit_tiles = len(unmatched)
 
@@ -892,9 +895,9 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
 
     # Copy non-split regions
     copies = 0
-    for rid, tile_ids in assignments.items():
+    for rid, tile_list in assignments.items():
         if rid not in split_set or rid not in new_assignments:
-            new_assignments[rid] = tile_ids
+            new_assignments[rid] = tile_list
             new_names[rid] = region_names.get(rid, rid)
             new_countries[rid] = region_countries.get(rid, "Unknown")
             if rid in region_parents:
@@ -944,7 +947,7 @@ def write_region_files(assignments, region_names, region_countries, region_paren
 
     index_entries = []
 
-    for rid, tile_ids in sorted(assignments.items()):
+    for rid, tile_list in sorted(assignments.items()):
         rname = region_names.get(rid, rid)
         parent = region_parents.get(rid)
         country = region_countries.get(rid, "Unknown")
@@ -958,8 +961,8 @@ def write_region_files(assignments, region_names, region_countries, region_paren
         }
         if parent:
             entry["parent"] = parent
-        if tile_ids:
-            entry["tiles"] = sorted(set(tile_ids))
+        if tile_list:
+            entry["tiles"] = sorted(set(tile_list))
 
         with open(filepath, "w") as f:
             yaml.dump(entry, f, default_flow_style=False, sort_keys=False, allow_unicode=True)
@@ -1031,7 +1034,7 @@ def main():
 
     # Assign tiles to regions
     print("\nAssigning tiles to regions (3-point majority test)...")
-    assignments = defaultdict(list)  # region_id → [tile_ids]
+    assignments = defaultdict(list)  # region_id → [tile_list]
     region_names = {}                # region_id → display name
     region_countries = {}            # region_id → country
     region_parents = {}              # region_id → parent_id (for admin-2)
