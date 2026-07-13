@@ -514,12 +514,12 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
                 "centroid": c["polygon"].centroid,
             }
 
-    # Build province polygon lookup: province_name → polygon
+    # Build province polygon lookup: province_name → polygon (sanitized keys)
     province_polygons = {}
     for p in province_shapes:
         name = p["name"]
         if name:
-            province_polygons[name] = p["polygon"]
+            province_polygons[sanitize_id(name)] = p["polygon"]
 
     # Build tile lat/lon lookup
     tile_latlon = {}
@@ -553,14 +553,8 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
     for rid, tile_count, rname, country in splittable:
         print(f"\n  Splitting {rname} ({tile_count:,} tiles) [{country}]...")
 
-        # Find the admin-1 polygon for this province
-        prov_poly = province_polygons.get(rname)
-        if prov_poly is None:
-            # Try matching by sanitized name or partial match
-            for pname, ppoly in province_polygons.items():
-                if sanitize_id(pname) == rid:
-                    prov_poly = ppoly
-                    break
+        # Find the admin-1 polygon for this province (rid is already sanitized)
+        prov_poly = province_polygons.get(rid)
         if prov_poly is None:
             print(f"    WARNING: no admin-1 polygon found for {rname}, skipping")
             continue
@@ -578,17 +572,33 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
 
         print(f"    {len(province_counties)} admin-2 counties inside province")
 
-        # Count tiles per county
+        # Count tiles per county using 3-point majority test (matches main loop)
+        COASTAL_FRAC = 0.35
         county_tile_count = dd(int)
         county_tile_ids = dd(list)
         for tid in tile_ids:
-            lat, lon = tile_latlon.get(tid, (0, 0))
-            pt = Point(lon, lat)
-            for cname, cdata in province_counties.items():
-                if cdata["polygon"].contains(pt):
-                    county_tile_count[cname] += 1
-                    county_tile_ids[cname].append(tid)
-                    break
+            tdata = registry.get(tid, {})
+            lat = tdata.get("lat", 0)
+            lon = tdata.get("lon", 0)
+            tbbox = tdata.get("bbox", {})
+            lat_span = tbbox.get("lat_max", 0) - tbbox.get("lat_min", 0)
+            raw_lon_span = tbbox.get("lon_max", 0) - tbbox.get("lon_min", 0)
+            lon_span = 360.0 - raw_lon_span if raw_lon_span > 180.0 else raw_lon_span
+            dlat = lat_span * COASTAL_FRAC
+            dlon = lon_span * COASTAL_FRAC
+            test_pts = [(lat, lon), (lat + dlat, lon + dlon), (lat - dlat, lon - dlon)]
+
+            votes = dd(int)
+            for pt_lat, pt_lon in test_pts:
+                pt = Point(pt_lon, pt_lat)
+                for cname, cdata in province_counties.items():
+                    if cdata["polygon"].contains(pt):
+                        votes[cname] += 1
+                        break
+            if votes:
+                best = max(votes, key=votes.get)
+                county_tile_count[best] += 1
+                county_tile_ids[best].append(tid)
 
         # Filter: only counties with tiles
         active_counties = {c: n for c, n in county_tile_count.items() if n > 0}
