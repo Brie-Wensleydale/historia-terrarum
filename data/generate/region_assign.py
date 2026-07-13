@@ -480,6 +480,89 @@ def apply_one_tile_rule(assignments, region_names, region_countries, region_pare
     return assignments
 
 
+def _geometric_split_province(prov_poly, rid, rname, country, tile_ids, tile_latlon,
+                               registry, max_tiles, new_assignments, new_names,
+                               new_countries, new_parents):
+    """
+    Geometric fallback: split a province polygon along its longest axis
+    into N ≈ ceil(tiles/max_tiles) sub-regions using recursive BSP.
+    Each sub-region's tiles are assigned by spatial containment.
+    """
+    n_splits = max(2, math.ceil(len(tile_ids) / max_tiles))
+    if n_splits < 2:
+        return
+
+    from shapely.ops import split
+    from shapely.geometry import LineString
+
+    # Compute the bounding box and decide split axis
+    minx, miny, maxx, maxy = prov_poly.bounds
+    dx = maxx - minx
+    dy = maxy - miny
+    split_horiz = dx > dy  # split along the longer axis
+
+    # Recursively split into n_splits regions
+    sub_polys = [prov_poly]
+    while len(sub_polys) < n_splits:
+        # Find the polygon with largest area to split
+        largest_idx = max(range(len(sub_polys)), key=lambda i: sub_polys[i].area)
+        largest = sub_polys[largest_idx]
+        b = largest.bounds
+
+        if b[2] - b[0] > b[3] - b[1]:  # wider than tall → vertical cut
+            mid = (b[0] + b[2]) / 2
+            cutter = LineString([(mid, b[1] - 1), (mid, b[3] + 1)])
+        else:
+            mid = (b[1] + b[3]) / 2
+            cutter = LineString([(b[0] - 1, mid), (b[2] + 1, mid)])
+
+        try:
+            result = split(largest, cutter)
+            if len(result.geoms) >= 2:
+                sub_polys[largest_idx] = result.geoms[0]
+                sub_polys.append(result.geoms[1])
+            else:
+                break  # can't split further
+        except Exception:
+            break
+
+    if len(sub_polys) < 2:
+        return
+
+    # Assign tiles to sub-polygons
+    from shapely.geometry import Point
+    sub_tiles = {i: [] for i in range(len(sub_polys))}
+    for tid in tile_ids:
+        lat, lon = tile_latlon.get(tid, (0, 0))
+        pt = Point(lon, lat)
+        for i, sp in enumerate(sub_polys):
+            if sp.contains(pt):
+                sub_tiles[i].append(tid)
+                break
+
+    # Create sub-regions
+    for i, tiles in sub_tiles.items():
+        if not tiles:
+            continue
+        cluster_name = sanitize_id(f"{rid}_{i+1}")
+        new_assignments[cluster_name] = tiles
+        new_names[cluster_name] = f"{rname} {i+1}"
+        new_countries[cluster_name] = country
+        new_parents[cluster_name] = rid
+
+    # Keep parent with any unmatched tiles
+    all_matched = set()
+    for tiles in sub_tiles.values():
+        all_matched.update(tiles)
+    unmatched = [t for t in tile_ids if t not in all_matched]
+    if rid not in new_assignments:
+        new_assignments[rid] = unmatched
+        new_names[rid] = rname
+        new_countries[rid] = country
+
+    print(f"    → {len([t for t in sub_tiles.values() if t])} geometric splits")
+
+
 def auto_split_mega_regions(assignments, region_names, region_countries, region_parents,
                              tiles, registry, config, province_shapes, county_shapes):
     """
@@ -514,12 +597,14 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
                 "centroid": c["polygon"].centroid,
             }
 
-    # Build province polygon lookup: province_name → polygon (sanitized keys)
+    # Build province polygon lookup: (country, sanitized_name) → polygon
+    # Must key by country to avoid name collisions (e.g., Montana in Bulgaria vs US)
     province_polygons = {}
     for p in province_shapes:
         name = p["name"]
-        if name:
-            province_polygons[sanitize_id(name)] = p["polygon"]
+        admin = p.get("admin", "")
+        if name and admin:
+            province_polygons[(admin.lower(), sanitize_id(name))] = p["polygon"]
 
     # Build tile lat/lon lookup
     tile_latlon = {}
@@ -553,8 +638,8 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
     for rid, tile_count, rname, country in splittable:
         print(f"\n  Splitting {rname} ({tile_count:,} tiles) [{country}]...")
 
-        # Find the admin-1 polygon for this province (rid is already sanitized)
-        prov_poly = province_polygons.get(rid)
+        # Find the admin-1 polygon (keyed by country + sanitized name)
+        prov_poly = province_polygons.get((country.lower(), rid))
         if prov_poly is None:
             print(f"    WARNING: no admin-1 polygon found for {rname}, skipping")
             continue
@@ -567,7 +652,15 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
                 province_counties[cname] = cdata
 
         if len(province_counties) < 2:
-            print(f"    Only {len(province_counties)} admin-2 counties found, skipping")
+            print(f"    Only {len(province_counties)} admin-2 counties found", end="")
+            # Fallback: geometric split for countries without admin-2 data
+            if len(province_counties) == 0 and prov_poly is not None:
+                print(f", falling back to geometric split")
+                _geometric_split_province(prov_poly, rid, rname, country, tile_ids, tile_latlon,
+                                          registry, max_tiles_val, new_assignments, new_names,
+                                          new_countries, new_parents)
+            else:
+                print(f", skipping")
             continue
 
         print(f"    {len(province_counties)} admin-2 counties inside province")
