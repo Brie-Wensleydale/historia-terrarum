@@ -1021,16 +1021,18 @@ def main():
     print("Loading GADM admin-2 shapefiles...")
     gadm_counties = load_gadm_counties()
 
-    # Merge GADM counties into county_shapes for adm_2 countries
-    # (Natural Earth admin-2 is US-only, so adm_2 countries would get zero counties)
+    # Merge GADM counties into county_shapes ONLY for adm_2 countries
+    # (Natural Earth admin-2 is US-only, so adm_2 countries need GADM for the main assignment)
+    # Auto-split loads GADM separately via gadm_counties dict — doesn't need to be in main pool.
     if gadm_counties:
+        adm_2_set = set(adm_2_list)
         gadm_merged = 0
         for country_key, clist in gadm_counties.items():
-            # Only merge if this country is in our adm_2 or has mega-provinces
-            for c in clist:
-                county_shapes.append(c)
-                gadm_merged += 1
-        print(f"  Merged {gadm_merged:,} GADM counties into assignment pool")
+            if country_key in adm_2_set:
+                for c in clist:
+                    county_shapes.append(c)
+                    gadm_merged += 1
+        print(f"  Merged {gadm_merged:,} GADM counties into assignment pool (adm_2 countries only)")
 
     print(f"\nStrategies: adm_0={len(adm_0_list)}, adm_2={len(adm_2_list)}, "
           f"custom={len(custom_dict)}, ignore={len(ignore_list)}, "
