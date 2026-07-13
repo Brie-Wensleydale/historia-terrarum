@@ -623,7 +623,7 @@ def _geometric_split_province(prov_poly, rid, rname, country, tile_ids, tile_lat
 
 def auto_split_mega_regions(assignments, region_names, region_countries, region_parents,
                              tiles, registry, config, province_shapes, county_shapes,
-                             gadm_counties=None):
+                             gadm_counties=None, tile_to_county=None):
     """
     Split any region with > max_tiles into contiguous admin-2 clusters.
 
@@ -737,33 +737,19 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
 
         print(f"    {len(province_counties)} admin-2 counties inside province")
 
-        # Count tiles per county using 3-point majority test (matches main loop)
-        COASTAL_FRAC = 0.35
+        # Count tiles per county using the pre-computed tile_to_county dict
+        # (from the main 3-point test — avoids re-testing millions of tiles)
         county_tile_count = dd(int)
         county_tile_ids = dd(list)
+        matched = 0
         for tid in tile_ids:
-            tdata = registry.get(tid, {})
-            lat = tdata.get("lat", 0)
-            lon = tdata.get("lon", 0)
-            tbbox = tdata.get("bbox", {})
-            lat_span = tbbox.get("lat_max", 0) - tbbox.get("lat_min", 0)
-            raw_lon_span = tbbox.get("lon_max", 0) - tbbox.get("lon_min", 0)
-            lon_span = 360.0 - raw_lon_span if raw_lon_span > 180.0 else raw_lon_span
-            dlat = lat_span * COASTAL_FRAC
-            dlon = lon_span * COASTAL_FRAC
-            test_pts = [(lat, lon), (lat + dlat, lon + dlon), (lat - dlat, lon - dlon)]
+            cname = tile_to_county.get(tid) if tile_to_county else None
+            if cname and cname in province_counties:
+                county_tile_count[cname] += 1
+                county_tile_ids[cname].append(tid)
+                matched += 1
 
-            votes = dd(int)
-            for pt_lat, pt_lon in test_pts:
-                pt = Point(pt_lon, pt_lat)
-                for cname, cdata in province_counties.items():
-                    if cdata["polygon"].contains(pt):
-                        votes[cname] += 1
-                        break
-            if votes:
-                best = max(votes, key=votes.get)
-                county_tile_count[best] += 1
-                county_tile_ids[best].append(tid)
+        print(f"    {matched:,}/{len(tile_ids):,} tiles matched to counties ({100*matched/max(len(tile_ids),1):.1f}%)")
 
         # Filter: only counties with tiles
         active_counties = {c: n for c, n in county_tile_count.items() if n > 0}
@@ -1054,6 +1040,7 @@ def main():
     land_tiles = 0
     total = len(tiles)
     report_every = max(total // 20, 1)
+    tile_to_county = {}  # tile_id → county_name (from 3-point test during main loop)
 
     for i, tile in enumerate(tiles):
         if (i + 1) % report_every == 0:
@@ -1070,6 +1057,10 @@ def main():
             ocean_tiles += 1
             continue
         land_tiles += 1
+
+        # Save county assignment for auto-split
+        if county_name:
+            tile_to_county[tile["id"]] = county_name
 
         strategy, custom_data = get_strategy(country, sovereign, config)
         is_overseas = (country.lower() != sovereign.lower() and sovereign != "")
@@ -1106,7 +1097,8 @@ def main():
         assignments, region_names, region_countries, region_parents = \
             auto_split_mega_regions(assignments, region_names, region_countries,
                                     region_parents, tiles, registry, config,
-                                    province_shapes, county_shapes, gadm_counties)
+                                    province_shapes, county_shapes, gadm_counties,
+                                    tile_to_county)
 
     # Write output
     print("\nWriting region files...")
