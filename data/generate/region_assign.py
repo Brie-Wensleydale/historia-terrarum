@@ -480,6 +480,276 @@ def apply_one_tile_rule(assignments, region_names, region_countries, region_pare
     return assignments
 
 
+def auto_split_mega_regions(assignments, region_names, region_countries, region_parents,
+                             tiles, registry, config, province_shapes, county_shapes):
+    """
+    Split any region with > max_tiles into contiguous admin-2 clusters.
+
+    Uses adjacency-guaranteed agglomerative merging:
+    1. Find admin-2 counties inside the province polygon
+    2. Count tiles per county
+    3. Build adjacency graph (shapely.touches)
+    4. Agglomeratively merge smallest clusters first until all ≥ min_cluster
+    5. Produce sub-regions with parent = original province name
+    """
+    from shapely.geometry import Point
+    from collections import defaultdict as dd
+
+    auto_cfg = config.get("auto_split", {})
+    max_tiles_val = auto_cfg.get("max_tiles", 5000)
+    min_cluster_val = auto_cfg.get("min_cluster", 2500)
+
+    print(f"\nAuto-split: scanning for mega-provinces (> {max_tiles_val:,} tiles)...")
+
+    # Load admin-2 counties with polygons (reload with full geometry for adjacency)
+    # We need name, admin (country), polygon for adjacency testing
+    county_polygons = {}   # county_name → {admin, polygon, bbox, centroid}
+    for c in county_shapes:
+        name = c["name"]
+        if name:
+            county_polygons[name] = {
+                "admin": c.get("admin", ""),
+                "polygon": c["polygon"],
+                "bbox": c["bbox"],
+                "centroid": c["polygon"].centroid,
+            }
+
+    # Build province polygon lookup: province_name → polygon
+    province_polygons = {}
+    for p in province_shapes:
+        name = p["name"]
+        if name:
+            province_polygons[name] = p["polygon"]
+
+    # Build tile lat/lon lookup
+    tile_latlon = {}
+    for tid, tdata in registry.items():
+        tile_latlon[tid] = (tdata["lat"], tdata["lon"])
+
+    # Prepare result containers (we'll remove split regions and add new ones)
+    new_assignments = {}
+    new_names = {}
+    new_countries = {}
+    new_parents = {}
+
+    splittable = []
+    for rid, tile_ids in assignments.items():
+        # Only split top-level regions (no parent) — children of adm_2 are already granular
+        if rid in region_parents and region_parents[rid]:
+            continue
+        if len(tile_ids) > max_tiles_val:
+            splittable.append((rid, len(tile_ids), region_names.get(rid, rid),
+                               region_countries.get(rid, "Unknown")))
+
+    if not splittable:
+        print(f"  No mega-provinces found (all ≤ {max_tiles_val:,} tiles)")
+        return assignments, region_names, region_countries, region_parents
+
+    splittable.sort(key=lambda x: -x[1])
+    print(f"  Found {len(splittable)} mega-provinces to split:")
+
+    split_set = {r[0] for r in splittable}
+
+    for rid, tile_count, rname, country in splittable:
+        print(f"\n  Splitting {rname} ({tile_count:,} tiles) [{country}]...")
+
+        # Find the admin-1 polygon for this province
+        prov_poly = province_polygons.get(rname)
+        if prov_poly is None:
+            # Try matching by sanitized name or partial match
+            for pname, ppoly in province_polygons.items():
+                if sanitize_id(pname) == rid:
+                    prov_poly = ppoly
+                    break
+        if prov_poly is None:
+            print(f"    WARNING: no admin-1 polygon found for {rname}, skipping")
+            continue
+
+        # Find admin-2 counties inside this province
+        province_counties = {}
+        for cname, cdata in county_polygons.items():
+            centroid = cdata["centroid"]
+            if prov_poly.contains(centroid):
+                province_counties[cname] = cdata
+
+        if len(province_counties) < 2:
+            print(f"    Only {len(province_counties)} admin-2 counties found, skipping")
+            continue
+
+        print(f"    {len(province_counties)} admin-2 counties inside province")
+
+        # Count tiles per county
+        county_tile_count = dd(int)
+        county_tile_ids = dd(list)
+        for tid in tile_ids:
+            lat, lon = tile_latlon.get(tid, (0, 0))
+            pt = Point(lon, lat)
+            for cname, cdata in province_counties.items():
+                if cdata["polygon"].contains(pt):
+                    county_tile_count[cname] += 1
+                    county_tile_ids[cname].append(tid)
+                    break
+
+        # Filter: only counties with tiles
+        active_counties = {c: n for c, n in county_tile_count.items() if n > 0}
+        if len(active_counties) < 3:
+            print(f"    Only {len(active_counties)} counties with tiles (too few to split), skipping")
+            continue
+
+        # Build adjacency graph
+        adjacency = dd(set)
+        county_list = list(active_counties.keys())
+        for i, c1 in enumerate(county_list):
+            poly1 = province_counties[c1]["polygon"]
+            for j in range(i + 1, len(county_list)):
+                c2 = county_list[j]
+                poly2 = province_counties[c2]["polygon"]
+                try:
+                    if poly1.touches(poly2) or poly1.intersects(poly2):
+                        adjacency[c1].add(c2)
+                        adjacency[c2].add(c1)
+                except Exception:
+                    pass  # geometry error — skip this edge
+
+        # Count connected components
+        visited = set()
+        components = []
+        for cname in county_list:
+            if cname in visited:
+                continue
+            comp = set()
+            stack = [cname]
+            while stack:
+                cn = stack.pop()
+                if cn in visited:
+                    continue
+                visited.add(cn)
+                comp.add(cn)
+                stack.extend(adjacency[cn] - visited)
+            if comp:
+                components.append(comp)
+
+        print(f"    {len(components)} connected components")
+
+        # Agglomerative merging per component
+        cluster_id = 0
+        clusters = {}  # cluster_name → {tiles, counties}
+        unsplit_tiles = 0
+
+        for comp in components:
+            # Initialize: each county = its own cluster
+            comp_clusters = {}
+            for cname in comp:
+                comp_clusters[cname] = {
+                    "tiles": county_tile_ids.get(cname, []),
+                    "tile_count": county_tile_count.get(cname, 0),
+                    "counties": {cname},
+                    "neighbors": set(adjacency.get(cname, set())) & comp,
+                }
+
+            # Agglomeratively merge smallest with smallest neighbor
+            changed = True
+            while changed:
+                changed = False
+                # Find smallest cluster below min_cluster
+                small = [(cid, cd) for cid, cd in comp_clusters.items()
+                         if cd["tile_count"] < min_cluster_val and cd["tile_count"] > 0]
+                if not small:
+                    break
+                small.sort(key=lambda x: x[1]["tile_count"])
+
+                for scid, scdata in small:
+                    if scid not in comp_clusters:
+                        continue
+                    # Find best neighbor to merge with (smallest neighbor)
+                    best_neighbor = None
+                    best_size = float("inf")
+                    for nid in scdata["neighbors"]:
+                        if nid in comp_clusters:
+                            ns = comp_clusters[nid]["tile_count"]
+                            if ns < best_size:
+                                best_size = ns
+                                best_neighbor = nid
+                    if best_neighbor is None:
+                        continue
+
+                    # Merge
+                    ndata = comp_clusters[best_neighbor]
+                    new_id = f"{best_neighbor}+{scid}"
+                    comp_clusters[new_id] = {
+                        "tiles": ndata["tiles"] + scdata["tiles"],
+                        "tile_count": ndata["tile_count"] + scdata["tile_count"],
+                        "counties": ndata["counties"] | scdata["counties"],
+                        "neighbors": (ndata["neighbors"] | scdata["neighbors"]) - {scid, best_neighbor},
+                    }
+                    # Update neighbors pointing to scid or best_neighbor
+                    for cid in comp_clusters:
+                        if cid == new_id:
+                            continue
+                        nbrs = comp_clusters[cid]["neighbors"]
+                        if scid in nbrs or best_neighbor in nbrs:
+                            nbrs.discard(scid)
+                            nbrs.discard(best_neighbor)
+                            nbrs.add(new_id)
+                    del comp_clusters[scid]
+                    del comp_clusters[best_neighbor]
+                    changed = True
+                    break  # restart scan after merge
+
+            # Assign cluster names: largest county in each cluster
+            for cid, cdata in comp_clusters.items():
+                best_cname = max(cdata["counties"], key=lambda c: county_tile_count.get(c, 0))
+                cluster_name = sanitize_id(f"{rname}_{best_cname}")
+                clusters[cluster_name] = cdata
+
+        # Move non-matching tiles (outside any admin-2 polygon) to parent
+        matched_tiles = set()
+        for cdata in clusters.values():
+            matched_tiles.update(cdata["tiles"])
+        unmatched = [t for t in tile_ids if t not in matched_tiles]
+        if unmatched:
+            unsplit_tiles = len(unmatched)
+
+        # Replace the mega-region with clusters
+        if len(clusters) >= 2:
+            for cluster_name, cdata in clusters.items():
+                new_assignments[cluster_name] = cdata["tiles"]
+                new_names[cluster_name] = cluster_name.replace("_", " ")
+                new_countries[cluster_name] = country
+                new_parents[cluster_name] = rid
+
+            # Keep parent as empty region
+            if rid not in new_assignments:
+                new_assignments[rid] = unmatched
+                new_names[rid] = rname
+                new_countries[rid] = country
+
+            print(f"    → {len(clusters)} contiguous clusters"
+                  f"{f' (+{unsplit_tiles} unmatched tiles in parent)' if unsplit_tiles else ''}")
+        else:
+            print(f"    → only {len(clusters)} cluster(s) produced, keeping original region")
+
+    # Copy non-split regions
+    copies = 0
+    for rid, tile_ids in assignments.items():
+        if rid not in split_set or rid not in new_assignments:
+            new_assignments[rid] = tile_ids
+            new_names[rid] = region_names.get(rid, rid)
+            new_countries[rid] = region_countries.get(rid, "Unknown")
+            if rid in region_parents:
+                new_parents[rid] = region_parents[rid]
+            copies += 1
+        else:
+            # Was split — keep the entry from new_assignments
+            pass
+
+    total_new = len(new_assignments)
+    splits = len(splittable)
+    print(f"\n  Auto-split complete: {splits} mega-provinces split")
+    print(f"  Regions before: {len(assignments)} → after: {total_new} (+{total_new - len(assignments)})")
+    return new_assignments, new_names, new_countries, new_parents
+
+
 def write_region_files(assignments, region_names, region_countries, region_parents, config):
     """Write region YAML files and _index.yaml with parent hierarchy."""
     os.makedirs(REGIONS_DIR, exist_ok=True)
@@ -493,6 +763,7 @@ def write_region_files(assignments, region_names, region_countries, region_paren
                 pass
 
     # Also write parent regions (empty — just metadata, tiles come from children)
+    # Unless auto-split left unmatched tiles in the parent
     all_parents = set()
     for rid in region_parents:
         pid = region_parents[rid]
@@ -638,6 +909,14 @@ def main():
     print("\nApplying 1-tile minimum guarantee...")
     assignments = apply_one_tile_rule(assignments, region_names, region_countries,
                                       region_parents, country_shapes, tiles, config)
+
+    # Auto-split mega-provinces using admin-2 clustering
+    auto_split = config.get("auto_split", {})
+    if auto_split:
+        assignments, region_names, region_countries, region_parents = \
+            auto_split_mega_regions(assignments, region_names, region_countries,
+                                    region_parents, tiles, registry, config,
+                                    province_shapes, county_shapes)
 
     # Write output
     print("\nWriting region files...")

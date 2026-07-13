@@ -19,6 +19,16 @@
 adm_2:
   - Italy       # 20 regioni → 107 province
   - Germany     # 16 länder → ~400 kreise
+  - Australia   # 8 states → ~560 LGAs — WA (25K tiles), QLD (17K), NT (14K)
+  - Canada      # 13 provinces → ~293 census divisions — Nunavut (20K), Quebec (15K)
+
+# ── Auto-split: subdivide mega-provinces using admin-2 clustering ──
+# For adm_1 countries (not adm_2, not adm_0), any province > max_tiles
+# gets split by aggregating admin-2 counties into contiguous clusters.
+# Adjacency-guaranteed via shapely.touches() on admin-2 polygons.
+auto_split:
+  max_tiles: 5000       # split any region larger than this
+  min_cluster: 2500     # aim for contiguous clusters ≥ this size
 
 # ── Admin-0: Whole country = one region ──
 # Countries ≤ ~2,000 km² that don't benefit from subdivision.
