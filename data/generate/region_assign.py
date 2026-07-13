@@ -163,6 +163,64 @@ def load_subunit_shapes():
     return subunits
 
 
+# ── ISO → country name mapping for GADM lookup ──
+_ISO_MAP = {
+    "ita": "Italy", "deu": "Germany", "aus": "Australia", "can": "Canada",
+    "rus": "Russia", "chn": "China", "bra": "Brazil", "kaz": "Kazakhstan",
+    "sdn": "Sudan", "cod": "Democratic Republic of the Congo", "mli": "Mali",
+}
+
+
+def load_gadm_counties():
+    """
+    Load GADM admin-2 shapefiles for countries we have data for.
+    Returns dict: {country_name_lower: [county_dicts]} — same format as NE county_shapes.
+    """
+    import fiona
+    from shapely.geometry import shape
+
+    gadm_dir = os.path.join(SHAPEFILE_DIR, "gadm")
+    gadm_counties = defaultdict(list)
+    loaded = 0
+
+    for iso3, country in _ISO_MAP.items():
+        path = os.path.join(gadm_dir, f"gadm41_{iso3.upper()}_2.shp")
+        if not os.path.exists(path):
+            continue
+        try:
+            with fiona.open(path) as src:
+                for feat in src:
+                    props = feat["properties"]
+                    name = props.get("NAME_2", "")
+                    admin1 = props.get("NAME_1", "")
+                    if not name:
+                        continue
+                    geom = shape(feat["geometry"])
+                    gadm_counties[country.lower()].append({
+                        "name": name,
+                        "admin": country,
+                        "admin1": admin1,
+                        "polygon": geom,
+                        "bbox": geom.bounds,
+                    })
+            loaded += 1
+        except Exception as e:
+            print(f"  WARNING: failed to load GADM for {iso3}: {e}")
+
+    print(f"  GADM admin-2: {loaded} countries, {sum(len(v) for v in gadm_counties.values()):,} counties total")
+    return dict(gadm_counties)
+
+
+def _load_gadm_province_counties(gadm_list, prov_poly):
+    """Find GADM admin-2 counties whose centroid is inside a province polygon."""
+    result = {}
+    for c in gadm_list:
+        centroid = c["polygon"].centroid
+        if prov_poly.contains(centroid):
+            result[c["name"]] = c
+    return result
+
+
 def get_strategy(country_name, sovereign_name, config):
     """Determine the strategy for a country."""
     adm_0_list = [n.lower() for n in config.get("adm_0", [])]
@@ -564,7 +622,8 @@ def _geometric_split_province(prov_poly, rid, rname, country, tile_ids, tile_lat
 
 
 def auto_split_mega_regions(assignments, region_names, region_countries, region_parents,
-                             tiles, registry, config, province_shapes, county_shapes):
+                             tiles, registry, config, province_shapes, county_shapes,
+                             gadm_counties=None):
     """
     Split any region with > max_tiles into contiguous admin-2 clusters.
 
@@ -652,13 +711,26 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
                 province_counties[cname] = cdata
 
         if len(province_counties) < 2:
-            print(f"    Only {len(province_counties)} admin-2 counties found", end="")
-            # Fallback: geometric split for countries without admin-2 data
-            if len(province_counties) == 0 and prov_poly is not None:
+            print(f"    Only {len(province_counties)} NE admin-2 counties found", end="")
+            # Try GADM admin-2 for this country
+            if gadm_counties and country.lower() in gadm_counties:
+                gadm_prov = _load_gadm_province_counties(gadm_counties[country.lower()],
+                                                          prov_poly)
+                if len(gadm_prov) >= 2:
+                    province_counties = gadm_prov
+                    print(f", using {len(province_counties)} GADM counties instead")
+                    # Fall through to clustering code below
+                else:
+                    print(f", GADM also insufficient ({len(gadm_prov)}), geometric split")
+                    _geometric_split_province(prov_poly, rid, rname, country, tile_ids,
+                                              tile_latlon, registry, max_tiles_val,
+                                              new_assignments, new_names, new_countries, new_parents)
+                    continue
+            elif len(province_counties) == 0 and prov_poly is not None:
                 print(f", falling back to geometric split")
-                _geometric_split_province(prov_poly, rid, rname, country, tile_ids, tile_latlon,
-                                          registry, max_tiles_val, new_assignments, new_names,
-                                          new_countries, new_parents)
+                _geometric_split_province(prov_poly, rid, rname, country, tile_ids,
+                                          tile_latlon, registry, max_tiles_val,
+                                          new_assignments, new_names, new_countries, new_parents)
             else:
                 print(f", skipping")
             continue
@@ -952,6 +1024,21 @@ def main():
     ignore_list = [n.lower() for n in config.get("ignore", [])]
     custom_dict = config.get("custom", {})
 
+    # Load GADM admin-2 (supplements US-only Natural Earth admin-2)
+    print("Loading GADM admin-2 shapefiles...")
+    gadm_counties = load_gadm_counties()
+
+    # Merge GADM counties into county_shapes for adm_2 countries
+    # (Natural Earth admin-2 is US-only, so adm_2 countries would get zero counties)
+    if gadm_counties:
+        gadm_merged = 0
+        for country_key, clist in gadm_counties.items():
+            # Only merge if this country is in our adm_2 or has mega-provinces
+            for c in clist:
+                county_shapes.append(c)
+                gadm_merged += 1
+        print(f"  Merged {gadm_merged:,} GADM counties into assignment pool")
+
     print(f"\nStrategies: adm_0={len(adm_0_list)}, adm_2={len(adm_2_list)}, "
           f"custom={len(custom_dict)}, ignore={len(ignore_list)}, "
           f"default adm_1 for remaining ~{len(country_shapes) - len(adm_0_list) - len(adm_2_list) - len(custom_dict) - len(ignore_list)}")
@@ -1019,7 +1106,7 @@ def main():
         assignments, region_names, region_countries, region_parents = \
             auto_split_mega_regions(assignments, region_names, region_countries,
                                     region_parents, tiles, registry, config,
-                                    province_shapes, county_shapes)
+                                    province_shapes, county_shapes, gadm_counties)
 
     # Write output
     print("\nWriting region files...")
