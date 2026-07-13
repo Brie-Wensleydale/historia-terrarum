@@ -1,0 +1,101 @@
+# region_config.yaml — Region strategy definitions for region_assign.py
+#
+# Historia Terrarum — 10km grid resolution.
+#
+# Strategies:
+#   adm_0            — one region = whole country
+#   adm_1            — one region per province/state (Natural Earth admin-1)
+#   adm_2            — one region per county/district (Natural Earth admin-2)
+#                     Region's parent = lookup via admin-1 shapefile
+#   custom           — special handling (UK: use subunits + admin-2)
+#
+# Default: any country not listed here gets strategy=adm_1 (most of the world)
+#   unless area < 2,000 km² → adm_0, or there's no admin-1 data.
+#
+# 1950 historical baseline: colonial names, Soviet SSRs, pre-decolonization borders.
+
+# ── Admin-2: Countries where admin-1 units are too coarse at 10km ──
+# Counties/districts assigned to parent admin-1 regions.
+adm_2:
+  - Italy       # 20 regioni → 107 province
+  - Germany     # 16 länder → ~400 kreise
+
+# ── Admin-0: Whole country = one region ──
+# Countries ≤ ~2,000 km² that don't benefit from subdivision.
+# Also: tiny island nations, city-states, microstates.
+adm_0:
+  # Microstates / city-states
+  - Monaco
+  - Vatican
+  - San Marino
+  - Liechtenstein
+  - Andorra
+  - Malta
+  - Singapore
+  - Bahrain
+  - Luxembourg          # 2,586 km² → 3 districts of ~8 tiles each — not worth it
+
+  # Small island nations
+  - Comoros
+  - Mauritius
+  - Seychelles
+  - Cape Verde
+  - São Tomé and Príncipe
+  - Trinidad and Tobago
+  - Barbados
+  - Saint Lucia
+  - Saint Vincent and the Grenadines
+  - Grenada
+  - Dominica
+  - Antigua and Barbuda
+  - Saint Kitts and Nevis
+  - Bahamas
+  - Jamaica
+  - Fiji
+  - Vanuatu
+  - Solomon Islands
+  - Tonga
+  - Samoa
+  - Tuvalu
+  - Nauru
+  - Kiribati
+  - Marshall Islands
+  - Palau
+  - Micronesia
+
+  # Small peninsular / coastal
+  - Brunei
+  - East Timor
+  - Equatorial Guinea
+  - Lesotho
+  - Eswatini
+  - Djibouti
+  - Gambia
+  - Guinea-Bissau
+
+  # Dependencies / non-sovereign (won't have Natural Earth admin-0 entry anyway)
+  # These are safety: if they appear, treat as single region.
+
+# ── Custom: Special handling ──
+custom:
+  United Kingdom:
+    use_subunits: true    # Parent = constituent country from map_subunits
+    subdivide_level: 2    # Tiles assigned at admin-2 (ceremonial counties)
+
+# ── Everyone else: adm_1 (default) ──
+# All other sovereign states with area > 2,000 km².
+# Natural Earth admin-1 provides province/state boundaries.
+# ~150 countries: USA, Canada, Mexico, Brazil, Russia, China, India,
+# Australia, all of Europe, Asia, Africa, South America, etc.
+#
+# Former SN custom entries now handled as adm_1:
+#   Japan (47 prefectures), Indonesia (34 provinces), Vietnam (58 provinces),
+#   Malaysia (16 states), Yemen (22 governorates)
+#
+# Historical splits (East/West Germany, North/South Vietnam, etc.)
+# are handled by the territory timeline, not by region grouping.
+
+# ── Ignore: Skip entirely ──
+# Empty — at 10km resolution, even tiny entities get a few tiles.
+# The 1-tile minimum guarantee in region_assign.py ensures coverage.
+ignore: []
