@@ -772,8 +772,8 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
             lon = tdata.get("lon", 0)
             if lat == 0 and lon == 0:
                 continue
-            for cname, cpoly, mix, miy, max, may in county_bboxes:
-                if mix <= lon <= max and miy <= lat <= may:
+            for cname, cpoly, mix, miy, maxx, may in county_bboxes:
+                if mix <= lon <= maxx and miy <= lat <= may:
                     if cpoly.contains(Point(lon, lat)):
                         county_tile_count[cname] += 1
                         county_tile_list[cname].append(tid)
