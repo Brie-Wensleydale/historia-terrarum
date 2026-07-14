@@ -751,11 +751,11 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
         county_tile_list = dd(list)
         matched = 0
 
-        # Build spatial index for fast point-in-polygon lookup
-        from shapely.strtree import STRtree
-        county_list = list(province_counties.keys())
-        county_polys = [province_counties[c]["polygon"] for c in county_list]
-        tree = STRtree(county_polys) if county_polys else None
+        # Build bbox index for fast point-in-polygon lookup
+        county_bboxes = []
+        for cname, cdata in province_counties.items():
+            b = cdata["bbox"]
+            county_bboxes.append((cname, cdata["polygon"], b[0], b[1], b[2], b[3]))
 
         for tid in tile_list:
             # Try tile_to_county first (works for NE admin-2)
@@ -766,29 +766,19 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
                 matched += 1
                 continue
 
-            # Fallback: STRtree spatial index lookup (for GADM provinces)
-            if not tree:
-                continue
+            # Fallback: bbox-filtered contains() test (for GADM provinces)
             tdata = registry.get(tid, {})
             lat = tdata.get("lat", 0)
             lon = tdata.get("lon", 0)
             if lat == 0 and lon == 0:
                 continue
-            pt = Point(lon, lat)
-            # Query STRtree for nearby polygons, then test contains
-            try:
-                candidates = tree.query(pt)
-                for idx in candidates:
-                    # shapely >=2.0 returns indices, <2.0 returns geometries
-                    cand_poly = county_polys[int(idx)] if isinstance(idx, (int, float)) else idx
-                    if hasattr(cand_poly, 'contains') and cand_poly.contains(pt):
-                        cname = county_list[int(idx)] if isinstance(idx, (int, float)) else county_list[county_polys.index(cand_poly)]
+            for cname, cpoly, mix, miy, max, may in county_bboxes:
+                if mix <= lon <= max and miy <= lat <= may:
+                    if cpoly.contains(Point(lon, lat)):
                         county_tile_count[cname] += 1
                         county_tile_list[cname].append(tid)
                         matched += 1
                         break
-            except Exception:
-                pass  # STRtree query failed — skip this tile
 
         print(f"    {matched:,}/{len(tile_list):,} tiles matched to counties ({100*matched/max(len(tile_list),1):.1f}%)")
 
