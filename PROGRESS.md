@@ -1,6 +1,6 @@
 # PROGRESS.md — Historia Terrarum
 
-> Last updated: 2026-07-07
+> Last updated: 2026-07-14
 
 ---
 
@@ -58,14 +58,28 @@
 
 ---
 
-## Phase 4: Territory Data
+## Phase 4: Territory Core (Data Pipeline)
+
+**Status:** ✅ Complete
+
+- [x] `tile_registry.py` — generate 10km tile registry (913 MB, 6,245,000 tiles)
+- [x] Natural Earth shapefiles (admin-0, admin-1, admin-2 US-only, subunits)
+- [x] GADM admin-2 shapefiles downloaded for 11 countries
+- [x] `region_config.yaml` — strategy config (adm_0: 43, adm_2: 4, adm_1 default, UK custom)
+- [x] `region_assign.py` — 3-point majority test + GADM/NE admin-2 + auto-split
+- [x] **Result: 5,171 regions** from 1,852,412 land tiles
+- [x] 1,578 admin-2 regions with parent-linked hierarchy
+- [x] 41 mega-provinces auto-split (Sakha→29, Alaska→16, Xinjiang→11, etc.)
+- [x] Agglomerative clustering with adjacency guarantee (shapely.touches())
+- [x] Geometric BSP fallback for countries without admin-2 data
+
+### Phase 4b: Country Registry & Palette Indices
 
 **Status:** ⬜ Not started
 
-- [ ] `data/generate/region_assign.py` — Natural Earth shapefile intersection at 10km
-- [ ] Region YAML files at 10km resolution
-- [ ] Territory timeline YAML (events from 1950 baseline)
-- [ ] Country registry with palette indices
+- [ ] Build country registry from 5,171 regions
+- [ ] Assign palette indices to countries
+- [ ] Wire into PaletteManager for shader rendering
 - [ ] `territory_data.gd` — Godot-side territory data loader
 - [ ] Dynamic territory updates (occupation, annexation)
 - [ ] Dirty-tracking for LOD regeneration
