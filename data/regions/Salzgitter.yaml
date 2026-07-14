@@ -1,0 +1,9 @@
+id: Salzgitter
+name: Salzgitter
+type: province
+country: Germany
+parent: Niedersachsen
+tiles:
+- B1580_3884
+- B1581_3883
+- B1581_3884

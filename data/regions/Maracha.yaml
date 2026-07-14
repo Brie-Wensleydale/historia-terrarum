@@ -1,0 +1,11 @@
+id: Maracha
+name: Maracha
+type: province
+country: Uganda
+tiles:
+- B1036_3656
+- B1036_3657
+- B1037_3655
+- B1037_3656
+- B1037_3657
+- B1038_3656

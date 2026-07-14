@@ -1,0 +1,12 @@
+id: Saarlouis
+name: Saarlouis
+type: province
+country: Germany
+parent: Saarland
+tiles:
+- B1548_3925
+- B1549_3924
+- B1549_3925
+- B1549_3926
+- B1550_3923
+- B1550_3924

@@ -1,0 +1,8 @@
+id: Liverpool
+name: Liverpool
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B623_2323
+- B623_2324

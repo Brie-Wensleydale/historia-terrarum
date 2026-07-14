@@ -1,0 +1,16 @@
+id: Burnie
+name: Burnie
+type: province
+country: Australia
+parent: Tasmania
+tiles:
+- B541_2379
+- B541_2380
+- B541_2381
+- B542_2379
+- B542_2380
+- B542_2381
+- B543_2378
+- B543_2379
+- B544_2378
+- B544_2379

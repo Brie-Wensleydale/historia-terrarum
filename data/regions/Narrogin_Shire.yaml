@@ -1,0 +1,24 @@
+id: Narrogin_Shire
+name: Narrogin (Shire)
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B632_2697
+- B632_2698
+- B632_2699
+- B633_2694
+- B633_2695
+- B633_2696
+- B633_2697
+- B633_2698
+- B633_2699
+- B634_2694
+- B634_2695
+- B634_2696
+- B634_2697
+- B634_2698
+- B634_2699
+- B635_2695
+- B635_2696
+- B635_2700

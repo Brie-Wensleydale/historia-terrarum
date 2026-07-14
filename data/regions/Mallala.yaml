@@ -1,0 +1,18 @@
+id: Mallala
+name: Mallala
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B615_2461
+- B616_2460
+- B616_2461
+- B616_2462
+- B617_2460
+- B617_2461
+- B617_2462
+- B617_2463
+- B618_2460
+- B618_2461
+- B618_2462
+- B618_2463

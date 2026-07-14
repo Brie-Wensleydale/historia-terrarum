@@ -1,0 +1,7 @@
+id: Schweinfurt_Kreisfreie_Stadt
+name: Schweinfurt (Kreisfreie Stadt)
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1557_3886

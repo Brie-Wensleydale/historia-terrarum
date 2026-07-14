@@ -1,0 +1,7 @@
+id: Oberhausen
+name: Oberhausen
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1573_3923

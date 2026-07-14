@@ -1,0 +1,8 @@
+id: Kassel_Kreisfreie_Stadt
+name: Kassel (Kreisfreie Stadt)
+type: province
+country: Germany
+parent: Hessen
+tiles:
+- B1571_3894
+- B1571_3895

@@ -1,0 +1,25 @@
+id: Herzogtum_Lauenburg
+name: Herzogtum Lauenburg
+type: province
+country: Germany
+parent: Schleswig_Holstein
+tiles:
+- B1594_3882
+- B1595_3882
+- B1595_3883
+- B1595_3884
+- B1595_3885
+- B1596_3880
+- B1596_3881
+- B1596_3882
+- B1596_3883
+- B1596_3884
+- B1596_3885
+- B1597_3879
+- B1597_3880
+- B1597_3881
+- B1597_3882
+- B1598_3880
+- B1598_3881
+- B1598_3882
+- B1598_3883

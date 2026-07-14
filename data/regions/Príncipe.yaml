@@ -1,0 +1,8 @@
+id: Príncipe
+name: Príncipe
+type: province
+country: São Tomé and Principe
+tiles:
+- B1018_3917
+- B1018_3918
+- B1019_3917

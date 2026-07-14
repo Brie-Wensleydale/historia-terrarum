@@ -1,0 +1,14 @@
+id: Waroona
+name: Waroona
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B635_2709
+- B635_2710
+- B635_2711
+- B635_2712
+- B635_2713
+- B635_2714
+- B635_2715
+- B636_2710

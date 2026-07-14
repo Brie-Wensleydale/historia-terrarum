@@ -1,0 +1,12 @@
+id: Mazsalacas
+name: Mazsalacas
+type: province
+country: Latvia
+tiles:
+- B1644_3720
+- B1644_3721
+- B1644_3722
+- B1645_3721
+- B1645_3722
+- B1645_3723
+- B1646_3721

@@ -1,0 +1,14 @@
+id: West_Tamar
+name: West Tamar
+type: province
+country: Australia
+parent: Tasmania
+tiles:
+- B540_2365
+- B540_2366
+- B541_2367
+- B541_2368
+- B541_2369
+- B542_2368
+- B542_2369
+- B543_2369

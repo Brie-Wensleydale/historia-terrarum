@@ -1,0 +1,8 @@
+id: Indian_Ocean_Territories
+name: Indian Ocean Territories (Australia)
+type: province
+country: Indian Ocean Territories
+tiles:
+- B865_2924
+- B884_2825
+- B884_2826

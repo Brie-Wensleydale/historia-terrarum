@@ -1,0 +1,9 @@
+id: Vilanu
+name: Vilanu
+type: province
+country: Latvia
+tiles:
+- B1629_3700
+- B1629_3701
+- B1630_3701
+- B1630_3702

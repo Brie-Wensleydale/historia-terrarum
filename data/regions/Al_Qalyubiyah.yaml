@@ -1,0 +1,15 @@
+id: Al_Qalyubiyah
+name: Al Qalyubiyah
+type: province
+country: Egypt
+tiles:
+- B1336_3652
+- B1336_3653
+- B1337_3651
+- B1337_3652
+- B1337_3653
+- B1338_3652
+- B1338_3653
+- B1338_3654
+- B1339_3653
+- B1340_3652

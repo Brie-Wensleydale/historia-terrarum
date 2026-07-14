@@ -1,0 +1,7 @@
+id: Rosenheim_Kreisfreie_Stadt
+name: Rosenheim (Kreisfreie Stadt)
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1533_3865

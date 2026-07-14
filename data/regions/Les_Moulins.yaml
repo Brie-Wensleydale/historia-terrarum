@@ -1,0 +1,11 @@
+id: Les_Moulins
+name: Les Moulins
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1509_817
+- B1509_818
+- B1509_819
+- B1510_817
+- B1510_819

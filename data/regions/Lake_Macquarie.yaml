@@ -1,0 +1,15 @@
+id: Lake_Macquarie
+name: Lake Macquarie
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B632_2315
+- B632_2316
+- B632_2317
+- B633_2314
+- B633_2315
+- B633_2316
+- B633_2317
+- B634_2314
+- B634_2315

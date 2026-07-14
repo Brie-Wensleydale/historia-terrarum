@@ -1,0 +1,9 @@
+id: Jurmala
+name: Jurmala
+type: province
+country: Latvia
+tiles:
+- B1634_3735
+- B1634_3736
+- B1634_3737
+- B1634_3738

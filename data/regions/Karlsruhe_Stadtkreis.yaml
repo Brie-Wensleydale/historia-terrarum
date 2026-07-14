@@ -1,0 +1,9 @@
+id: Karlsruhe_Stadtkreis
+name: Karlsruhe (Stadtkreis)
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1545_3905
+- B1546_3906
+- B1546_3907

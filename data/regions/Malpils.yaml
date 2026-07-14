@@ -1,0 +1,10 @@
+id: Malpils
+name: Malpils
+type: province
+country: Latvia
+tiles:
+- B1634_3721
+- B1634_3722
+- B1634_3723
+- B1635_3722
+- B1635_3723

@@ -1,0 +1,7 @@
+id: Glen_Eira
+name: Glen Eira
+type: province
+country: Australia
+parent: Victoria
+tiles:
+- B579_2388

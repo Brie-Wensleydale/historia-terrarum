@@ -1,0 +1,8 @@
+id: Knox
+name: Knox
+type: province
+country: Australia
+parent: Victoria
+tiles:
+- B579_2385
+- B579_2386

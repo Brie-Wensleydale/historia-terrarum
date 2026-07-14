@@ -1,0 +1,15 @@
+id: Resen
+name: Resen
+type: province
+country: North Macedonia
+tiles:
+- B1455_3765
+- B1455_3766
+- B1456_3764
+- B1456_3765
+- B1456_3766
+- B1456_3767
+- B1456_3768
+- B1457_3766
+- B1457_3767
+- B1458_3766

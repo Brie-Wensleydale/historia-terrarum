@@ -1,0 +1,8 @@
+id: Stuttgart
+name: Stuttgart
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1543_3897
+- B1543_3898

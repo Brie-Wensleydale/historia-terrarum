@@ -1,0 +1,12 @@
+id: Nairobi
+name: Nairobi
+type: province
+country: Kenya
+tiles:
+- B985_3590
+- B986_3589
+- B986_3590
+- B986_3591
+- B987_3589
+- B987_3590
+- B987_3591

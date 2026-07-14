@@ -1,0 +1,15 @@
+id: Orhon
+name: Orhon
+type: province
+country: Mongolia
+tiles:
+- B1545_2839
+- B1545_2840
+- B1545_2841
+- B1545_2842
+- B1546_2838
+- B1546_2839
+- B1546_2840
+- B1546_2841
+- B1546_2842
+- B1546_2843

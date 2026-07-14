@@ -1,0 +1,11 @@
+id: Budaka
+name: Budaka
+type: province
+country: Uganda
+tiles:
+- B1011_3623
+- B1012_3621
+- B1012_3622
+- B1012_3623
+- B1013_3621
+- B1013_3622

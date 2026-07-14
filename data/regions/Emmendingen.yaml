@@ -1,0 +1,14 @@
+id: Emmendingen
+name: Emmendingen
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1535_3912
+- B1536_3910
+- B1536_3911
+- B1536_3912
+- B1536_3913
+- B1536_3914
+- B1536_3915
+- B1537_3914

@@ -1,0 +1,10 @@
+id: Daejeon
+name: Daejeon
+type: province
+country: South Korea
+tiles:
+- B1404_2584
+- B1404_2585
+- B1405_2584
+- B1405_2585
+- B1406_2585

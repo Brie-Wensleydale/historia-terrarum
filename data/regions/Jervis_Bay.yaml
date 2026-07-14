@@ -1,0 +1,9 @@
+id: Jervis_Bay
+name: Jervis Bay
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B609_2325
+- B610_2324
+- B610_2325

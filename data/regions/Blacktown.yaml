@@ -1,0 +1,9 @@
+id: Blacktown
+name: Blacktown
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B625_2323
+- B625_2324
+- B626_2323

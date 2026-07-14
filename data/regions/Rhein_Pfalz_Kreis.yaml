@@ -1,0 +1,11 @@
+id: Rhein_Pfalz_Kreis
+name: Rhein-Pfalz-Kreis
+type: province
+country: Germany
+parent: Hessen
+tiles:
+- B1549_3907
+- B1550_3906
+- B1550_3907
+- B1552_3906
+- B1552_3907

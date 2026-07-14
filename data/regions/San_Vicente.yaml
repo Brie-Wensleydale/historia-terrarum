@@ -1,0 +1,17 @@
+id: San_Vicente
+name: San Vicente
+type: province
+country: El Salvador
+tiles:
+- B1149_986
+- B1150_986
+- B1151_985
+- B1151_986
+- B1152_984
+- B1152_985
+- B1152_986
+- B1152_987
+- B1153_983
+- B1153_984
+- B1153_985
+- B1153_986

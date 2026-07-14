@@ -1,0 +1,18 @@
+id: San_Cristóbal
+name: San Cristóbal
+type: province
+country: Dominican Republic
+tiles:
+- B1204_779
+- B1205_778
+- B1205_779
+- B1205_780
+- B1206_779
+- B1206_780
+- B1207_779
+- B1207_780
+- B1207_781
+- B1208_779
+- B1208_780
+- B1208_781
+- B1209_780

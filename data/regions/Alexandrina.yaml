@@ -1,0 +1,26 @@
+id: Alexandrina
+name: Alexandrina
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B605_2457
+- B605_2459
+- B606_2455
+- B606_2456
+- B606_2457
+- B606_2458
+- B607_2454
+- B607_2455
+- B607_2456
+- B607_2457
+- B607_2458
+- B607_2459
+- B608_2454
+- B608_2455
+- B608_2456
+- B608_2457
+- B608_2458
+- B608_2459
+- B609_2455
+- B609_2456

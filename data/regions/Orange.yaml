@@ -1,0 +1,9 @@
+id: Orange
+name: Orange
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B629_2342
+- B630_2342
+- B630_2343

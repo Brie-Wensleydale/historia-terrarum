@@ -1,0 +1,9 @@
+id: Deux_Montagnes
+name: Deux-Montagnes
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1507_821
+- B1507_822
+- B1507_824

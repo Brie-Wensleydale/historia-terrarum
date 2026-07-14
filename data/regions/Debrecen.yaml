@@ -1,0 +1,16 @@
+id: Debrecen
+name: Debrecen
+type: province
+country: Hungary
+tiles:
+- B1528_3759
+- B1529_3757
+- B1529_3758
+- B1529_3759
+- B1529_3760
+- B1529_3761
+- B1530_3757
+- B1530_3758
+- B1530_3759
+- B1530_3760
+- B1530_3761

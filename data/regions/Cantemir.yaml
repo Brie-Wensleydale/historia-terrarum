@@ -1,0 +1,16 @@
+id: Cantemir
+name: Cantemir
+type: province
+country: Moldova
+tiles:
+- B1514_3684
+- B1514_3685
+- B1514_3686
+- B1515_3683
+- B1515_3684
+- B1515_3685
+- B1515_3686
+- B1516_3683
+- B1516_3684
+- B1516_3685
+- B1516_3686

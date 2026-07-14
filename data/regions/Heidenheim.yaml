@@ -1,0 +1,13 @@
+id: Heidenheim
+name: Heidenheim
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1541_3886
+- B1541_3887
+- B1542_3885
+- B1542_3886
+- B1542_3887
+- B1542_3888
+- B1543_3886

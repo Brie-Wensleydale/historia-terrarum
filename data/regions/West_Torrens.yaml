@@ -1,0 +1,7 @@
+id: West_Torrens
+name: West Torrens
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B612_2460

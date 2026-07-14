@@ -1,0 +1,22 @@
+id: Northern_Peninsula_Area
+name: Northern Peninsula Area
+type: province
+country: Australia
+parent: Queensland
+tiles:
+- B876_2418
+- B876_2419
+- B876_2420
+- B877_2418
+- B877_2419
+- B877_2420
+- B878_2418
+- B878_2419
+- B878_2420
+- B879_2417
+- B879_2418
+- B879_2419
+- B880_2417
+- B881_2415
+- B881_2416
+- B881_2417

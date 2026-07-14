@@ -1,0 +1,11 @@
+id: Sutherland
+name: Sutherland
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B621_2321
+- B621_2322
+- B622_2320
+- B622_2321
+- B622_2322

@@ -1,0 +1,18 @@
+id: Südliche_Weinstraße
+name: Südliche Weinstraße
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1546_3910
+- B1546_3911
+- B1547_3908
+- B1547_3909
+- B1547_3910
+- B1547_3911
+- B1547_3912
+- B1548_3908
+- B1548_3910
+- B1548_3911
+- B1549_3910
+- B1549_3911

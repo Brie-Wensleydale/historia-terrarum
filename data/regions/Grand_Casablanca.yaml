@@ -1,0 +1,16 @@
+id: Grand_Casablanca
+name: Grand Casablanca
+type: province
+country: Morocco
+tiles:
+- B1372_84
+- B1373_82
+- B1373_83
+- B1373_84
+- B1373_85
+- B1373_86
+- B1374_82
+- B1374_83
+- B1374_84
+- B1374_85
+- B1375_82

@@ -1,0 +1,10 @@
+id: Trieste
+name: Trieste
+type: province
+country: Italy
+parent: Trieste
+tiles:
+- B1508_3846
+- B1508_3847
+- B1509_3847
+- B1509_3848

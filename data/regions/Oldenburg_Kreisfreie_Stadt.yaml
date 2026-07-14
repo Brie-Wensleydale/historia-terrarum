@@ -1,0 +1,8 @@
+id: Oldenburg_Kreisfreie_Stadt
+name: Oldenburg (Kreisfreie Stadt)
+type: province
+country: Germany
+parent: Niedersachsen
+tiles:
+- B1591_3908
+- B1592_3908

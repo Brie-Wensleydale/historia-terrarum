@@ -1,0 +1,16 @@
+id: Rhein_Kreis_Neuss
+name: Rhein-Kreis Neuss
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1568_3925
+- B1568_3926
+- B1569_3924
+- B1569_3925
+- B1569_3926
+- B1569_3927
+- B1570_3925
+- B1570_3926
+- B1570_3927
+- B1571_3925

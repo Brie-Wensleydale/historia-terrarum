@@ -1,0 +1,17 @@
+id: Montcalm
+name: Montcalm
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1510_818
+- B1511_816
+- B1511_817
+- B1511_818
+- B1511_819
+- B1511_820
+- B1512_817
+- B1512_818
+- B1512_819
+- B1512_820
+- B1512_821

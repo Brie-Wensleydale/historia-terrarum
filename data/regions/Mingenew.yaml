@@ -1,0 +1,24 @@
+id: Mingenew
+name: Mingenew
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B674_2714
+- B674_2715
+- B675_2714
+- B675_2715
+- B675_2716
+- B675_2717
+- B675_2718
+- B676_2715
+- B676_2716
+- B676_2717
+- B676_2718
+- B677_2715
+- B677_2716
+- B677_2717
+- B677_2718
+- B678_2715
+- B678_2716
+- B678_2717

@@ -1,0 +1,11 @@
+id: Höfuðborgarsvæði
+name: Höfuðborgarsvæði
+type: province
+country: Iceland
+tiles:
+- B1713_120
+- B1714_119
+- B1715_119
+- B1716_118
+- B1716_119
+- B1716_120

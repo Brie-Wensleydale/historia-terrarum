@@ -1,0 +1,17 @@
+id: San_Salvador
+name: San Salvador
+type: province
+country: The Bahamas
+tiles:
+- B1151_990
+- B1152_990
+- B1153_989
+- B1153_990
+- B1153_991
+- B1154_990
+- B1154_991
+- B1155_990
+- B1156_991
+- B1267_828
+- B1268_827
+- B1269_827

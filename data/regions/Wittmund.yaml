@@ -1,0 +1,18 @@
+id: Wittmund
+name: Wittmund
+type: province
+country: Germany
+parent: Niedersachsen
+tiles:
+- B1595_3912
+- B1595_3913
+- B1596_3913
+- B1596_3914
+- B1596_3917
+- B1597_3913
+- B1597_3914
+- B1597_3915
+- B1597_3916
+- B1598_3913
+- B1598_3914
+- B1598_3916

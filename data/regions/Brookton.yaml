@@ -1,0 +1,22 @@
+id: Brookton
+name: Brookton
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B640_2698
+- B640_2699
+- B640_2700
+- B640_2701
+- B640_2702
+- B640_2703
+- B640_2704
+- B641_2695
+- B641_2696
+- B641_2697
+- B641_2698
+- B641_2699
+- B641_2700
+- B641_2701
+- B642_2695
+- B642_2696

@@ -1,0 +1,19 @@
+id: Freudenstadt
+name: Freudenstadt
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1538_3906
+- B1539_3903
+- B1539_3904
+- B1539_3905
+- B1539_3906
+- B1539_3907
+- B1540_3904
+- B1540_3905
+- B1540_3906
+- B1540_3907
+- B1540_3908
+- B1541_3906
+- B1541_3908

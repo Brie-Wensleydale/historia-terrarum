@@ -1,0 +1,13 @@
+id: Baghdad
+name: Baghdad
+type: province
+country: Iraq
+tiles:
+- B1370_3505
+- B1370_3506
+- B1370_3507
+- B1371_3505
+- B1371_3506
+- B1371_3507
+- B1371_3508
+- B1372_3506

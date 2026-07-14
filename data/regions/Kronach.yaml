@@ -1,0 +1,16 @@
+id: Kronach
+name: Kronach
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1559_3873
+- B1559_3874
+- B1559_3875
+- B1560_3872
+- B1560_3873
+- B1560_3874
+- B1561_3872
+- B1561_3873
+- B1561_3874
+- B1562_3873

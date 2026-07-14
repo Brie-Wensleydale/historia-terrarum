@@ -1,0 +1,21 @@
+id: Halton
+name: Halton
+type: province
+country: Canada
+parent: Ontario
+tiles:
+- B1482_887
+- B1483_886
+- B1483_887
+- B1484_885
+- B1484_886
+- B1484_887
+- B1484_888
+- B1485_886
+- B1485_887
+- B1485_888
+- B1485_889
+- B1485_890
+- B1486_887
+- B1486_888
+- B1486_889

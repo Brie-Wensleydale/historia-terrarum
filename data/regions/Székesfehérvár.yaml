@@ -1,0 +1,9 @@
+id: Székesfehérvár
+name: Székesfehérvár
+type: province
+country: Hungary
+tiles:
+- B1525_3794
+- B1525_3795
+- B1526_3794
+- B1526_3795

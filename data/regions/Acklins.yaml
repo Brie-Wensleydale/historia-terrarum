@@ -1,0 +1,16 @@
+id: Acklins
+name: Acklins
+type: province
+country: The Bahamas
+tiles:
+- B1247_825
+- B1248_824
+- B1249_822
+- B1249_823
+- B1250_821
+- B1251_820
+- B1252_817
+- B1252_820
+- B1252_821
+- B1252_822
+- B1253_821

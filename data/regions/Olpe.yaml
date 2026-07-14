@@ -1,0 +1,17 @@
+id: Olpe
+name: Olpe
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1567_3912
+- B1568_3909
+- B1568_3910
+- B1568_3912
+- B1568_3913
+- B1569_3909
+- B1569_3910
+- B1569_3911
+- B1569_3912
+- B1570_3910
+- B1570_3911

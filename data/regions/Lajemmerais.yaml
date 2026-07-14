@@ -1,0 +1,9 @@
+id: Lajemmerais
+name: Lajemmerais
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1508_814
+- B1508_815
+- B1509_814

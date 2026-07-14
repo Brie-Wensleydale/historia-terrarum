@@ -1,0 +1,8 @@
+id: Jaunpils
+name: Jaunpils
+type: province
+country: Latvia
+tiles:
+- B1632_3744
+- B1632_3745
+- B1632_3746

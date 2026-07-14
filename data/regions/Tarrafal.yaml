@@ -1,0 +1,7 @@
+id: Tarrafal
+name: Tarrafal
+type: province
+country: Cabo Verde
+tiles:
+- B1170_263
+- B1171_263

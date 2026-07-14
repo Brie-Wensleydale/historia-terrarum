@@ -1,0 +1,9 @@
+id: Glogovac
+name: Glogovac
+type: province
+country: Kosovo
+tiles:
+- B1474_3767
+- B1474_3768
+- B1475_3767
+- B1475_3768

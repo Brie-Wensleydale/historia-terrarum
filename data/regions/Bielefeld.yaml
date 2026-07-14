@@ -1,0 +1,10 @@
+id: Bielefeld
+name: Bielefeld
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1578_3905
+- B1579_3904
+- B1579_3905
+- B1580_3905

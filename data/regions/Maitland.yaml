@@ -1,0 +1,12 @@
+id: Maitland
+name: Maitland
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B636_2314
+- B636_2315
+- B636_2316
+- B637_2315
+- B637_2316
+- B637_2317

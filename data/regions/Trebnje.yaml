@@ -1,0 +1,11 @@
+id: Trebnje
+name: Trebnje
+type: province
+country: Slovenia
+tiles:
+- B1511_3831
+- B1511_3832
+- B1511_3833
+- B1511_3834
+- B1512_3831
+- B1512_3832

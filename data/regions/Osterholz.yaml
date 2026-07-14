@@ -1,0 +1,19 @@
+id: Osterholz
+name: Osterholz
+type: province
+country: Germany
+parent: Niedersachsen
+tiles:
+- B1592_3900
+- B1592_3901
+- B1592_3902
+- B1592_3903
+- B1593_3900
+- B1593_3901
+- B1593_3902
+- B1593_3903
+- B1593_3904
+- B1593_3905
+- B1594_3901
+- B1594_3902
+- B1594_3905

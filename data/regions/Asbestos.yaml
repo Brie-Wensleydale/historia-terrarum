@@ -1,0 +1,18 @@
+id: Asbestos
+name: Asbestos
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1508_798
+- B1509_795
+- B1509_796
+- B1509_797
+- B1509_798
+- B1509_799
+- B1509_800
+- B1510_795
+- B1510_796
+- B1510_797
+- B1510_799
+- B1510_800

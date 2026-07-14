@@ -1,0 +1,7 @@
+id: Mosman
+name: Mosman
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B624_2319

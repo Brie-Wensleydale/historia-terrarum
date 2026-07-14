@@ -1,0 +1,11 @@
+id: Rostock_Kreisfreie_Stadt
+name: Rostock (Kreisfreie Stadt)
+type: province
+country: Germany
+parent: Mecklenburg_Vorpommern
+tiles:
+- B1602_3864
+- B1602_3865
+- B1603_3864
+- B1603_3865
+- B1603_3866

@@ -1,0 +1,23 @@
+id: Light
+name: Light
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B616_2456
+- B616_2458
+- B616_2459
+- B617_2456
+- B617_2457
+- B617_2458
+- B617_2459
+- B618_2454
+- B618_2455
+- B618_2456
+- B618_2457
+- B618_2458
+- B618_2459
+- B619_2455
+- B619_2456
+- B619_2457
+- B620_2456

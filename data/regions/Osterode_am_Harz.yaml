@@ -1,0 +1,15 @@
+id: Osterode_am_Harz
+name: Osterode am Harz
+type: province
+country: Germany
+parent: Niedersachsen
+tiles:
+- B1574_3882
+- B1575_3882
+- B1575_3883
+- B1575_3884
+- B1575_3885
+- B1575_3886
+- B1576_3884
+- B1576_3885
+- B1576_3886

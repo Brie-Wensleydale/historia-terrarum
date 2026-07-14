@@ -1,0 +1,8 @@
+id: Ku_ring_gai
+name: Ku-ring-gai
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B625_2320
+- B626_2320

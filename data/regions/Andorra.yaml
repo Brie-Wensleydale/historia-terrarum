@@ -1,0 +1,10 @@
+id: Andorra
+name: Andorra
+type: province
+country: Andorra
+tiles:
+- B1473_3982
+- B1473_3983
+- B1474_3981
+- B1474_3982
+- B1474_3983

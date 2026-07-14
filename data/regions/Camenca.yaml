@@ -1,0 +1,13 @@
+id: Camenca
+name: Camenca
+type: province
+country: Moldova
+tiles:
+- B1534_3679
+- B1534_3680
+- B1534_3681
+- B1534_3682
+- B1535_3680
+- B1535_3681
+- B1535_3682
+- B1536_3682

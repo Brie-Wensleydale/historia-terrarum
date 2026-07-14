@@ -1,0 +1,20 @@
+id: Aichach_Friedberg
+name: Aichach-Friedberg
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1537_3877
+- B1537_3878
+- B1538_3876
+- B1538_3877
+- B1539_3876
+- B1539_3877
+- B1539_3878
+- B1540_3875
+- B1540_3876
+- B1540_3877
+- B1540_3878
+- B1541_3876
+- B1541_3877
+- B1541_3878

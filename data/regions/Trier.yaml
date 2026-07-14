@@ -1,0 +1,7 @@
+id: Trier
+name: Trier
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1554_3926

@@ -1,0 +1,18 @@
+id: Hope_Vale
+name: Hope Vale
+type: province
+country: Australia
+parent: Queensland
+tiles:
+- B830_2385
+- B830_2386
+- B830_2387
+- B831_2385
+- B831_2386
+- B831_2387
+- B832_2386
+- B832_2387
+- B833_2386
+- B834_2385
+- B834_2386
+- B835_2386

@@ -1,0 +1,18 @@
+id: Les_Jardins_de_Napierville
+name: Les Jardins-de-Napierville
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1502_815
+- B1502_816
+- B1502_817
+- B1502_818
+- B1503_815
+- B1503_816
+- B1503_817
+- B1503_818
+- B1504_815
+- B1504_816
+- B1504_817
+- B1504_818

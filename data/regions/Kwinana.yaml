@@ -1,0 +1,8 @@
+id: Kwinana
+name: Kwinana
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B642_2712
+- B642_2713

@@ -1,0 +1,10 @@
+id: Ozolnieku
+name: Ozolnieku
+type: province
+country: Latvia
+tiles:
+- B1629_3733
+- B1630_3733
+- B1631_3733
+- B1631_3734
+- B1631_3735

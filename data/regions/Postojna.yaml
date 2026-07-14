@@ -1,0 +1,8 @@
+id: Postojna
+name: Postojna
+type: province
+country: Slovenia
+tiles:
+- B1509_3842
+- B1510_3842
+- B1510_3843

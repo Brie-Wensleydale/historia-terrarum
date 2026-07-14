@@ -1,0 +1,23 @@
+id: Ascoli_Piceno
+name: Ascoli Piceno
+type: province
+country: Italy
+parent: Ascoli_Piceno
+tiles:
+- B1476_3850
+- B1476_3851
+- B1476_3852
+- B1477_3848
+- B1477_3849
+- B1477_3850
+- B1477_3851
+- B1477_3852
+- B1478_3845
+- B1478_3846
+- B1478_3847
+- B1478_3848
+- B1478_3849
+- B1478_3850
+- B1479_3846
+- B1479_3847
+- B1479_3848

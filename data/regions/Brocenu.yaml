@@ -1,0 +1,14 @@
+id: Brocenu
+name: Brocenu
+type: province
+country: Latvia
+tiles:
+- B1630_3747
+- B1630_3749
+- B1631_3747
+- B1631_3748
+- B1631_3749
+- B1632_3747
+- B1632_3748
+- B1632_3749
+- B1632_3750

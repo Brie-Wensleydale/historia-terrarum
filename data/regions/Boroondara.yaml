@@ -1,0 +1,7 @@
+id: Boroondara
+name: Boroondara
+type: province
+country: Australia
+parent: Victoria
+tiles:
+- B580_2388

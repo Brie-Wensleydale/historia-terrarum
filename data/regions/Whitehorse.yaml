@@ -1,0 +1,7 @@
+id: Whitehorse
+name: Whitehorse
+type: province
+country: Australia
+parent: Victoria
+tiles:
+- B580_2387

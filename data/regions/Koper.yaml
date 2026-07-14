@@ -1,0 +1,10 @@
+id: Koper
+name: Koper
+type: province
+country: Slovenia
+tiles:
+- B1506_3845
+- B1506_3846
+- B1507_3845
+- B1507_3846
+- B1507_3847

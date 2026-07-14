@@ -1,0 +1,8 @@
+id: Banaadir
+name: Banaadir
+type: province
+country: Somalia
+tiles:
+- B1023_3496
+- B1024_3494
+- B1024_3495

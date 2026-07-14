@@ -1,0 +1,8 @@
+id: Gosnells
+name: Gosnells
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B644_2710
+- B644_2711

@@ -1,0 +1,18 @@
+id: Ahuachapán
+name: Ahuachapán
+type: province
+country: El Salvador
+tiles:
+- B1153_1000
+- B1153_998
+- B1153_999
+- B1154_1000
+- B1154_998
+- B1154_999
+- B1155_1000
+- B1155_997
+- B1155_998
+- B1155_999
+- B1156_997
+- B1156_998
+- B1156_999

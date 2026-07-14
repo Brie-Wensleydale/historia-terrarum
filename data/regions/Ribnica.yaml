@@ -1,0 +1,7 @@
+id: Ribnica
+name: Ribnica
+type: province
+country: Slovenia
+tiles:
+- B1509_3835
+- B1509_3836

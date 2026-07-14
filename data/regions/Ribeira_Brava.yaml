@@ -1,0 +1,9 @@
+id: Ribeira_Brava
+name: Ribeira Brava
+type: province
+country: Cabo Verde
+tiles:
+- B1184_270
+- B1185_267
+- B1185_268
+- B1185_269

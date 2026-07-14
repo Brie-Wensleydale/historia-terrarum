@@ -1,0 +1,7 @@
+id: Neutral_Zone
+name: Neutral Zone
+type: province
+country: United Arab Emirates
+tiles:
+- B1276_3377
+- B1277_3377

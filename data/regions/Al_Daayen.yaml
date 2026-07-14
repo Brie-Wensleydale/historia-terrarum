@@ -1,0 +1,9 @@
+id: Al_Daayen
+name: Al Daayen
+type: province
+country: Qatar
+tiles:
+- B1283_3428
+- B1284_3427
+- B1284_3428
+- B1285_3428

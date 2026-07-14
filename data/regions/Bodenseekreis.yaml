@@ -1,0 +1,15 @@
+id: Bodenseekreis
+name: Bodenseekreis
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1530_3893
+- B1531_3893
+- B1531_3894
+- B1531_3895
+- B1531_3896
+- B1532_3895
+- B1532_3896
+- B1532_3897
+- B1532_3898

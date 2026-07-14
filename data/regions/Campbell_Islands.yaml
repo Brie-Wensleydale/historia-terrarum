@@ -1,0 +1,9 @@
+id: Campbell_Islands
+name: Campbell Islands
+type: province
+country: New Zealand
+tiles:
+- B416_2119
+- B416_2120
+- B416_2121
+- B417_2119

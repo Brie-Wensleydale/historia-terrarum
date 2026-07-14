@@ -1,0 +1,15 @@
+id: CommunautÃ©_Urbaine_de_QuÃ©bec
+name: CommunautÃ©-Urbaine-de-QuÃ©bec
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1520_793
+- B1520_794
+- B1521_791
+- B1521_792
+- B1521_793
+- B1521_794
+- B1522_791
+- B1522_792
+- B1522_793

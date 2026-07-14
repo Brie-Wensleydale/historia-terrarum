@@ -1,0 +1,14 @@
+id: Lichtenfels
+name: Lichtenfels
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1557_3874
+- B1557_3875
+- B1557_3877
+- B1558_3874
+- B1558_3875
+- B1558_3876
+- B1558_3877
+- B1559_3877

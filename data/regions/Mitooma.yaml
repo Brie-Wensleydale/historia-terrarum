@@ -1,0 +1,10 @@
+id: Mitooma
+name: Mitooma
+type: province
+country: Uganda
+tiles:
+- B993_3665
+- B993_3666
+- B994_3665
+- B994_3666
+- B994_3667

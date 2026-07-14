@@ -1,0 +1,7 @@
+id: Speyer
+name: Speyer
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1549_3906

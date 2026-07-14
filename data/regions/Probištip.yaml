@@ -1,0 +1,9 @@
+id: Probištip
+name: Probištip
+type: province
+country: North Macedonia
+tiles:
+- B1466_3753
+- B1467_3753
+- B1467_3754
+- B1468_3752

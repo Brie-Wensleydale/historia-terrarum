@@ -1,0 +1,7 @@
+id: Cerkno
+name: Cerkno
+type: province
+country: Slovenia
+tiles:
+- B1513_3844
+- B1514_3844

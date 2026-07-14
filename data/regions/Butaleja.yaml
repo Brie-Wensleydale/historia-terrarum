@@ -1,0 +1,12 @@
+id: Butaleja
+name: Butaleja
+type: province
+country: Uganda
+tiles:
+- B1009_3623
+- B1009_3624
+- B1010_3623
+- B1010_3624
+- B1011_3621
+- B1011_3622
+- B1011_3624

@@ -1,0 +1,24 @@
+id: Gold_Coast
+name: Gold Coast
+type: province
+country: Australia
+parent: Queensland
+tiles:
+- B687_2295
+- B687_2296
+- B687_2297
+- B688_2294
+- B688_2295
+- B688_2296
+- B689_2295
+- B689_2296
+- B689_2297
+- B690_2295
+- B690_2296
+- B690_2297
+- B691_2295
+- B691_2296
+- B691_2297
+- B692_2295
+- B692_2296
+- B692_2297

@@ -1,0 +1,8 @@
+id: Kobarid
+name: Kobarid
+type: province
+country: Slovenia
+tiles:
+- B1515_3848
+- B1515_3849
+- B1515_3850

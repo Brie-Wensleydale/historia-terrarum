@@ -1,0 +1,20 @@
+id: Verden
+name: Verden
+type: province
+country: Germany
+parent: Niedersachsen
+tiles:
+- B1588_3896
+- B1588_3897
+- B1589_3895
+- B1589_3896
+- B1589_3897
+- B1589_3898
+- B1589_3900
+- B1590_3896
+- B1590_3897
+- B1590_3898
+- B1590_3899
+- B1590_3900
+- B1591_3898
+- B1591_3899

@@ -1,0 +1,8 @@
+id: Bled
+name: Bled
+type: province
+country: Slovenia
+tiles:
+- B1516_3843
+- B1516_3844
+- B1517_3844

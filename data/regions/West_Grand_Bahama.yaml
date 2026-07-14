@@ -1,0 +1,15 @@
+id: West_Grand_Bahama
+name: West Grand Bahama
+type: province
+country: The Bahamas
+tiles:
+- B1295_874
+- B1295_875
+- B1296_872
+- B1296_873
+- B1296_874
+- B1296_875
+- B1296_876
+- B1297_872
+- B1298_872
+- B1298_873

@@ -1,0 +1,19 @@
+id: Rhein_Lahn_Kreis
+name: Rhein-Lahn-Kreis
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1558_3912
+- B1558_3913
+- B1559_3912
+- B1559_3913
+- B1559_3914
+- B1560_3910
+- B1560_3911
+- B1560_3912
+- B1560_3913
+- B1560_3914
+- B1560_3915
+- B1561_3911
+- B1561_3913

@@ -1,0 +1,21 @@
+id: Hato_Mayor
+name: Hato Mayor
+type: province
+country: Dominican Republic
+tiles:
+- B1207_770
+- B1208_769
+- B1208_770
+- B1209_769
+- B1209_770
+- B1209_771
+- B1210_770
+- B1211_770
+- B1211_771
+- B1212_769
+- B1212_770
+- B1212_771
+- B1212_772
+- B1212_773
+- B1213_771
+- B1213_772

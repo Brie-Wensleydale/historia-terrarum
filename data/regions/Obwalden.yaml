@@ -1,0 +1,13 @@
+id: Obwalden
+name: Obwalden
+type: province
+country: Switzerland
+tiles:
+- B1521_3906
+- B1521_3907
+- B1521_3908
+- B1521_3909
+- B1521_3910
+- B1522_3907
+- B1522_3908
+- B1522_3909

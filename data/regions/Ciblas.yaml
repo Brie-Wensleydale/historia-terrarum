@@ -1,0 +1,14 @@
+id: Ciblas
+name: Ciblas
+type: province
+country: Latvia
+tiles:
+- B1629_3689
+- B1630_3689
+- B1630_3690
+- B1630_3691
+- B1630_3692
+- B1630_3693
+- B1631_3689
+- B1631_3690
+- B1631_3691

@@ -1,0 +1,8 @@
+id: Puconci
+name: Puconci
+type: province
+country: Slovenia
+tiles:
+- B1520_3820
+- B1520_3821
+- B1521_3820

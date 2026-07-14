@@ -1,0 +1,7 @@
+id: Russia
+name: Russia
+type: province
+country: Russia
+tiles:
+- B1766_1625
+- B1766_1626

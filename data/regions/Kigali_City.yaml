@@ -1,0 +1,13 @@
+id: Kigali_City
+name: Kigali City
+type: province
+country: Rwanda
+tiles:
+- B978_3664
+- B978_3665
+- B978_3666
+- B979_3664
+- B979_3665
+- B979_3666
+- B980_3664
+- B980_3665

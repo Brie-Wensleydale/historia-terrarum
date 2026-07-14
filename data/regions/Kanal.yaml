@@ -1,0 +1,8 @@
+id: Kanal
+name: Kanal
+type: province
+country: Slovenia
+tiles:
+- B1513_3847
+- B1513_3848
+- B1513_3849

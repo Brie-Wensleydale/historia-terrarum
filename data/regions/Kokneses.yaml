@@ -1,0 +1,10 @@
+id: Kokneses
+name: Kokneses
+type: province
+country: Latvia
+tiles:
+- B1631_3716
+- B1631_3717
+- B1631_3718
+- B1632_3715
+- B1632_3716

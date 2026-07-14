@@ -1,0 +1,9 @@
+id: South_Dublin
+name: South Dublin
+type: province
+country: Ireland
+tiles:
+- B1592_70
+- B1593_70
+- B1593_71
+- B1594_71

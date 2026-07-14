@@ -1,0 +1,11 @@
+id: Mwaro
+name: Mwaro
+type: province
+country: Burundi
+tiles:
+- B961_3669
+- B961_3670
+- B962_3668
+- B962_3669
+- B962_3670
+- B963_3668

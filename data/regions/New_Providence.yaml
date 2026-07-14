@@ -1,0 +1,8 @@
+id: New_Providence
+name: New Providence
+type: province
+country: The Bahamas
+tiles:
+- B1279_859
+- B1279_860
+- B1279_861

@@ -1,0 +1,11 @@
+id: Mapoon
+name: Mapoon
+type: province
+country: Australia
+parent: Queensland
+tiles:
+- B865_2424
+- B866_2423
+- B866_2424
+- B867_2421
+- B867_2423

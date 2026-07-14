@@ -1,0 +1,9 @@
+id: Kratovo
+name: Kratovo
+type: province
+country: North Macedonia
+tiles:
+- B1468_3753
+- B1468_3754
+- B1468_3755
+- B1469_3755

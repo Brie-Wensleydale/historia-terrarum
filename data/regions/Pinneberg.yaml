@@ -1,0 +1,18 @@
+id: Pinneberg
+name: Pinneberg
+type: province
+country: Germany
+parent: Schleswig_Holstein
+tiles:
+- B1597_3890
+- B1597_3891
+- B1597_3892
+- B1597_3893
+- B1598_3889
+- B1598_3890
+- B1598_3891
+- B1598_3892
+- B1598_3893
+- B1599_3890
+- B1599_3891
+- B1599_3892

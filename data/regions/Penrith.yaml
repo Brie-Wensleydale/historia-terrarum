@@ -1,0 +1,12 @@
+id: Penrith
+name: Penrith
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B624_2324
+- B624_2325
+- B624_2326
+- B625_2325
+- B626_2324
+- B626_2325

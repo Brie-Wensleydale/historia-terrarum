@@ -1,0 +1,22 @@
+id: Reutlingen
+name: Reutlingen
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1537_3895
+- B1538_3894
+- B1538_3895
+- B1538_3896
+- B1538_3897
+- B1539_3893
+- B1539_3894
+- B1539_3895
+- B1539_3896
+- B1539_3897
+- B1540_3893
+- B1540_3894
+- B1540_3895
+- B1540_3896
+- B1540_3897
+- B1541_3898

@@ -1,0 +1,7 @@
+id: Worms
+name: Worms
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1553_3907

@@ -1,0 +1,11 @@
+id: Crooked_Island_and_Long_Cay
+name: Crooked Island and Long Cay
+type: province
+country: The Bahamas
+tiles:
+- B1253_823
+- B1253_824
+- B1253_825
+- B1254_824
+- B1254_825
+- B1257_819

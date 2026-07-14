@@ -1,0 +1,19 @@
+id: Cuballing
+name: Cuballing
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B635_2697
+- B635_2698
+- B635_2699
+- B636_2696
+- B636_2697
+- B636_2698
+- B636_2699
+- B636_2700
+- B637_2696
+- B637_2697
+- B637_2698
+- B637_2699
+- B637_2700

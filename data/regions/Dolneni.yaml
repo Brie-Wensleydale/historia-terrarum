@@ -1,0 +1,12 @@
+id: Dolneni
+name: Dolneni
+type: province
+country: North Macedonia
+tiles:
+- B1461_3761
+- B1461_3762
+- B1461_3763
+- B1462_3761
+- B1462_3762
+- B1462_3763
+- B1463_3762

@@ -1,0 +1,21 @@
+id: Mayen_Koblenz
+name: Mayen-Koblenz
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1559_3917
+- B1559_3918
+- B1560_3916
+- B1560_3917
+- B1560_3918
+- B1560_3919
+- B1560_3920
+- B1560_3921
+- B1561_3915
+- B1561_3916
+- B1561_3917
+- B1561_3918
+- B1561_3919
+- B1561_3920
+- B1561_3921

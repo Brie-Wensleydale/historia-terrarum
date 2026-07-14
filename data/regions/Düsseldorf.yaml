@@ -1,0 +1,9 @@
+id: Düsseldorf
+name: Düsseldorf
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1570_3923
+- B1570_3924
+- B1571_3924

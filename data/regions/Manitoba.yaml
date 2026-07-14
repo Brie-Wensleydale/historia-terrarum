@@ -1,0 +1,9 @@
+id: Manitoba
+name: Manitoba
+type: province
+country: Canada
+tiles:
+- B1636_1019
+- B1645_1030
+- B1655_1049
+- B1668_526

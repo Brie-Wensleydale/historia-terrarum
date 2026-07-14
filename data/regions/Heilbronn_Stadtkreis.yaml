@@ -1,0 +1,7 @@
+id: Heilbronn_Stadtkreis
+name: Heilbronn (Stadtkreis)
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1547_3897

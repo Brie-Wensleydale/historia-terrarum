@@ -1,0 +1,13 @@
+id: Gostivar
+name: Gostivar
+type: province
+country: North Macedonia
+tiles:
+- B1464_3766
+- B1464_3767
+- B1465_3766
+- B1465_3767
+- B1465_3768
+- B1465_3770
+- B1466_3770
+- B1466_3771

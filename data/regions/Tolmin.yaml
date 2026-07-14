@@ -1,0 +1,11 @@
+id: Tolmin
+name: Tolmin
+type: province
+country: Slovenia
+tiles:
+- B1513_3845
+- B1513_3846
+- B1514_3845
+- B1514_3846
+- B1514_3847
+- B1515_3847

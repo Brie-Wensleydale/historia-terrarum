@@ -1,0 +1,9 @@
+id: Iecavas
+name: Iecavas
+type: province
+country: Latvia
+tiles:
+- B1630_3730
+- B1630_3731
+- B1630_3732
+- B1631_3730

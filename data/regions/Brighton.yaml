@@ -1,0 +1,7 @@
+id: Brighton
+name: Brighton
+type: province
+country: Australia
+parent: Tasmania
+tiles:
+- B525_2363

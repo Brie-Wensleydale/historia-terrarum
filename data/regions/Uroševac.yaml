@@ -1,0 +1,10 @@
+id: Uroševac
+name: Uroševac
+type: province
+country: Kosovo
+tiles:
+- B1471_3764
+- B1471_3765
+- B1471_3766
+- B1472_3764
+- B1472_3765

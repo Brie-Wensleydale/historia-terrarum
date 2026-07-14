@@ -1,0 +1,22 @@
+id: Torres_Strait_Islands
+name: Torres Strait Islands
+type: province
+country: Australia
+parent: Queensland
+tiles:
+- B879_2414
+- B879_2415
+- B879_2416
+- B880_2416
+- B881_2420
+- B882_2419
+- B882_2420
+- B883_2418
+- B887_2419
+- B888_2418
+- B888_2420
+- B896_2414
+- B896_2415
+- B897_2419
+- B897_2420
+- B898_2419

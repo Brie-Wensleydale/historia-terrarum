@@ -1,0 +1,14 @@
+id: Iganga
+name: Iganga
+type: province
+country: Uganda
+tiles:
+- B1007_3626
+- B1007_3627
+- B1008_3626
+- B1008_3627
+- B1009_3626
+- B1009_3627
+- B1009_3628
+- B1010_3627
+- B1010_3628

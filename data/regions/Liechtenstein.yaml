@@ -1,0 +1,8 @@
+id: Liechtenstein
+name: Liechtenstein
+type: province
+country: Liechtenstein
+tiles:
+- B1524_3893
+- B1524_3894
+- B1525_3894

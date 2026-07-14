@@ -1,0 +1,12 @@
+id: Exuma
+name: Exuma
+type: province
+country: The Bahamas
+tiles:
+- B1261_839
+- B1261_840
+- B1261_841
+- B1262_841
+- B1262_843
+- B1263_843
+- B1263_844

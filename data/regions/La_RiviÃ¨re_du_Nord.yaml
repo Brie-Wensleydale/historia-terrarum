@@ -1,0 +1,12 @@
+id: La_RiviÃ¨re_du_Nord
+name: La RiviÃ¨re-du-Nord
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1509_823
+- B1510_821
+- B1510_822
+- B1510_823
+- B1511_821
+- B1511_822

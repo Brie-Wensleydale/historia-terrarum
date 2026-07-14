@@ -1,0 +1,12 @@
+id: CommunautÃ©_Urbaine_de_l_Outaouai
+name: CommunautÃ©-Urbaine-de-l'Outaouai
+type: province
+country: Canada
+parent: Ontario
+tiles:
+- B1506_841
+- B1506_842
+- B1507_837
+- B1507_838
+- B1507_839
+- B1507_840

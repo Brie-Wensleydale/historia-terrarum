@@ -1,0 +1,11 @@
+id: Niamey
+name: Niamey
+type: province
+country: Niger
+tiles:
+- B1150_3975
+- B1150_3976
+- B1151_3975
+- B1151_3976
+- B1151_3977
+- B1152_3977

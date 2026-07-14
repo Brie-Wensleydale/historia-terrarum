@@ -1,0 +1,17 @@
+id: Neuchâtel
+name: Neuchâtel
+type: province
+country: Switzerland
+tiles:
+- B1522_3924
+- B1522_3927
+- B1523_3922
+- B1523_3923
+- B1523_3924
+- B1523_3925
+- B1523_3926
+- B1524_3921
+- B1524_3922
+- B1524_3923
+- B1524_3924
+- B1524_3925

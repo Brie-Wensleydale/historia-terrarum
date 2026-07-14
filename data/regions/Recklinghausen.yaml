@@ -1,0 +1,19 @@
+id: Recklinghausen
+name: Recklinghausen
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1574_3918
+- B1574_3920
+- B1574_3922
+- B1575_3917
+- B1575_3918
+- B1575_3919
+- B1575_3920
+- B1575_3921
+- B1575_3922
+- B1576_3919
+- B1576_3920
+- B1576_3921
+- B1576_3922

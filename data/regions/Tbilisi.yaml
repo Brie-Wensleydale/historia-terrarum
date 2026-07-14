@@ -1,0 +1,8 @@
+id: Tbilisi
+name: Tbilisi
+type: province
+country: Georgia
+tiles:
+- B1464_3502
+- B1465_3501
+- B1465_3502

@@ -1,0 +1,10 @@
+id: New_Brunswick
+name: New Brunswick
+type: province
+country: Canada
+tiles:
+- B1497_743
+- B1499_741
+- B1521_720
+- B1534_733
+- B1535_716

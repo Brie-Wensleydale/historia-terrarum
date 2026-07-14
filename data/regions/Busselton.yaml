@@ -1,0 +1,24 @@
+id: Busselton
+name: Busselton
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B625_2714
+- B625_2715
+- B625_2716
+- B625_2717
+- B625_2718
+- B625_2719
+- B625_2720
+- B625_2721
+- B625_2722
+- B626_2714
+- B626_2715
+- B626_2716
+- B626_2717
+- B626_2718
+- B626_2719
+- B626_2720
+- B626_2721
+- B627_2721

@@ -1,0 +1,7 @@
+id: Bunbury
+name: Bunbury
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B630_2714

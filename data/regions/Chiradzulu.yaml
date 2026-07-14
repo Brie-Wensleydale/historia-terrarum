@@ -1,0 +1,15 @@
+id: Chiradzulu
+name: Chiradzulu
+type: province
+country: Malawi
+tiles:
+- B823_3607
+- B824_3607
+- B824_3608
+- B825_3608
+- B825_3609
+- B826_3607
+- B826_3608
+- B826_3609
+- B827_3608
+- B827_3609

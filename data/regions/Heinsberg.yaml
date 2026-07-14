@@ -1,0 +1,16 @@
+id: Heinsberg
+name: Heinsberg
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1567_3932
+- B1568_3929
+- B1568_3930
+- B1568_3931
+- B1568_3932
+- B1568_3933
+- B1569_3929
+- B1569_3930
+- B1569_3931
+- B1569_3932

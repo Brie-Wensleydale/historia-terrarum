@@ -1,0 +1,14 @@
+id: Cayman_Islands
+name: Cayman Islands (United Kingdom)
+type: province
+country: Cayman Islands
+tiles:
+- B1215_901
+- B1215_902
+- B1215_903
+- B1215_904
+- B1216_901
+- B1216_902
+- B1216_904
+- B1220_886
+- B1220_888

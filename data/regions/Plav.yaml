@@ -1,0 +1,12 @@
+id: Plav
+name: Plav
+type: province
+country: Montenegro
+tiles:
+- B1473_3779
+- B1474_3777
+- B1474_3778
+- B1474_3779
+- B1474_3780
+- B1475_3777
+- B1475_3778

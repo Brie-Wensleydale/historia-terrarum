@@ -1,0 +1,8 @@
+id: Samut_Songkhram
+name: Samut Songkhram
+type: province
+country: Thailand
+tiles:
+- B1149_2889
+- B1150_2888
+- B1150_2889

@@ -1,0 +1,8 @@
+id: Woorabinda
+name: Woorabinda
+type: province
+country: Australia
+parent: Queensland
+tiles:
+- B732_2339
+- B739_2336

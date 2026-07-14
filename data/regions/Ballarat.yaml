@@ -1,0 +1,15 @@
+id: Ballarat
+name: Ballarat
+type: province
+country: Australia
+parent: Victoria
+tiles:
+- B582_2401
+- B583_2401
+- B583_2402
+- B583_2403
+- B584_2402
+- B584_2403
+- B585_2401
+- B585_2402
+- B585_2403

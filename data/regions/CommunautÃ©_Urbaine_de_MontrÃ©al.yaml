@@ -1,0 +1,15 @@
+id: CommunautÃ©_Urbaine_de_MontrÃ©al
+name: CommunautÃ©-Urbaine-de-MontrÃ©al
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1506_817
+- B1506_818
+- B1506_819
+- B1506_820
+- B1506_821
+- B1507_817
+- B1507_818
+- B1508_816
+- B1508_817

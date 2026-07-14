@@ -1,0 +1,11 @@
+id: Ciudad_de_Buenos_Aires
+name: Ciudad de Buenos Aires
+type: province
+country: Argentina
+tiles:
+- B614_649
+- B615_648
+- B615_649
+- B615_650
+- B616_648
+- B616_649

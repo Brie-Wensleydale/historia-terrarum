@@ -1,0 +1,19 @@
+id: Limburg_Weilburg
+name: Limburg-Weilburg
+type: province
+country: Germany
+parent: Hessen
+tiles:
+- B1560_3907
+- B1560_3908
+- B1560_3909
+- B1561_3907
+- B1561_3908
+- B1561_3909
+- B1561_3910
+- B1562_3907
+- B1562_3908
+- B1562_3909
+- B1562_3910
+- B1563_3908
+- B1563_3909

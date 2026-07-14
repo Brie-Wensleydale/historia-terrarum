@@ -1,0 +1,11 @@
+id: Salas
+name: Salas
+type: province
+country: Latvia
+tiles:
+- B1628_3713
+- B1628_3714
+- B1629_3713
+- B1629_3714
+- B1629_3715
+- B1630_3714

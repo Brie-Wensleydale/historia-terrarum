@@ -1,0 +1,10 @@
+id: Tervetes
+name: Tervetes
+type: province
+country: Latvia
+tiles:
+- B1628_3739
+- B1628_3740
+- B1628_3741
+- B1628_3742
+- B1629_3740

@@ -1,0 +1,24 @@
+id: Bernkastel_Wittlich
+name: Bernkastel-Wittlich
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1554_3921
+- B1554_3922
+- B1555_3919
+- B1555_3920
+- B1555_3921
+- B1555_3922
+- B1555_3923
+- B1555_3924
+- B1556_3920
+- B1556_3921
+- B1556_3922
+- B1556_3923
+- B1556_3924
+- B1557_3921
+- B1557_3922
+- B1557_3923
+- B1557_3924
+- B1557_3925

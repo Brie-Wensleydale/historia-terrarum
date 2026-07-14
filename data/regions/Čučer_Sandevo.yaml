@@ -1,0 +1,10 @@
+id: Čučer_Sandevo
+name: Čučer Sandevo
+type: province
+country: North Macedonia
+tiles:
+- B1468_3762
+- B1469_3761
+- B1469_3762
+- B1470_3761
+- B1470_3762

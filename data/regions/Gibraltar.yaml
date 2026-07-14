@@ -1,0 +1,6 @@
+id: Gibraltar
+name: Gibraltar
+type: province
+country: Gibraltar
+tiles:
+- B1402_59

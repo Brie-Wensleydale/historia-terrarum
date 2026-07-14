@@ -1,0 +1,17 @@
+id: Dajabón
+name: Dajabón
+type: province
+country: Dominican Republic
+tiles:
+- B1215_794
+- B1215_795
+- B1215_796
+- B1216_794
+- B1216_795
+- B1216_796
+- B1217_794
+- B1217_795
+- B1217_796
+- B1218_794
+- B1218_795
+- B1218_796

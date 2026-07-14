@@ -1,0 +1,12 @@
+id: Kisoro
+name: Kisoro
+type: province
+country: Uganda
+tiles:
+- B986_3669
+- B986_3670
+- B987_3669
+- B987_3670
+- B988_3670
+- B988_3671
+- B989_3671

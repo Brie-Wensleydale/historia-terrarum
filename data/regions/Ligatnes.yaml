@@ -1,0 +1,9 @@
+id: Ligatnes
+name: Ligatnes
+type: province
+country: Latvia
+tiles:
+- B1636_3721
+- B1637_3720
+- B1637_3721
+- B1637_3722

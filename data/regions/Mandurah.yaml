@@ -1,0 +1,10 @@
+id: Mandurah
+name: Mandurah
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B636_2714
+- B636_2715
+- B637_2715
+- B638_2714

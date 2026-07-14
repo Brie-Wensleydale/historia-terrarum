@@ -1,0 +1,7 @@
+id: Neumünster
+name: Neumünster
+type: province
+country: Germany
+parent: Schleswig_Holstein
+tiles:
+- B1602_3889

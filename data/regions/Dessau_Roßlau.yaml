@@ -1,0 +1,10 @@
+id: Dessau_Roßlau
+name: Dessau-Roßlau
+type: province
+country: Germany
+parent: Sachsen_Anhalt
+tiles:
+- B1577_3863
+- B1577_3864
+- B1578_3863
+- B1578_3864

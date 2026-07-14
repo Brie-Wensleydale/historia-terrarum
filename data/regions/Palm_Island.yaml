@@ -1,0 +1,7 @@
+id: Palm_Island
+name: Palm Island
+type: province
+country: Australia
+parent: Queensland
+tiles:
+- B792_2371

@@ -1,0 +1,9 @@
+id: Novo_Mesto
+name: Novo Mesto
+type: province
+country: Slovenia
+tiles:
+- B1509_3831
+- B1510_3830
+- B1510_3831
+- B1511_3830

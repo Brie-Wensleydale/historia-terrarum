@@ -1,0 +1,8 @@
+id: Skopje
+name: Skopje
+type: province
+country: North Macedonia
+tiles:
+- B1466_3758
+- B1466_3759
+- B1467_3758

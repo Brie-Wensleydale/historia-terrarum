@@ -1,0 +1,10 @@
+id: Ajlun
+name: Ajlun
+type: province
+country: Jordan
+tiles:
+- B1359_3602
+- B1359_3603
+- B1360_3601
+- B1360_3602
+- B1360_3603

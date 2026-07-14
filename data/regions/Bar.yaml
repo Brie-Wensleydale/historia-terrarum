@@ -1,0 +1,14 @@
+id: Bar
+name: Bar
+type: province
+country: Montenegro
+tiles:
+- B1468_3787
+- B1469_3785
+- B1469_3786
+- B1469_3787
+- B1469_3788
+- B1470_3786
+- B1470_3787
+- B1470_3788
+- B1471_3788

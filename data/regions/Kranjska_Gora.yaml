@@ -1,0 +1,8 @@
+id: Kranjska_Gora
+name: Kranjska Gora
+type: province
+country: Slovenia
+tiles:
+- B1517_3845
+- B1517_3846
+- B1517_3847

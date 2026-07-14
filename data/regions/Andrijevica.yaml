@@ -1,0 +1,11 @@
+id: Andrijevica
+name: Andrijevica
+type: province
+country: Montenegro
+tiles:
+- B1475_3779
+- B1475_3780
+- B1475_3781
+- B1476_3779
+- B1476_3780
+- B1476_3781

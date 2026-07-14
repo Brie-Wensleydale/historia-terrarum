@@ -1,0 +1,12 @@
+id: La_Romana
+name: La Romana
+type: province
+country: Dominican Republic
+tiles:
+- B1205_766
+- B1205_767
+- B1206_765
+- B1206_766
+- B1206_767
+- B1207_765
+- B1207_766

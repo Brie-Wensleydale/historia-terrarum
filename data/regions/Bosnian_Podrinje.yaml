@@ -1,0 +1,12 @@
+id: Bosnian_Podrinje
+name: Bosnian Podrinje
+type: province
+country: Bosnia and Herzegovina
+tiles:
+- B1486_3789
+- B1486_3790
+- B1486_3791
+- B1486_3792
+- B1487_3789
+- B1487_3790
+- B1487_3791

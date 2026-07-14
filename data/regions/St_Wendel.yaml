@@ -1,0 +1,13 @@
+id: St_Wendel
+name: St. Wendel
+type: province
+country: Germany
+parent: Saarland
+tiles:
+- B1551_3919
+- B1551_3920
+- B1551_3921
+- B1551_3922
+- B1552_3920
+- B1552_3921
+- B1552_3922

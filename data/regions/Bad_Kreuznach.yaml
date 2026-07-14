@@ -1,0 +1,21 @@
+id: Bad_Kreuznach
+name: Bad Kreuznach
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1553_3914
+- B1554_3912
+- B1554_3913
+- B1554_3914
+- B1554_3915
+- B1554_3916
+- B1554_3917
+- B1555_3911
+- B1555_3912
+- B1555_3913
+- B1555_3914
+- B1555_3915
+- B1555_3916
+- B1556_3913
+- B1556_3914

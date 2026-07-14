@@ -1,0 +1,23 @@
+id: Northam
+name: Northam
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B646_2705
+- B646_2706
+- B647_2704
+- B647_2705
+- B647_2706
+- B648_2701
+- B648_2702
+- B648_2703
+- B648_2704
+- B648_2705
+- B649_2701
+- B649_2702
+- B649_2703
+- B649_2704
+- B650_2702
+- B650_2703
+- B650_2704

@@ -1,0 +1,9 @@
+id: Kačanik
+name: Kačanik
+type: province
+country: Kosovo
+tiles:
+- B1469_3763
+- B1470_3763
+- B1470_3764
+- B1470_3765

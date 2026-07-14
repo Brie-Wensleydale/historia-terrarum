@@ -1,0 +1,7 @@
+id: Ormoc
+name: Ormoc
+type: province
+country: Philippines
+tiles:
+- B1123_2615
+- B1124_2615

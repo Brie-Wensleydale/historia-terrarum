@@ -1,0 +1,11 @@
+id: Monza_and_Brianza
+name: Monza and Brianza
+type: province
+country: Italy
+parent: Monza_e_Brianza
+tiles:
+- B1507_3896
+- B1508_3895
+- B1508_3896
+- B1508_3897
+- B1508_3898

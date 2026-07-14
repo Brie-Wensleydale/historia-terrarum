@@ -1,0 +1,7 @@
+id: Frankenthal_Pfalz
+name: Frankenthal (Pfalz)
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1551_3907

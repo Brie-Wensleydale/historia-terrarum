@@ -1,0 +1,10 @@
+id: Gnjilane
+name: Gnjilane
+type: province
+country: Kosovo
+tiles:
+- B1472_3760
+- B1472_3761
+- B1473_3761
+- B1473_3762
+- B1473_3763

@@ -1,0 +1,12 @@
+id: Saarpfalz_Kreis
+name: Saarpfalz-Kreis
+type: province
+country: Germany
+parent: Saarland
+tiles:
+- B1547_3919
+- B1547_3920
+- B1548_3919
+- B1548_3920
+- B1549_3918
+- B1549_3919

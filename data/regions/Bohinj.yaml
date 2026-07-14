@@ -1,0 +1,11 @@
+id: Bohinj
+name: Bohinj
+type: province
+country: Slovenia
+tiles:
+- B1515_3843
+- B1515_3844
+- B1515_3845
+- B1515_3846
+- B1516_3845
+- B1516_3846

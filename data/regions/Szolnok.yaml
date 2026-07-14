@@ -1,0 +1,9 @@
+id: Szolnok
+name: Szolnok
+type: province
+country: Hungary
+tiles:
+- B1525_3775
+- B1525_3776
+- B1526_3775
+- B1526_3776

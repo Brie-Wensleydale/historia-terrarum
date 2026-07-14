@@ -1,0 +1,9 @@
+id: Black_Point
+name: Black Point
+type: province
+country: The Bahamas
+tiles:
+- B1267_848
+- B1268_848
+- B1269_848
+- B1273_853

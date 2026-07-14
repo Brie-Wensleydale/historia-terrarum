@@ -1,0 +1,12 @@
+id: Clarence
+name: Clarence
+type: province
+country: Australia
+parent: Tasmania
+tiles:
+- B522_2361
+- B523_2361
+- B524_2361
+- B524_2362
+- B525_2361
+- B525_2362

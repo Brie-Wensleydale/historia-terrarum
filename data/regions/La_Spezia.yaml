@@ -1,0 +1,20 @@
+id: La_Spezia
+name: La Spezia
+type: province
+country: Italy
+parent: La_Spezia
+tiles:
+- B1491_3888
+- B1491_3889
+- B1491_3890
+- B1491_3891
+- B1491_3892
+- B1492_3890
+- B1492_3891
+- B1492_3892
+- B1492_3893
+- B1492_3894
+- B1493_3891
+- B1493_3892
+- B1493_3893
+- B1494_3893

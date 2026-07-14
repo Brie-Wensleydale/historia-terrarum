@@ -1,0 +1,9 @@
+id: Magdeburg
+name: Magdeburg
+type: province
+country: Germany
+parent: Sachsen_Anhalt
+tiles:
+- B1580_3870
+- B1580_3871
+- B1581_3870

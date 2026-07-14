@@ -1,0 +1,17 @@
+id: München
+name: München
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1534_3869
+- B1534_3870
+- B1534_3871
+- B1535_3869
+- B1535_3870
+- B1535_3871
+- B1535_3872
+- B1536_3869
+- B1537_3869
+- B1537_3870
+- B1537_3871

@@ -1,0 +1,15 @@
+id: Aizputes
+name: Aizputes
+type: province
+country: Latvia
+tiles:
+- B1630_3758
+- B1630_3759
+- B1631_3758
+- B1631_3759
+- B1631_3760
+- B1631_3761
+- B1632_3759
+- B1632_3760
+- B1632_3761
+- B1632_3762

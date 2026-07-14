@@ -1,0 +1,15 @@
+id: Wyong
+name: Wyong
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B630_2316
+- B630_2317
+- B630_2318
+- B631_2316
+- B631_2317
+- B631_2318
+- B631_2319
+- B632_2318
+- B632_2319

@@ -1,0 +1,22 @@
+id: Lahn_Dill_Kreis
+name: Lahn-Dill-Kreis
+type: province
+country: Germany
+parent: Hessen
+tiles:
+- B1562_3905
+- B1562_3906
+- B1563_3904
+- B1563_3905
+- B1563_3906
+- B1563_3907
+- B1564_3905
+- B1564_3906
+- B1564_3907
+- B1564_3908
+- B1564_3909
+- B1565_3906
+- B1565_3907
+- B1565_3908
+- B1566_3907
+- B1566_3908

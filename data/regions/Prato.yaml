@@ -1,0 +1,12 @@
+id: Prato
+name: Prato
+type: province
+country: Italy
+parent: Bologna
+tiles:
+- B1488_3877
+- B1489_3876
+- B1489_3877
+- B1490_3876
+- B1490_3877
+- B1491_3876

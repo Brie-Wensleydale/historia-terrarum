@@ -1,0 +1,11 @@
+id: Reykjavík
+name: Reykjavík
+type: province
+country: Iceland
+tiles:
+- B1713_121
+- B1713_122
+- B1714_120
+- B1714_121
+- B1715_120
+- B1715_121

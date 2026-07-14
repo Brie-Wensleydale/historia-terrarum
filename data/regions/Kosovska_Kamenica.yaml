@@ -1,0 +1,13 @@
+id: Kosovska_Kamenica
+name: Kosovska Kamenica
+type: province
+country: Kosovo
+tiles:
+- B1473_3759
+- B1473_3760
+- B1474_3759
+- B1474_3760
+- B1475_3758
+- B1475_3759
+- B1475_3760
+- B1475_3761

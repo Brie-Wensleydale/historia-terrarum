@@ -1,0 +1,14 @@
+id: Kocevje
+name: Kocevje
+type: province
+country: Slovenia
+tiles:
+- B1507_3832
+- B1507_3833
+- B1507_3834
+- B1507_3835
+- B1508_3833
+- B1508_3834
+- B1508_3835
+- B1508_3836
+- B1509_3834

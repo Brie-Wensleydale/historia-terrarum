@@ -1,0 +1,17 @@
+id: Rottweil
+name: Rottweil
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1536_3903
+- B1536_3904
+- B1537_3903
+- B1537_3904
+- B1537_3905
+- B1537_3906
+- B1537_3907
+- B1538_3903
+- B1538_3904
+- B1538_3905
+- B1538_3907

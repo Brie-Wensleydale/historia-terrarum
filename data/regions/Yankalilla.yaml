@@ -1,0 +1,19 @@
+id: Yankalilla
+name: Yankalilla
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B604_2462
+- B604_2463
+- B604_2464
+- B604_2465
+- B605_2462
+- B605_2463
+- B605_2464
+- B606_2461
+- B606_2462
+- B606_2463
+- B607_2460
+- B607_2461
+- B607_2462

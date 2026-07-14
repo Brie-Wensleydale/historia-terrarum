@@ -1,0 +1,14 @@
+id: Grobinas
+name: Grobinas
+type: province
+country: Latvia
+tiles:
+- B1627_3762
+- B1627_3763
+- B1628_3762
+- B1628_3763
+- B1629_3763
+- B1629_3764
+- B1629_3765
+- B1630_3764
+- B1630_3765

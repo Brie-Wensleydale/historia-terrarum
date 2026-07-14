@@ -1,0 +1,8 @@
+id: Tea_Tree_Gully
+name: Tea Tree Gully
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B613_2458
+- B614_2458

@@ -1,0 +1,10 @@
+id: Ngora
+name: Ngora
+type: province
+country: Uganda
+tiles:
+- B1016_3624
+- B1016_3625
+- B1017_3624
+- B1017_3625
+- B1018_3624

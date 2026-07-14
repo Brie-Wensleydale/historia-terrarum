@@ -1,0 +1,8 @@
+id: Maribor
+name: Maribor
+type: province
+country: Slovenia
+tiles:
+- B1518_3825
+- B1518_3826
+- B1519_3827

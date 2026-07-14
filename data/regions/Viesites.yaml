@@ -1,0 +1,16 @@
+id: Viesites
+name: Viesites
+type: province
+country: Latvia
+tiles:
+- B1625_3715
+- B1626_3715
+- B1626_3716
+- B1626_3717
+- B1627_3714
+- B1627_3715
+- B1627_3716
+- B1627_3717
+- B1628_3715
+- B1628_3716
+- B1628_3718

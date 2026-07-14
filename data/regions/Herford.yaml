@@ -1,0 +1,14 @@
+id: Herford
+name: Herford
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1580_3901
+- B1580_3903
+- B1580_3904
+- B1581_3901
+- B1581_3902
+- B1581_3903
+- B1581_3904
+- B1581_3905

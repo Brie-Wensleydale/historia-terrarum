@@ -1,0 +1,11 @@
+id: Rojas
+name: Rojas
+type: province
+country: Latvia
+tiles:
+- B1639_3745
+- B1640_3745
+- B1640_3746
+- B1640_3747
+- B1641_3747
+- B1641_3748

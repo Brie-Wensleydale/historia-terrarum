@@ -1,0 +1,12 @@
+id: Dependencias_Federales
+name: Dependencias Federales
+type: province
+country: Venezuela
+tiles:
+- B1122_724
+- B1122_725
+- B1122_726
+- B1132_717
+- B1132_718
+- B1132_734
+- B1133_717

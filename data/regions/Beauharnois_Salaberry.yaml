@@ -1,0 +1,15 @@
+id: Beauharnois_Salaberry
+name: Beauharnois-Salaberry
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1503_819
+- B1503_821
+- B1503_822
+- B1503_823
+- B1504_819
+- B1504_820
+- B1504_821
+- B1504_822
+- B1504_823

@@ -1,0 +1,11 @@
+id: Victor_Harbor
+name: Victor Harbor
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B604_2461
+- B605_2460
+- B605_2461
+- B606_2459
+- B606_2460

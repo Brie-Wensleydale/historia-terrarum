@@ -1,0 +1,15 @@
+id: Čaška
+name: Čaška
+type: province
+country: North Macedonia
+tiles:
+- B1462_3758
+- B1462_3759
+- B1462_3760
+- B1463_3758
+- B1463_3759
+- B1463_3760
+- B1463_3761
+- B1464_3759
+- B1464_3760
+- B1464_3761

@@ -1,0 +1,10 @@
+id: Sejong
+name: Sejong
+type: province
+country: South Korea
+tiles:
+- B1406_2586
+- B1406_2587
+- B1407_2587
+- B1408_2586
+- B1408_2587

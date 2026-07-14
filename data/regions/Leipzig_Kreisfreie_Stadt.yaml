@@ -1,0 +1,12 @@
+id: Leipzig_Kreisfreie_Stadt
+name: Leipzig (Kreisfreie Stadt)
+type: province
+country: Germany
+parent: Sachsen
+tiles:
+- B1571_3861
+- B1571_3862
+- B1571_3863
+- B1572_3861
+- B1572_3862
+- B1572_3863

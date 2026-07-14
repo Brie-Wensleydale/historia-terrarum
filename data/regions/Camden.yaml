@@ -1,0 +1,8 @@
+id: Camden
+name: Camden
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B622_2325
+- B623_2325

@@ -1,0 +1,8 @@
+id: Salisbury
+name: Salisbury
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B613_2459
+- B614_2460

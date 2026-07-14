@@ -1,0 +1,9 @@
+id: Slovenska_Bistrica
+name: Slovenska Bistrica
+type: province
+country: Slovenia
+tiles:
+- B1516_3826
+- B1517_3826
+- B1517_3827
+- B1517_3828

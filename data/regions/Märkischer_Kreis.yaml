@@ -1,0 +1,23 @@
+id: Märkischer_Kreis
+name: Märkischer Kreis
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1569_3913
+- B1569_3914
+- B1569_3915
+- B1569_3916
+- B1570_3912
+- B1570_3913
+- B1570_3914
+- B1570_3915
+- B1570_3916
+- B1571_3912
+- B1571_3913
+- B1571_3914
+- B1571_3915
+- B1572_3912
+- B1572_3913
+- B1572_3914
+- B1572_3915

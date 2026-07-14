@@ -1,0 +1,24 @@
+id: Murray_Bridge
+name: Murray Bridge
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B607_2452
+- B608_2451
+- B608_2452
+- B608_2453
+- B609_2451
+- B609_2452
+- B609_2453
+- B609_2454
+- B610_2449
+- B610_2450
+- B610_2451
+- B610_2452
+- B610_2453
+- B610_2454
+- B611_2449
+- B611_2452
+- B611_2453
+- B611_2454

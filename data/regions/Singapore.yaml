@@ -1,0 +1,13 @@
+id: Singapore
+name: Singapore
+type: province
+country: Singapore
+tiles:
+- B1015_2845
+- B1015_2846
+- B1015_2847
+- B1015_2848
+- B1016_2844
+- B1016_2845
+- B1016_2846
+- B1016_2847

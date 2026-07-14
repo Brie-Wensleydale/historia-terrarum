@@ -1,0 +1,7 @@
+id: Nedlands
+name: Nedlands
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B645_2713

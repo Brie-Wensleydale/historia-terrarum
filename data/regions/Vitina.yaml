@@ -1,0 +1,10 @@
+id: Vitina
+name: Vitina
+type: province
+country: Kosovo
+tiles:
+- B1471_3761
+- B1471_3762
+- B1471_3763
+- B1472_3762
+- B1472_3763

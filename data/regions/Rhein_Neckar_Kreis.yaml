@@ -1,0 +1,23 @@
+id: Rhein_Neckar_Kreis
+name: Rhein-Neckar-Kreis
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1548_3900
+- B1548_3901
+- B1548_3902
+- B1549_3900
+- B1549_3901
+- B1549_3902
+- B1549_3903
+- B1549_3904
+- B1549_3905
+- B1550_3900
+- B1550_3904
+- B1550_3905
+- B1551_3899
+- B1551_3901
+- B1551_3902
+- B1551_3903
+- B1551_3904

@@ -1,0 +1,9 @@
+id: Mecklenburg_Vorpommern
+name: Mecklenburg-Vorpommern
+type: province
+country: Germany
+tiles:
+- B1601_3845
+- B1603_3848
+- B1606_3857
+- B1608_3848

@@ -1,0 +1,9 @@
+id: Cesvaines
+name: Cesvaines
+type: province
+country: Latvia
+tiles:
+- B1634_3707
+- B1634_3708
+- B1635_3707
+- B1635_3708

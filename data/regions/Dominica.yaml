@@ -1,0 +1,18 @@
+id: Dominica
+name: Dominica
+type: province
+country: Dominica
+tiles:
+- B1170_681
+- B1171_680
+- B1171_681
+- B1171_682
+- B1172_680
+- B1172_681
+- B1172_682
+- B1173_680
+- B1173_681
+- B1173_682
+- B1173_683
+- B1174_681
+- B1174_682

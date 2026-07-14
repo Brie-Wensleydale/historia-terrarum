@@ -1,0 +1,9 @@
+id: Rundales
+name: Rundales
+type: province
+country: Latvia
+tiles:
+- B1627_3733
+- B1627_3734
+- B1628_3733
+- B1628_3734

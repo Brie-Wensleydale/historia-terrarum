@@ -1,0 +1,16 @@
+id: Kulmbach
+name: Kulmbach
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1556_3873
+- B1557_3871
+- B1557_3872
+- B1557_3873
+- B1558_3871
+- B1558_3872
+- B1558_3873
+- B1559_3870
+- B1559_3871
+- B1559_3872

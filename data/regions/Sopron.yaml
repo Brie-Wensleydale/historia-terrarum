@@ -1,0 +1,8 @@
+id: Sopron
+name: Sopron
+type: province
+country: Hungary
+tiles:
+- B1531_3814
+- B1531_3815
+- B1531_3816

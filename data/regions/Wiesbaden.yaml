@@ -1,0 +1,10 @@
+id: Wiesbaden
+name: Wiesbaden
+type: province
+country: Germany
+parent: Hessen
+tiles:
+- B1557_3907
+- B1557_3908
+- B1558_3907
+- B1558_3908

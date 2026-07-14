@@ -1,0 +1,8 @@
+id: Deniliquin
+name: Deniliquin
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B605_2388
+- B605_2389

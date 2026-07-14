@@ -1,0 +1,8 @@
+id: Distrito_Capital
+name: Distrito Capital
+type: province
+country: Venezuela
+tiles:
+- B1117_743
+- B1117_744
+- B1118_744

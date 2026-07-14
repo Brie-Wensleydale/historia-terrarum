@@ -1,0 +1,7 @@
+id: Bremerhaven
+name: Bremerhaven
+type: province
+country: Germany
+parent: Bremen
+tiles:
+- B1596_3904

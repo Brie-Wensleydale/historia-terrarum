@@ -1,0 +1,14 @@
+id: Fingal
+name: Fingal
+type: province
+country: Ireland
+tiles:
+- B1594_68
+- B1595_68
+- B1595_69
+- B1595_70
+- B1596_67
+- B1596_68
+- B1596_69
+- B1596_70
+- B1597_68

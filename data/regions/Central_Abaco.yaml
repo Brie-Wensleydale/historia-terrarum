@@ -1,0 +1,15 @@
+id: Central_Abaco
+name: Central Abaco
+type: province
+country: The Bahamas
+tiles:
+- B1293_858
+- B1294_856
+- B1294_857
+- B1295_856
+- B1295_857
+- B1296_856
+- B1296_857
+- B1296_858
+- B1297_858
+- B1297_859

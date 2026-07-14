@@ -1,0 +1,7 @@
+id: Norwood_Payneham_St_Peters
+name: Norwood Payneham St Peters
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B612_2459

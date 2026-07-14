@@ -1,0 +1,16 @@
+id: Freising
+name: Freising
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1538_3869
+- B1538_3870
+- B1539_3868
+- B1539_3869
+- B1539_3870
+- B1539_3871
+- B1540_3867
+- B1540_3868
+- B1540_3869
+- B1541_3869

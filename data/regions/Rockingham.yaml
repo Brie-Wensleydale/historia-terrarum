@@ -1,0 +1,12 @@
+id: Rockingham
+name: Rockingham
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B640_2713
+- B640_2714
+- B641_2712
+- B641_2713
+- B641_2714
+- B643_2714

@@ -1,0 +1,14 @@
+id: Territoire_de_Belfort
+name: Territoire de Belfort
+type: province
+country: France
+tiles:
+- B1529_3921
+- B1529_3922
+- B1530_3922
+- B1530_3923
+- B1530_3924
+- B1531_3922
+- B1531_3923
+- B1531_3924
+- B1532_3923

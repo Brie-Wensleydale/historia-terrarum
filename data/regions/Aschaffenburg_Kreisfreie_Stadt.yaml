@@ -1,0 +1,7 @@
+id: Aschaffenburg_Kreisfreie_Stadt
+name: Aschaffenburg (Kreisfreie Stadt)
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1556_3898

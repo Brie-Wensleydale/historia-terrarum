@@ -1,0 +1,11 @@
+id: Maio
+name: Maio
+type: province
+country: Cabo Verde
+tiles:
+- B1169_257
+- B1169_258
+- B1170_256
+- B1170_257
+- B1170_258
+- B1171_257

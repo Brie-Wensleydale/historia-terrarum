@@ -1,0 +1,17 @@
+id: Lecco
+name: Lecco
+type: province
+country: Italy
+parent: Lecco
+tiles:
+- B1509_3895
+- B1509_3896
+- B1510_3895
+- B1510_3896
+- B1511_3894
+- B1511_3895
+- B1512_3894
+- B1512_3895
+- B1512_3896
+- B1513_3895
+- B1513_3896

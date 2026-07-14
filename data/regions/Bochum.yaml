@@ -1,0 +1,9 @@
+id: Bochum
+name: Bochum
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1573_3918
+- B1573_3919
+- B1573_3920

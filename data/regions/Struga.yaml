@@ -1,0 +1,12 @@
+id: Struga
+name: Struga
+type: province
+country: North Macedonia
+tiles:
+- B1458_3770
+- B1459_3770
+- B1459_3771
+- B1460_3770
+- B1460_3771
+- B1461_3770
+- B1461_3771

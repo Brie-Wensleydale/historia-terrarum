@@ -1,0 +1,7 @@
+id: Suhl
+name: Suhl
+type: province
+country: Germany
+parent: Thüringen
+tiles:
+- B1563_3881

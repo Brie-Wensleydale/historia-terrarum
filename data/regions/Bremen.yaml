@@ -1,0 +1,11 @@
+id: Bremen
+name: Bremen
+type: province
+country: Germany
+parent: Niedersachsen
+tiles:
+- B1591_3900
+- B1591_3901
+- B1591_3902
+- B1591_3903
+- B1592_3904

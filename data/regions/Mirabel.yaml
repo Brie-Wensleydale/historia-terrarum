@@ -1,0 +1,13 @@
+id: Mirabel
+name: Mirabel
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1507_823
+- B1508_821
+- B1508_822
+- B1508_823
+- B1508_824
+- B1509_821
+- B1509_822

@@ -1,0 +1,8 @@
+id: Darwin
+name: Darwin
+type: province
+country: Australia
+parent: Northern_Territory
+tiles:
+- B862_2546
+- B863_2545

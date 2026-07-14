@@ -1,0 +1,14 @@
+id: Keguma
+name: Keguma
+type: province
+country: Latvia
+tiles:
+- B1630_3722
+- B1630_3723
+- B1630_3724
+- B1630_3725
+- B1631_3724
+- B1631_3725
+- B1632_3723
+- B1632_3724
+- B1632_3726

@@ -1,0 +1,9 @@
+id: Szeged
+name: Szeged
+type: province
+country: Hungary
+tiles:
+- B1514_3775
+- B1514_3776
+- B1515_3775
+- B1515_3776

@@ -1,0 +1,7 @@
+id: Železniki
+name: Železniki
+type: province
+country: Slovenia
+tiles:
+- B1514_3843
+- B1515_3842

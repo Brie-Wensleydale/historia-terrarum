@@ -1,0 +1,10 @@
+id: Nauksenu
+name: Nauksenu
+type: province
+country: Latvia
+tiles:
+- B1644_3716
+- B1644_3717
+- B1645_3716
+- B1645_3717
+- B1645_3718

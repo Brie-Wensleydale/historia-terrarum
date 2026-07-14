@@ -1,0 +1,10 @@
+id: Rujienas
+name: Rujienas
+type: province
+country: Latvia
+tiles:
+- B1644_3718
+- B1644_3719
+- B1645_3719
+- B1645_3720
+- B1646_3720

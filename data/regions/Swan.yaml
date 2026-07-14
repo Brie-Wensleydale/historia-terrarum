@@ -1,0 +1,19 @@
+id: Swan
+name: Swan
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B646_2710
+- B646_2711
+- B647_2708
+- B647_2709
+- B647_2710
+- B647_2711
+- B648_2708
+- B648_2709
+- B648_2710
+- B648_2711
+- B649_2708
+- B649_2709
+- B649_2710

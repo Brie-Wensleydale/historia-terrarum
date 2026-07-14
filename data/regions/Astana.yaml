@@ -1,0 +1,15 @@
+id: Astana
+name: Astana
+type: province
+country: Kazakhstan
+tiles:
+- B1568_3205
+- B1568_3206
+- B1569_3204
+- B1569_3205
+- B1569_3206
+- B1569_3207
+- B1570_3205
+- B1570_3206
+- B1570_3207
+- B1571_3206

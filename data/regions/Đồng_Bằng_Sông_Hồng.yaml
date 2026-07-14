@@ -1,0 +1,13 @@
+id: Đồng_Bằng_Sông_Hồng
+name: Đồng Bằng Sông Hồng
+type: province
+country: Vietnam
+tiles:
+- B1230_2821
+- B1231_2820
+- B1231_2821
+- B1232_2821
+- B1232_2822
+- B1233_2821
+- B1233_2822
+- B1234_2821

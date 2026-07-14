@@ -1,0 +1,19 @@
+id: Lörrach
+name: Lörrach
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1530_3912
+- B1530_3913
+- B1530_3914
+- B1530_3915
+- B1531_3911
+- B1531_3912
+- B1531_3913
+- B1531_3914
+- B1531_3915
+- B1531_3916
+- B1532_3911
+- B1532_3912
+- B1532_3913

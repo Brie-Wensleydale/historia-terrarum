@@ -1,0 +1,10 @@
+id: Sal
+name: Sal
+type: province
+country: Cabo Verde
+tiles:
+- B1186_254
+- B1186_255
+- B1187_254
+- B1187_255
+- B1188_254

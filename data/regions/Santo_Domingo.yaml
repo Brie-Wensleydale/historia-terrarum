@@ -1,0 +1,20 @@
+id: Santo_Domingo
+name: Santo Domingo
+type: province
+country: Dominican Republic
+tiles:
+- B1206_773
+- B1206_774
+- B1206_775
+- B1206_777
+- B1206_778
+- B1207_773
+- B1207_774
+- B1207_775
+- B1207_776
+- B1207_777
+- B1207_778
+- B1208_773
+- B1208_776
+- B1208_777
+- B1208_778

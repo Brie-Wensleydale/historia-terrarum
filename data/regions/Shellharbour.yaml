@@ -1,0 +1,9 @@
+id: Shellharbour
+name: Shellharbour
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B616_2323
+- B616_2324
+- B616_2325

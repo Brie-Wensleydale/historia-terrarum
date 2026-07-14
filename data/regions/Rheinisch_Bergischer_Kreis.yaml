@@ -1,0 +1,14 @@
+id: Rheinisch_Bergischer_Kreis
+name: Rheinisch-Bergischer Kreis
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1567_3918
+- B1567_3919
+- B1567_3920
+- B1568_3919
+- B1568_3920
+- B1569_3919
+- B1569_3920
+- B1569_3921

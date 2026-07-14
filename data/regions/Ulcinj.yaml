@@ -1,0 +1,11 @@
+id: Ulcinj
+name: Ulcinj
+type: province
+country: Montenegro
+tiles:
+- B1466_3785
+- B1467_3785
+- B1467_3786
+- B1467_3787
+- B1468_3785
+- B1468_3786

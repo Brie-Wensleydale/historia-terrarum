@@ -1,0 +1,9 @@
+id: Cockburn
+name: Cockburn
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B643_2712
+- B643_2713
+- B644_2717

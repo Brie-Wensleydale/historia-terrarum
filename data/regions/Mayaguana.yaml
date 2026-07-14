@@ -1,0 +1,13 @@
+id: Mayaguana
+name: Mayaguana
+type: province
+country: The Bahamas
+tiles:
+- B1249_808
+- B1249_809
+- B1249_810
+- B1249_811
+- B1249_812
+- B1250_810
+- B1250_811
+- B1250_812

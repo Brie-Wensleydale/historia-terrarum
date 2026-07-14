@@ -1,0 +1,14 @@
+id: Muramvya
+name: Muramvya
+type: province
+country: Burundi
+tiles:
+- B963_3669
+- B963_3670
+- B963_3671
+- B964_3669
+- B964_3670
+- B964_3671
+- B965_3670
+- B965_3671
+- B966_3671

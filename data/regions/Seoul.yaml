@@ -1,0 +1,11 @@
+id: Seoul
+name: Seoul
+type: province
+country: South Korea
+tiles:
+- B1417_2588
+- B1417_2589
+- B1418_2587
+- B1418_2588
+- B1418_2589
+- B1419_2588

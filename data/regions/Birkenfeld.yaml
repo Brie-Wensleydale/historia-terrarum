@@ -1,0 +1,17 @@
+id: Birkenfeld
+name: Birkenfeld
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1552_3918
+- B1552_3919
+- B1553_3917
+- B1553_3918
+- B1553_3919
+- B1553_3920
+- B1553_3921
+- B1554_3918
+- B1554_3919
+- B1554_3920
+- B1555_3918

@@ -1,0 +1,20 @@
+id: Coaticook
+name: Coaticook
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1502_794
+- B1502_795
+- B1502_796
+- B1502_797
+- B1502_798
+- B1502_799
+- B1502_800
+- B1503_794
+- B1503_795
+- B1503_796
+- B1503_797
+- B1503_798
+- B1504_796
+- B1504_797

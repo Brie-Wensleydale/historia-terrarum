@@ -1,0 +1,11 @@
+id: Cook_Islands
+name: Cook Islands (New Zealand)
+type: province
+country: Cook Islands
+tiles:
+- B757_1754
+- B764_1775
+- B765_1775
+- B776_1748
+- B778_1756
+- B780_1752

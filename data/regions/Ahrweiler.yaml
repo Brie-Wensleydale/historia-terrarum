@@ -1,0 +1,18 @@
+id: Ahrweiler
+name: Ahrweiler
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1561_3922
+- B1561_3923
+- B1561_3924
+- B1562_3918
+- B1562_3919
+- B1562_3920
+- B1562_3921
+- B1562_3922
+- B1562_3924
+- B1563_3919
+- B1563_3920
+- B1563_3921

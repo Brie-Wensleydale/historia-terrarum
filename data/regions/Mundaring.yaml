@@ -1,0 +1,12 @@
+id: Mundaring
+name: Mundaring
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B645_2707
+- B645_2708
+- B646_2707
+- B646_2708
+- B646_2709
+- B647_2707

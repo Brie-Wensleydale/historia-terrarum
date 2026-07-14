@@ -1,0 +1,10 @@
+id: Klina
+name: Klina
+type: province
+country: Kosovo
+tiles:
+- B1474_3770
+- B1474_3771
+- B1475_3770
+- B1475_3771
+- B1475_3772

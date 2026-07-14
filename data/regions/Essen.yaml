@@ -1,0 +1,10 @@
+id: Essen
+name: Essen
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1572_3921
+- B1572_3922
+- B1573_3921
+- B1573_3922

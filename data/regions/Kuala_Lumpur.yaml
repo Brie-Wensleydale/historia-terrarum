@@ -1,0 +1,8 @@
+id: Kuala_Lumpur
+name: Kuala Lumpur
+type: province
+country: Malaysia
+tiles:
+- B1035_2869
+- B1036_2869
+- B1036_2870

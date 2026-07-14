@@ -1,0 +1,11 @@
+id: Raunas
+name: Raunas
+type: province
+country: Latvia
+tiles:
+- B1637_3711
+- B1637_3712
+- B1637_3713
+- B1638_3714
+- B1638_3715
+- B1639_3714

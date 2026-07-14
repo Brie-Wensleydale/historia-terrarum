@@ -1,0 +1,7 @@
+id: Hobart
+name: Hobart
+type: province
+country: Australia
+parent: Tasmania
+tiles:
+- B523_2363

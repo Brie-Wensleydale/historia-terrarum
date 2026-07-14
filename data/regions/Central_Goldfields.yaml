@@ -1,0 +1,25 @@
+id: Central_Goldfields
+name: Central Goldfields
+type: province
+country: Australia
+parent: Victoria
+tiles:
+- B587_2400
+- B587_2401
+- B587_2402
+- B587_2403
+- B587_2404
+- B588_2400
+- B588_2401
+- B588_2402
+- B588_2403
+- B588_2404
+- B589_2401
+- B589_2402
+- B589_2403
+- B590_2402
+- B590_2403
+- B590_2404
+- B590_2405
+- B591_2404
+- B591_2405

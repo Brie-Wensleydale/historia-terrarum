@@ -1,0 +1,13 @@
+id: Mayotte
+name: Mayotte
+type: province
+country: France
+tiles:
+- B856_3498
+- B857_3498
+- B858_3497
+- B858_3498
+- B859_3496
+- B859_3497
+- B859_3498
+- B859_3499

@@ -1,0 +1,11 @@
+id: Marshall_Islands
+name: Marshall Islands
+type: province
+country: Marshall Islands
+tiles:
+- B1067_2114
+- B1078_2092
+- B1079_2098
+- B1080_2099
+- B1083_2127
+- B1125_2145

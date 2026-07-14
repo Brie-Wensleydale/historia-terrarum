@@ -1,0 +1,7 @@
+id: Eisenach
+name: Eisenach
+type: province
+country: Germany
+parent: Thüringen
+tiles:
+- B1568_3885

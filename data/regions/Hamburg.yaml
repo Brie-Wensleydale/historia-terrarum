@@ -1,0 +1,19 @@
+id: Hamburg
+name: Hamburg
+type: province
+country: Germany
+parent: Hamburg
+tiles:
+- B1595_3886
+- B1595_3887
+- B1595_3888
+- B1595_3889
+- B1595_3890
+- B1596_3887
+- B1596_3888
+- B1596_3889
+- B1596_3890
+- B1597_3886
+- B1597_3887
+- B1597_3888
+- B1597_3889

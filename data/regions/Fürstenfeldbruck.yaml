@@ -1,0 +1,13 @@
+id: Fürstenfeldbruck
+name: Fürstenfeldbruck
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1536_3873
+- B1536_3874
+- B1536_3875
+- B1536_3876
+- B1537_3874
+- B1537_3875
+- B1537_3876

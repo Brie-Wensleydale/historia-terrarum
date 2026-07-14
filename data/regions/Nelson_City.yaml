@@ -1,0 +1,12 @@
+id: Nelson_City
+name: Nelson City
+type: province
+country: New Zealand
+tiles:
+- B541_2073
+- B541_2074
+- B541_2075
+- B542_2072
+- B542_2073
+- B543_2071
+- B543_2072

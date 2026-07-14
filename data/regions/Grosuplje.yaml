@@ -1,0 +1,9 @@
+id: Grosuplje
+name: Grosuplje
+type: province
+country: Slovenia
+tiles:
+- B1511_3836
+- B1511_3837
+- B1512_3836
+- B1512_3837

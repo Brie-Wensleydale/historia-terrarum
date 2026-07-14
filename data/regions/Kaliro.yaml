@@ -1,0 +1,12 @@
+id: Kaliro
+name: Kaliro
+type: province
+country: Uganda
+tiles:
+- B1011_3627
+- B1011_3628
+- B1012_3627
+- B1012_3628
+- B1013_3627
+- B1013_3628
+- B1014_3628

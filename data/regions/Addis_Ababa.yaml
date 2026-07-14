@@ -1,0 +1,9 @@
+id: Addis_Ababa
+name: Addis Ababa
+type: province
+country: Ethiopia
+tiles:
+- B1100_3568
+- B1100_3569
+- B1101_3568
+- B1101_3569

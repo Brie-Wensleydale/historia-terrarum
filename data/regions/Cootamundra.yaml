@@ -1,0 +1,24 @@
+id: Cootamundra
+name: Cootamundra
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B614_2353
+- B614_2354
+- B614_2355
+- B615_2353
+- B615_2354
+- B615_2355
+- B615_2356
+- B616_2353
+- B616_2354
+- B616_2355
+- B616_2356
+- B616_2357
+- B617_2354
+- B617_2355
+- B617_2356
+- B617_2357
+- B618_2355
+- B618_2356

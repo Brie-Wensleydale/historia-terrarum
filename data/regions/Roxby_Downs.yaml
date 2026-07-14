@@ -1,0 +1,8 @@
+id: Roxby_Downs
+name: Roxby Downs
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B660_2479
+- B661_2479

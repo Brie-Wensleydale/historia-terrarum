@@ -1,0 +1,7 @@
+id: Dunaújváros
+name: Dunaújváros
+type: province
+country: Hungary
+tiles:
+- B1522_3790
+- B1523_3789

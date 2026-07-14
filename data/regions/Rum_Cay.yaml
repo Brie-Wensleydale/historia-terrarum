@@ -1,0 +1,7 @@
+id: Rum_Cay
+name: Rum Cay
+type: province
+country: The Bahamas
+tiles:
+- B1264_831
+- B1264_832

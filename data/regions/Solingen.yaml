@@ -1,0 +1,7 @@
+id: Solingen
+name: Solingen
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1570_3921

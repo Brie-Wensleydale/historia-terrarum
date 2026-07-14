@@ -1,0 +1,20 @@
+id: Waldshut
+name: Waldshut
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1530_3906
+- B1530_3907
+- B1530_3909
+- B1530_3910
+- B1530_3911
+- B1531_3907
+- B1531_3908
+- B1531_3909
+- B1531_3910
+- B1532_3905
+- B1532_3906
+- B1532_3907
+- B1532_3908
+- B1532_3910

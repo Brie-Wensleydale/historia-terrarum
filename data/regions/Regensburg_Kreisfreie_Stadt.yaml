@@ -1,0 +1,7 @@
+id: Regensburg_Kreisfreie_Stadt
+name: Regensburg (Kreisfreie Stadt)
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1546_3865

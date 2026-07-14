@@ -1,0 +1,7 @@
+id: Bamako
+name: Bamako
+type: province
+country: Mali
+tiles:
+- B1141_88
+- B1141_89

@@ -1,0 +1,7 @@
+id: Brežice
+name: Brežice
+type: province
+country: Slovenia
+tiles:
+- B1511_3826
+- B1512_3826

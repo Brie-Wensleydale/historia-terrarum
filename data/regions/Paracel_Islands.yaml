@@ -1,0 +1,7 @@
+id: Paracel_Islands
+name: Paracel Islands
+type: province
+country: China
+tiles:
+- B1176_2764
+- B1188_2751

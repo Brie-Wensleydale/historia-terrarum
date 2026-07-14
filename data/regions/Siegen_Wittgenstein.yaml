@@ -1,0 +1,23 @@
+id: Siegen_Wittgenstein
+name: Siegen-Wittgenstein
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1565_3909
+- B1565_3910
+- B1566_3909
+- B1566_3910
+- B1567_3906
+- B1567_3907
+- B1567_3908
+- B1567_3909
+- B1567_3910
+- B1567_3911
+- B1568_3905
+- B1568_3906
+- B1568_3907
+- B1568_3908
+- B1568_3911
+- B1569_3905
+- B1569_3906

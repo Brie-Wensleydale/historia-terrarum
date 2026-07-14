@@ -1,0 +1,14 @@
+id: Bukedea
+name: Bukedea
+type: province
+country: Uganda
+tiles:
+- B1014_3620
+- B1014_3621
+- B1015_3620
+- B1015_3621
+- B1016_3619
+- B1016_3620
+- B1016_3621
+- B1017_3620
+- B1017_3621

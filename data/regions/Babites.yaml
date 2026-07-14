@@ -1,0 +1,8 @@
+id: Babites
+name: Babites
+type: province
+country: Latvia
+tiles:
+- B1633_3735
+- B1633_3736
+- B1634_3734

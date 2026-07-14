@@ -1,0 +1,20 @@
+id: Le_Haut_Saint_Laurent
+name: Le Haut-Saint-Laurent
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1501_826
+- B1501_827
+- B1501_828
+- B1502_819
+- B1502_820
+- B1502_821
+- B1502_822
+- B1502_823
+- B1502_824
+- B1502_825
+- B1502_826
+- B1503_820
+- B1503_824
+- B1503_825

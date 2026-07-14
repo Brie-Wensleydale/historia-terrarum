@@ -1,0 +1,9 @@
+id: Butambala
+name: Butambala
+type: province
+country: Uganda
+tiles:
+- B1001_3645
+- B1001_3646
+- B1002_3644
+- B1003_3642

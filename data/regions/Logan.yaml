@@ -1,0 +1,16 @@
+id: Logan
+name: Logan
+type: province
+country: Australia
+parent: Queensland
+tiles:
+- B690_2299
+- B691_2298
+- B691_2299
+- B691_2300
+- B691_2301
+- B692_2298
+- B692_2299
+- B692_2300
+- B693_2298
+- B693_2300

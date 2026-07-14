@@ -1,0 +1,10 @@
+id: Litija
+name: Litija
+type: province
+country: Slovenia
+tiles:
+- B1512_3833
+- B1513_3833
+- B1513_3834
+- B1513_3835
+- B1513_3836

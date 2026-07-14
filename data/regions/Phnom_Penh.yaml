@@ -1,0 +1,10 @@
+id: Phnom_Penh
+name: Phnom Penh
+type: province
+country: Cambodia
+tiles:
+- B1128_2834
+- B1128_2835
+- B1129_2834
+- B1129_2835
+- B1130_2834

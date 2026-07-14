@@ -1,0 +1,19 @@
+id: Mühldorf_am_Inn
+name: Mühldorf am Inn
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1536_3861
+- B1536_3862
+- B1536_3863
+- B1536_3864
+- B1536_3865
+- B1537_3860
+- B1537_3861
+- B1537_3862
+- B1537_3863
+- B1538_3860
+- B1538_3861
+- B1538_3862
+- B1539_3861

@@ -1,0 +1,13 @@
+id: Saint_Helena
+name: Saint Helena (United Kingdom)
+type: province
+country: Saint Helena
+tiles:
+- B551_110
+- B552_110
+- B552_111
+- B588_135
+- B588_136
+- B823_63
+- B912_159
+- B913_159

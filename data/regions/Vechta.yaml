@@ -1,0 +1,20 @@
+id: Vechta
+name: Vechta
+type: province
+country: Germany
+parent: Niedersachsen
+tiles:
+- B1584_3909
+- B1585_3907
+- B1585_3908
+- B1585_3909
+- B1585_3910
+- B1586_3908
+- B1586_3909
+- B1587_3906
+- B1587_3907
+- B1587_3908
+- B1587_3909
+- B1587_3910
+- B1588_3906
+- B1588_3907

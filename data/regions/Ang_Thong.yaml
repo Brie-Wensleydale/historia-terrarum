@@ -1,0 +1,16 @@
+id: Ang_Thong
+name: Ang Thong
+type: province
+country: Thailand
+tiles:
+- B1162_2883
+- B1162_2884
+- B1162_2885
+- B1162_2886
+- B1163_2883
+- B1163_2884
+- B1163_2885
+- B1163_2886
+- B1164_2883
+- B1164_2884
+- B1164_2885

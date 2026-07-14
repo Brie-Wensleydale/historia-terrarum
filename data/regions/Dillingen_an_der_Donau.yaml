@@ -1,0 +1,20 @@
+id: Dillingen_an_der_Donau
+name: Dillingen an der Donau
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1540_3881
+- B1540_3882
+- B1540_3883
+- B1540_3884
+- B1540_3885
+- B1541_3880
+- B1541_3881
+- B1541_3882
+- B1541_3883
+- B1541_3884
+- B1541_3885
+- B1542_3882
+- B1542_3883
+- B1542_3884

@@ -1,0 +1,15 @@
+id: La_Haute_Yamaska
+name: La Haute-Yamaska
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1504_807
+- B1505_805
+- B1505_806
+- B1505_807
+- B1505_808
+- B1506_805
+- B1506_806
+- B1506_807
+- B1506_808

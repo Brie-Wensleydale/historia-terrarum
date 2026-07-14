@@ -1,0 +1,11 @@
+id: Niedersachsen
+name: Niedersachsen
+type: province
+country: Germany
+tiles:
+- B1597_3920
+- B1598_3910
+- B1598_3917
+- B1598_3919
+- B1598_3921
+- B1599_3913

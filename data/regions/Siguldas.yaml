@@ -1,0 +1,11 @@
+id: Siguldas
+name: Siguldas
+type: province
+country: Latvia
+tiles:
+- B1635_3721
+- B1635_3724
+- B1635_3725
+- B1636_3722
+- B1636_3723
+- B1636_3724

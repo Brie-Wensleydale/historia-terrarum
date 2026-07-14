@@ -1,0 +1,7 @@
+id: Aroostook
+name: Aroostook
+type: province
+country: Canada
+parent: New_Brunswick
+tiles:
+- B1527_759

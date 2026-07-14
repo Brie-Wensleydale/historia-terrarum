@@ -1,0 +1,10 @@
+id: Genève
+name: Genève
+type: province
+country: Switzerland
+tiles:
+- B1514_3932
+- B1514_3933
+- B1515_3930
+- B1515_3931
+- B1515_3932

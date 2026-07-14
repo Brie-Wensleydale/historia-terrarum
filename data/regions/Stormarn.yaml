@@ -1,0 +1,18 @@
+id: Stormarn
+name: Stormarn
+type: province
+country: Germany
+parent: Schleswig_Holstein
+tiles:
+- B1596_3886
+- B1597_3883
+- B1597_3884
+- B1597_3885
+- B1598_3884
+- B1598_3885
+- B1598_3886
+- B1598_3887
+- B1599_3883
+- B1599_3884
+- B1599_3885
+- B1600_3882

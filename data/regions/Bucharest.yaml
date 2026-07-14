@@ -1,0 +1,8 @@
+id: Bucharest
+name: Bucharest
+type: province
+country: Romania
+tiles:
+- B1495_3709
+- B1495_3710
+- B1496_3710

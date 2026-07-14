@@ -1,0 +1,17 @@
+id: Woodanilling
+name: Woodanilling
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B627_2694
+- B627_2695
+- B627_2696
+- B627_2697
+- B627_2698
+- B627_2699
+- B628_2693
+- B628_2694
+- B628_2695
+- B628_2696
+- B629_2694

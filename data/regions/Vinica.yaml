@@ -1,0 +1,11 @@
+id: Vinica
+name: Vinica
+type: province
+country: North Macedonia
+tiles:
+- B1465_3748
+- B1465_3749
+- B1466_3748
+- B1466_3749
+- B1466_3750
+- B1467_3749

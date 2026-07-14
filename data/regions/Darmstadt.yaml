@@ -1,0 +1,9 @@
+id: Darmstadt
+name: Darmstadt
+type: province
+country: Germany
+parent: Hessen
+tiles:
+- B1555_3903
+- B1555_3904
+- B1556_3903

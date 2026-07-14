@@ -1,0 +1,17 @@
+id: Renmark_Paringa
+name: Renmark Paringa
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B619_2434
+- B619_2435
+- B619_2436
+- B619_2437
+- B620_2434
+- B620_2435
+- B620_2436
+- B621_2434
+- B621_2435
+- B621_2436
+- B622_2434

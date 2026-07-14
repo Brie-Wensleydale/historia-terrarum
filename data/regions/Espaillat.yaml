@@ -1,0 +1,17 @@
+id: Espaillat
+name: Espaillat
+type: province
+country: Dominican Republic
+tiles:
+- B1216_783
+- B1217_783
+- B1218_779
+- B1218_780
+- B1218_781
+- B1218_782
+- B1218_783
+- B1219_779
+- B1219_780
+- B1219_781
+- B1219_782
+- B1220_781

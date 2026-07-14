@@ -1,0 +1,14 @@
+id: Perlis
+name: Perlis
+type: province
+country: Malaysia
+tiles:
+- B1071_2886
+- B1071_2887
+- B1072_2885
+- B1072_2886
+- B1072_2887
+- B1073_2885
+- B1073_2886
+- B1074_2885
+- B1074_2886

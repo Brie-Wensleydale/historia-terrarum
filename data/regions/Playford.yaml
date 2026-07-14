@@ -1,0 +1,11 @@
+id: Playford
+name: Playford
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B614_2459
+- B614_2461
+- B615_2458
+- B615_2459
+- B615_2460

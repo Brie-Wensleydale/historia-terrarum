@@ -1,0 +1,7 @@
+id: Port_Lincoln
+name: Port Lincoln
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B614_2490

@@ -1,0 +1,10 @@
+id: Aknistes
+name: Aknistes
+type: province
+country: Latvia
+tiles:
+- B1624_3713
+- B1625_3711
+- B1625_3712
+- B1625_3713
+- B1625_3714

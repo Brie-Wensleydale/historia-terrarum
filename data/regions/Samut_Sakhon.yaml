@@ -1,0 +1,14 @@
+id: Samut_Sakhon
+name: Samut Sakhon
+type: province
+country: Thailand
+tiles:
+- B1150_2887
+- B1151_2884
+- B1151_2885
+- B1151_2886
+- B1151_2887
+- B1152_2885
+- B1152_2886
+- B1152_2887
+- B1153_2885

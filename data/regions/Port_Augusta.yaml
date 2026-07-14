@@ -1,0 +1,21 @@
+id: Port_Augusta
+name: Port Augusta
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B636_2467
+- B636_2469
+- B636_2470
+- B637_2467
+- B637_2468
+- B637_2469
+- B637_2470
+- B638_2468
+- B638_2469
+- B638_2470
+- B639_2468
+- B639_2469
+- B639_2470
+- B640_2469
+- B640_2470

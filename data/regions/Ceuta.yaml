@@ -1,0 +1,7 @@
+id: Ceuta
+name: Ceuta
+type: province
+country: Spain
+tiles:
+- B1400_58
+- B1400_59

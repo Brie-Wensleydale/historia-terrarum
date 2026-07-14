@@ -1,0 +1,16 @@
+id: Skrundas
+name: Skrundas
+type: province
+country: Latvia
+tiles:
+- B1629_3756
+- B1630_3754
+- B1630_3755
+- B1630_3756
+- B1630_3757
+- B1631_3754
+- B1631_3755
+- B1631_3756
+- B1631_3757
+- B1632_3754
+- B1632_3755

@@ -1,0 +1,10 @@
+id: Nidwalden
+name: Nidwalden
+type: province
+country: Switzerland
+tiles:
+- B1522_3906
+- B1523_3905
+- B1523_3906
+- B1523_3907
+- B1523_3908

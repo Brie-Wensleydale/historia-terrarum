@@ -1,0 +1,9 @@
+id: Kampala
+name: Kampala
+type: province
+country: Uganda
+tiles:
+- B1004_3637
+- B1004_3638
+- B1005_3637
+- B1006_3637

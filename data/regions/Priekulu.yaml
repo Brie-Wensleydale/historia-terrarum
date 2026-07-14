@@ -1,0 +1,12 @@
+id: Priekulu
+name: Priekulu
+type: province
+country: Latvia
+tiles:
+- B1637_3716
+- B1638_3716
+- B1638_3717
+- B1638_3718
+- B1639_3715
+- B1639_3716
+- B1639_3717

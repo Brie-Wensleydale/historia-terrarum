@@ -1,0 +1,16 @@
+id: Darmstadt_Dieburg
+name: Darmstadt-Dieburg
+type: province
+country: Germany
+parent: Hessen
+tiles:
+- B1554_3902
+- B1554_3903
+- B1554_3904
+- B1555_3900
+- B1555_3901
+- B1555_3902
+- B1556_3900
+- B1556_3901
+- B1556_3902
+- B1556_3904

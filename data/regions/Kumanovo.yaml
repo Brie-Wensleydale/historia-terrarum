@@ -1,0 +1,12 @@
+id: Kumanovo
+name: Kumanovo
+type: province
+country: North Macedonia
+tiles:
+- B1468_3756
+- B1468_3757
+- B1468_3758
+- B1468_3759
+- B1469_3758
+- B1469_3759
+- B1470_3758

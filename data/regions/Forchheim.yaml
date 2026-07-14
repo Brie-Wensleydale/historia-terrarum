@@ -1,0 +1,15 @@
+id: Forchheim
+name: Forchheim
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1553_3874
+- B1553_3875
+- B1553_3876
+- B1553_3877
+- B1554_3874
+- B1554_3875
+- B1554_3876
+- B1554_3877
+- B1554_3878

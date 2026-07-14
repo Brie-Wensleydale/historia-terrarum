@@ -1,0 +1,7 @@
+id: Paramaribo
+name: Paramaribo
+type: province
+country: Suriname
+tiles:
+- B1066_612
+- B1066_613

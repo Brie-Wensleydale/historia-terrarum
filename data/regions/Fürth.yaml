@@ -1,0 +1,11 @@
+id: Fürth
+name: Fürth
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1550_3878
+- B1550_3879
+- B1550_3880
+- B1551_3879
+- B1551_3880

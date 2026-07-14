@@ -1,0 +1,17 @@
+id: Ludwigsburg
+name: Ludwigsburg
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1544_3897
+- B1544_3898
+- B1544_3899
+- B1544_3900
+- B1545_3896
+- B1545_3897
+- B1545_3898
+- B1545_3899
+- B1545_3900
+- B1546_3895
+- B1546_3898

@@ -1,0 +1,14 @@
+id: Kolašin
+name: Kolašin
+type: province
+country: Montenegro
+tiles:
+- B1476_3782
+- B1476_3783
+- B1476_3784
+- B1476_3785
+- B1477_3781
+- B1477_3782
+- B1477_3783
+- B1477_3784
+- B1477_3785

@@ -1,0 +1,7 @@
+id: Bududa
+name: Bududa
+type: province
+country: Uganda
+tiles:
+- B1012_3617
+- B1012_3618

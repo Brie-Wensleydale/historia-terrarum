@@ -1,0 +1,15 @@
+id: Wyndham
+name: Wyndham
+type: province
+country: Australia
+parent: Victoria
+tiles:
+- B578_2392
+- B578_2393
+- B579_2391
+- B579_2392
+- B579_2393
+- B579_2394
+- B580_2392
+- B580_2393
+- B580_2394

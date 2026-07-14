@@ -1,0 +1,11 @@
+id: Sheema
+name: Sheema
+type: province
+country: Uganda
+tiles:
+- B993_3662
+- B993_3663
+- B993_3664
+- B994_3662
+- B995_3661
+- B995_3662

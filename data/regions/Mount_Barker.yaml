@@ -1,0 +1,15 @@
+id: Mount_Barker
+name: Mount Barker
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B609_2457
+- B609_2458
+- B610_2455
+- B610_2456
+- B610_2457
+- B610_2458
+- B611_2455
+- B611_2456
+- B612_2455

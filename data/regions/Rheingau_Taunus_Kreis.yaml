@@ -1,0 +1,18 @@
+id: Rheingau_Taunus_Kreis
+name: Rheingau-Taunus-Kreis
+type: province
+country: Germany
+parent: Hessen
+tiles:
+- B1557_3909
+- B1557_3910
+- B1557_3911
+- B1557_3912
+- B1558_3909
+- B1558_3910
+- B1558_3911
+- B1559_3907
+- B1559_3908
+- B1559_3909
+- B1559_3910
+- B1559_3911

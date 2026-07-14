@@ -1,0 +1,13 @@
+id: Guimaras
+name: Guimaras
+type: province
+country: Philippines
+tiles:
+- B1117_2637
+- B1117_2638
+- B1118_2636
+- B1118_2637
+- B1118_2638
+- B1119_2636
+- B1119_2637
+- B1120_2636

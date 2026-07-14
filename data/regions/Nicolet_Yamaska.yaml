@@ -1,0 +1,22 @@
+id: Nicolet_Yamaska
+name: Nicolet-Yamaska
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1513_803
+- B1513_804
+- B1513_805
+- B1513_806
+- B1513_807
+- B1513_808
+- B1513_809
+- B1513_810
+- B1514_802
+- B1514_803
+- B1514_804
+- B1514_805
+- B1514_806
+- B1514_807
+- B1514_808
+- B1515_806

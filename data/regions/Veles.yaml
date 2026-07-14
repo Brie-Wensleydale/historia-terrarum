@@ -1,0 +1,11 @@
+id: Veles
+name: Veles
+type: province
+country: North Macedonia
+tiles:
+- B1464_3757
+- B1464_3758
+- B1465_3757
+- B1465_3758
+- B1465_3759
+- B1466_3757

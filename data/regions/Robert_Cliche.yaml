@@ -1,0 +1,20 @@
+id: Robert_Cliche
+name: Robert-Cliche
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1513_787
+- B1514_786
+- B1514_787
+- B1514_788
+- B1515_785
+- B1515_786
+- B1515_787
+- B1515_788
+- B1516_784
+- B1516_785
+- B1516_786
+- B1516_787
+- B1516_788
+- B1516_789

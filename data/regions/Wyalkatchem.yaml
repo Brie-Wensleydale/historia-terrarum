@@ -1,0 +1,26 @@
+id: Wyalkatchem
+name: Wyalkatchem
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B651_2695
+- B652_2693
+- B652_2694
+- B652_2695
+- B652_2696
+- B653_2693
+- B653_2694
+- B653_2695
+- B653_2696
+- B654_2693
+- B654_2694
+- B654_2695
+- B654_2696
+- B655_2693
+- B655_2694
+- B655_2695
+- B655_2696
+- B656_2693
+- B656_2694
+- B656_2695

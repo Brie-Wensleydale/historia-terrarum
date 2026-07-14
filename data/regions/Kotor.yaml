@@ -1,0 +1,11 @@
+id: Kotor
+name: Kotor
+type: province
+country: Montenegro
+tiles:
+- B1471_3791
+- B1472_3791
+- B1473_3791
+- B1473_3792
+- B1474_3792
+- B1474_3793

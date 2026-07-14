@@ -1,0 +1,17 @@
+id: City_of_Minsk
+name: City of Minsk
+type: province
+country: Belarus
+tiles:
+- B1599_3691
+- B1599_3692
+- B1599_3693
+- B1600_3691
+- B1600_3692
+- B1600_3693
+- B1600_3694
+- B1600_3695
+- B1601_3691
+- B1601_3692
+- B1601_3693
+- B1601_3694

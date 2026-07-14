@@ -1,0 +1,16 @@
+id: Pavilostas
+name: Pavilostas
+type: province
+country: Latvia
+tiles:
+- B1631_3764
+- B1631_3765
+- B1632_3763
+- B1632_3764
+- B1632_3765
+- B1633_3762
+- B1633_3763
+- B1633_3764
+- B1633_3765
+- B1634_3762
+- B1634_3763

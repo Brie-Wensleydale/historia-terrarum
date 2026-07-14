@@ -1,0 +1,8 @@
+id: Joondalup
+name: Joondalup
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B647_2713
+- B647_2714

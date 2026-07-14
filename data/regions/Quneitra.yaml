@@ -1,0 +1,9 @@
+id: Quneitra
+name: Quneitra
+type: province
+country: Syria
+tiles:
+- B1366_3601
+- B1369_3600
+- B1370_3600
+- B1371_3601

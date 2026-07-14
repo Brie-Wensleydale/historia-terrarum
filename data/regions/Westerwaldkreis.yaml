@@ -1,0 +1,21 @@
+id: Westerwaldkreis
+name: Westerwaldkreis
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1561_3912
+- B1561_3914
+- B1562_3911
+- B1562_3912
+- B1562_3913
+- B1562_3914
+- B1563_3910
+- B1563_3911
+- B1563_3912
+- B1563_3913
+- B1564_3910
+- B1564_3911
+- B1564_3912
+- B1564_3913
+- B1564_3914

@@ -1,0 +1,20 @@
+id: Ilm_Kreis
+name: Ilm-Kreis
+type: province
+country: Germany
+parent: Thüringen
+tiles:
+- B1563_3877
+- B1563_3878
+- B1564_3877
+- B1564_3878
+- B1564_3879
+- B1564_3880
+- B1565_3876
+- B1565_3877
+- B1565_3878
+- B1565_3879
+- B1566_3876
+- B1566_3877
+- B1566_3878
+- B1566_3879

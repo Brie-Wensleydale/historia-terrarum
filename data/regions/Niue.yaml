@@ -1,0 +1,9 @@
+id: Niue
+name: Niue (New Zealand)
+type: province
+country: Niue
+tiles:
+- B788_1887
+- B788_1888
+- B789_1886
+- B789_1887

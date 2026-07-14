@@ -1,0 +1,10 @@
+id: Rožaje
+name: Rožaje
+type: province
+country: Montenegro
+tiles:
+- B1477_3774
+- B1477_3775
+- B1477_3776
+- B1478_3775
+- B1478_3776

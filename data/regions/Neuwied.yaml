@@ -1,0 +1,14 @@
+id: Neuwied
+name: Neuwied
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1562_3915
+- B1562_3916
+- B1562_3917
+- B1563_3914
+- B1563_3915
+- B1563_3917
+- B1563_3918
+- B1564_3917

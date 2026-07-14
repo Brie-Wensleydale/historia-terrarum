@@ -1,0 +1,13 @@
+id: Port_Stephens
+name: Port Stephens
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B636_2310
+- B636_2311
+- B636_2312
+- B636_2313
+- B637_2312
+- B637_2313
+- B637_2314

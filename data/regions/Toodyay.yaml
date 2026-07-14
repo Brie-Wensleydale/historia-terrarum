@@ -1,0 +1,25 @@
+id: Toodyay
+name: Toodyay
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B648_2706
+- B648_2707
+- B649_2705
+- B649_2706
+- B649_2707
+- B650_2705
+- B650_2706
+- B650_2707
+- B650_2708
+- B651_2704
+- B651_2705
+- B651_2706
+- B651_2707
+- B651_2708
+- B652_2704
+- B652_2705
+- B652_2706
+- B652_2707
+- B653_2707

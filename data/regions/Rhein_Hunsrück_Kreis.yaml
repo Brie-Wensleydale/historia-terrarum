@@ -1,0 +1,22 @@
+id: Rhein_Hunsrück_Kreis
+name: Rhein-Hunsrück-Kreis
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1555_3917
+- B1556_3915
+- B1556_3916
+- B1556_3917
+- B1556_3918
+- B1556_3919
+- B1557_3915
+- B1557_3916
+- B1557_3917
+- B1558_3914
+- B1558_3915
+- B1558_3916
+- B1558_3917
+- B1558_3918
+- B1559_3915
+- B1559_3916

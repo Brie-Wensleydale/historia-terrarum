@@ -1,0 +1,10 @@
+id: Frankfurt_Oder
+name: Frankfurt (Oder)
+type: province
+country: Germany
+parent: Brandenburg
+tiles:
+- B1582_3838
+- B1582_3839
+- B1583_3838
+- B1583_3839

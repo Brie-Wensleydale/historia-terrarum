@@ -1,0 +1,16 @@
+id: La_VallÃ©e_du_Richelieu
+name: La VallÃ©e-du-Richelieu
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1506_814
+- B1507_812
+- B1507_813
+- B1507_814
+- B1508_812
+- B1508_813
+- B1509_812
+- B1509_813
+- B1510_812
+- B1510_813

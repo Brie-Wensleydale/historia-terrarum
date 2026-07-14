@@ -1,0 +1,7 @@
+id: Landau_in_der_Pfalz
+name: Landau in der Pfalz
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1548_3909

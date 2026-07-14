@@ -1,0 +1,14 @@
+id: Vecpiebalgas
+name: Vecpiebalgas
+type: province
+country: Latvia
+tiles:
+- B1635_3712
+- B1635_3713
+- B1635_3714
+- B1635_3715
+- B1636_3713
+- B1636_3714
+- B1636_3715
+- B1637_3714
+- B1637_3715

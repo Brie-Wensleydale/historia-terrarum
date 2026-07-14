@@ -1,0 +1,13 @@
+id: New_South_Wales
+name: New South Wales
+type: province
+country: Australia
+tiles:
+- B599_2331
+- B604_2329
+- B606_2328
+- B625_2318
+- B626_2318
+- B636_2309
+- B669_2296
+- B684_2293

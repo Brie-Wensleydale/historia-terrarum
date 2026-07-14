@@ -1,0 +1,14 @@
+id: Novaci
+name: Novaci
+type: province
+country: North Macedonia
+tiles:
+- B1456_3758
+- B1456_3759
+- B1456_3760
+- B1457_3757
+- B1457_3758
+- B1457_3759
+- B1457_3760
+- B1457_3761
+- B1458_3759

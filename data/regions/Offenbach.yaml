@@ -1,0 +1,12 @@
+id: Offenbach
+name: Offenbach
+type: province
+country: Germany
+parent: Hessen
+tiles:
+- B1557_3900
+- B1557_3901
+- B1557_3902
+- B1557_3903
+- B1557_3904
+- B1558_3901

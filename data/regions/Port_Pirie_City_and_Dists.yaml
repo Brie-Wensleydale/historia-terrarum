@@ -1,0 +1,30 @@
+id: Port_Pirie_City_and_Dists
+name: Port Pirie City and Dists
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B627_2462
+- B627_2463
+- B627_2464
+- B627_2465
+- B628_2462
+- B628_2463
+- B628_2464
+- B628_2465
+- B628_2467
+- B629_2464
+- B629_2465
+- B629_2466
+- B629_2467
+- B630_2464
+- B630_2465
+- B630_2466
+- B630_2467
+- B630_2468
+- B631_2464
+- B631_2465
+- B631_2466
+- B631_2467
+- B631_2468
+- B632_2465

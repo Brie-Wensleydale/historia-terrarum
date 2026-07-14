@@ -1,0 +1,18 @@
+id: Pulau_Pinang
+name: Pulau Pinang
+type: province
+country: Malaysia
+tiles:
+- B1058_2883
+- B1059_2883
+- B1059_2886
+- B1060_2883
+- B1060_2884
+- B1060_2885
+- B1060_2886
+- B1061_2883
+- B1061_2884
+- B1061_2885
+- B1061_2886
+- B1062_2883
+- B1062_2884

@@ -1,0 +1,16 @@
+id: Esslingen
+name: Esslingen
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1541_3893
+- B1541_3894
+- B1541_3895
+- B1541_3896
+- B1541_3897
+- B1542_3895
+- B1542_3896
+- B1542_3897
+- B1542_3898
+- B1543_3895

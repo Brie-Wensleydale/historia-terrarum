@@ -1,0 +1,13 @@
+id: Wollongong
+name: Wollongong
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B617_2323
+- B617_2324
+- B617_2325
+- B618_2323
+- B618_2324
+- B619_2323
+- B620_2322

@@ -1,0 +1,8 @@
+id: Ljubljana
+name: Ljubljana
+type: province
+country: Slovenia
+tiles:
+- B1512_3839
+- B1513_3838
+- B1513_3839

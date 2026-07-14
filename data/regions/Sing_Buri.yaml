@@ -1,0 +1,14 @@
+id: Sing_Buri
+name: Sing Buri
+type: province
+country: Thailand
+tiles:
+- B1165_2884
+- B1165_2885
+- B1166_2884
+- B1166_2885
+- B1167_2884
+- B1167_2885
+- B1168_2884
+- B1168_2885
+- B1169_2885

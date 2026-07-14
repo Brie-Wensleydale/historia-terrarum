@@ -1,0 +1,13 @@
+id: Hume
+name: Hume
+type: province
+country: Australia
+parent: Victoria
+tiles:
+- B582_2389
+- B582_2390
+- B582_2391
+- B583_2389
+- B583_2390
+- B583_2391
+- B583_2392

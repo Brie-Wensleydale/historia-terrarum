@@ -1,0 +1,15 @@
+id: Boa_Vista
+name: Boa Vista
+type: province
+country: Cabo Verde
+tiles:
+- B1178_254
+- B1179_252
+- B1179_253
+- B1179_254
+- B1180_252
+- B1180_253
+- B1180_254
+- B1181_252
+- B1181_253
+- B1181_254

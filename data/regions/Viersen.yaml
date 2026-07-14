@@ -1,0 +1,14 @@
+id: Viersen
+name: Viersen
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1570_3930
+- B1570_3931
+- B1570_3932
+- B1571_3928
+- B1571_3929
+- B1571_3930
+- B1571_3931
+- B1572_3928

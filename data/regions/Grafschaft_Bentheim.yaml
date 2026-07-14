@@ -1,0 +1,23 @@
+id: Grafschaft_Bentheim
+name: Grafschaft Bentheim
+type: province
+country: Germany
+parent: Niedersachsen
+tiles:
+- B1582_3919
+- B1582_3920
+- B1582_3921
+- B1583_3919
+- B1583_3920
+- B1583_3921
+- B1584_3919
+- B1584_3920
+- B1584_3921
+- B1584_3922
+- B1584_3923
+- B1584_3924
+- B1585_3920
+- B1585_3921
+- B1585_3922
+- B1585_3923
+- B1585_3924

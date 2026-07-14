@@ -1,0 +1,22 @@
+id: Oldenburg
+name: Oldenburg
+type: province
+country: Germany
+parent: Niedersachsen
+tiles:
+- B1588_3905
+- B1589_3904
+- B1589_3905
+- B1589_3906
+- B1589_3907
+- B1589_3908
+- B1590_3905
+- B1590_3906
+- B1590_3907
+- B1590_3908
+- B1590_3909
+- B1591_3904
+- B1591_3905
+- B1591_3906
+- B1591_3907
+- B1591_3909

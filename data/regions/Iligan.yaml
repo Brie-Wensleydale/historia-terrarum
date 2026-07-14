@@ -1,0 +1,13 @@
+id: Iligan
+name: Iligan
+type: province
+country: Philippines
+tiles:
+- B1090_2615
+- B1091_2616
+- B1092_2616
+- B1092_2617
+- B1092_2618
+- B1092_2619
+- B1093_2617
+- B1093_2618

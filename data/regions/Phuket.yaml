@@ -1,0 +1,13 @@
+id: Phuket
+name: Phuket
+type: province
+country: Thailand
+tiles:
+- B1087_2907
+- B1088_2906
+- B1088_2907
+- B1089_2906
+- B1089_2907
+- B1090_2906
+- B1090_2907
+- B1091_2907

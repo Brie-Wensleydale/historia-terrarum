@@ -1,0 +1,8 @@
+id: Kamnik
+name: Kamnik
+type: province
+country: Slovenia
+tiles:
+- B1515_3836
+- B1515_3837
+- B1516_3837

@@ -1,0 +1,9 @@
+id: Busan
+name: Busan
+type: province
+country: South Korea
+tiles:
+- B1391_2565
+- B1391_2566
+- B1392_2565
+- B1392_2566

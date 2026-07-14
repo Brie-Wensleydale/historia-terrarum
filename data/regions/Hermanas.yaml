@@ -1,0 +1,11 @@
+id: Hermanas
+name: Hermanas
+type: province
+country: Dominican Republic
+tiles:
+- B1215_782
+- B1216_781
+- B1216_782
+- B1217_780
+- B1217_781
+- B1217_782

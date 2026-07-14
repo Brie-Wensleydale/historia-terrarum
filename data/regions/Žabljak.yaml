@@ -1,0 +1,11 @@
+id: Žabljak
+name: Žabljak
+type: province
+country: Montenegro
+tiles:
+- B1479_3785
+- B1480_3785
+- B1480_3786
+- B1480_3787
+- B1480_3788
+- B1481_3788

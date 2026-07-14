@@ -1,0 +1,21 @@
+id: Vaudreuil_Soulanges
+name: Vaudreuil-Soulanges
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1504_824
+- B1504_825
+- B1504_826
+- B1505_821
+- B1505_822
+- B1505_823
+- B1505_824
+- B1505_825
+- B1505_826
+- B1506_822
+- B1506_823
+- B1506_824
+- B1506_825
+- B1506_826
+- B1507_826

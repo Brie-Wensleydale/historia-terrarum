@@ -1,0 +1,11 @@
+id: The_Hills
+name: The Hills
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B625_2322
+- B626_2322
+- B627_2322
+- B628_2322
+- B629_2322

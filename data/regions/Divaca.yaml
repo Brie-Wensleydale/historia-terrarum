@@ -1,0 +1,8 @@
+id: Divaca
+name: Divaca
+type: province
+country: Slovenia
+tiles:
+- B1508_3844
+- B1509_3843
+- B1509_3844

@@ -1,0 +1,18 @@
+id: Altenkirchen_Westerwald
+name: Altenkirchen (Westerwald)
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1563_3916
+- B1564_3915
+- B1564_3916
+- B1565_3911
+- B1565_3912
+- B1565_3913
+- B1565_3914
+- B1565_3915
+- B1566_3911
+- B1566_3912
+- B1566_3913
+- B1567_3913

@@ -1,0 +1,11 @@
+id: Namutumba
+name: Namutumba
+type: province
+country: Uganda
+tiles:
+- B1009_3625
+- B1010_3625
+- B1010_3626
+- B1011_3625
+- B1011_3626
+- B1012_3626

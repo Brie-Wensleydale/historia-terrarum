@@ -1,0 +1,14 @@
+id: Berane
+name: Berane
+type: province
+country: Montenegro
+tiles:
+- B1476_3777
+- B1476_3778
+- B1477_3777
+- B1477_3778
+- B1477_3779
+- B1477_3780
+- B1478_3777
+- B1478_3778
+- B1478_3779

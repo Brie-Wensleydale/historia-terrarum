@@ -1,0 +1,17 @@
+id: Solothurn
+name: Solothurn
+type: province
+country: Switzerland
+tiles:
+- B1525_3915
+- B1525_3916
+- B1526_3916
+- B1526_3917
+- B1527_3911
+- B1527_3912
+- B1527_3913
+- B1527_3914
+- B1527_3915
+- B1528_3911
+- B1528_3915
+- B1528_3917

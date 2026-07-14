@@ -1,0 +1,10 @@
+id: São_Vicente
+name: São Vicente
+type: province
+country: Cabo Verde
+tiles:
+- B1185_273
+- B1187_274
+- B1188_276
+- B1188_277
+- B1188_278

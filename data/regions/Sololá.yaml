@@ -1,0 +1,15 @@
+id: Sololá
+name: Sololá
+type: province
+country: Guatemala
+tiles:
+- B1163_1012
+- B1163_1013
+- B1164_1012
+- B1164_1013
+- B1164_1014
+- B1164_1015
+- B1165_1012
+- B1165_1013
+- B1165_1014
+- B1165_1015

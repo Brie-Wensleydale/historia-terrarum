@@ -1,0 +1,12 @@
+id: Dardanup
+name: Dardanup
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B628_2712
+- B628_2713
+- B629_2711
+- B629_2712
+- B629_2713
+- B630_2713

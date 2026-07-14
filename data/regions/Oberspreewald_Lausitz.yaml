@@ -1,0 +1,25 @@
+id: Oberspreewald_Lausitz
+name: Oberspreewald-Lausitz
+type: province
+country: Germany
+parent: Brandenburg
+tiles:
+- B1572_3844
+- B1572_3845
+- B1572_3846
+- B1572_3847
+- B1573_3844
+- B1573_3845
+- B1573_3846
+- B1573_3847
+- B1574_3843
+- B1574_3844
+- B1574_3845
+- B1575_3843
+- B1575_3844
+- B1575_3845
+- B1576_3843
+- B1576_3844
+- B1576_3845
+- B1577_3844
+- B1577_3845

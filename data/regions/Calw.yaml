@@ -1,0 +1,17 @@
+id: Calw
+name: Calw
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1540_3903
+- B1541_3903
+- B1541_3904
+- B1541_3905
+- B1542_3902
+- B1542_3903
+- B1542_3904
+- B1542_3905
+- B1543_3903
+- B1543_3904
+- B1543_3905

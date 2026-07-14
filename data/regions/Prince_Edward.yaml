@@ -1,0 +1,21 @@
+id: Prince_Edward
+name: Prince Edward
+type: province
+country: Canada
+parent: Ontario
+tiles:
+- B1489_855
+- B1489_856
+- B1489_857
+- B1490_855
+- B1490_856
+- B1490_857
+- B1490_858
+- B1490_859
+- B1490_860
+- B1490_861
+- B1491_856
+- B1491_857
+- B1491_858
+- B1491_859
+- B1491_860

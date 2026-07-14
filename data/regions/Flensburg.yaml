@@ -1,0 +1,7 @@
+id: Flensburg
+name: Flensburg
+type: province
+country: Germany
+parent: Schleswig_Holstein
+tiles:
+- B1610_3894

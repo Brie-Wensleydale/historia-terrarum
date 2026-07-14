@@ -1,0 +1,7 @@
+id: Tel_Aviv
+name: Tel Aviv
+type: province
+country: Israel
+tiles:
+- B1357_3613
+- B1358_3613

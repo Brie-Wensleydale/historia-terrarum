@@ -1,0 +1,15 @@
+id: East_Grand_Bahama
+name: East Grand Bahama
+type: province
+country: The Bahamas
+tiles:
+- B1296_865
+- B1296_871
+- B1297_866
+- B1297_867
+- B1297_868
+- B1297_869
+- B1297_870
+- B1297_871
+- B1298_865
+- B1298_866

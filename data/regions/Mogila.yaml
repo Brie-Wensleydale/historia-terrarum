@@ -1,0 +1,9 @@
+id: Mogila
+name: Mogila
+type: province
+country: North Macedonia
+tiles:
+- B1458_3760
+- B1458_3761
+- B1458_3762
+- B1459_3762

@@ -1,0 +1,10 @@
+id: Bujumbura_Mairie
+name: Bujumbura Mairie
+type: province
+country: Burundi
+tiles:
+- B961_3674
+- B962_3673
+- B962_3674
+- B963_3673
+- B963_3674

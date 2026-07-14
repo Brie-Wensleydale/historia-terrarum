@@ -1,0 +1,10 @@
+id: Negotino
+name: Negotino
+type: province
+country: North Macedonia
+tiles:
+- B1461_3754
+- B1462_3752
+- B1462_3753
+- B1462_3754
+- B1463_3754

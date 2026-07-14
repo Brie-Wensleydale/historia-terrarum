@@ -1,0 +1,6 @@
+id: Antipodes_Islands
+name: Antipodes Islands
+type: province
+country: New Zealand
+tiles:
+- B448_2013

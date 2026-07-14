@@ -1,0 +1,12 @@
+id: Danilovgrad
+name: Danilovgrad
+type: province
+country: Montenegro
+tiles:
+- B1474_3786
+- B1474_3787
+- B1474_3788
+- B1475_3786
+- B1475_3787
+- B1475_3788
+- B1476_3786

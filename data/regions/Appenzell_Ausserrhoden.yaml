@@ -1,0 +1,8 @@
+id: Appenzell_Ausserrhoden
+name: Appenzell Ausserrhoden
+type: province
+country: Switzerland
+tiles:
+- B1527_3896
+- B1527_3897
+- B1528_3894

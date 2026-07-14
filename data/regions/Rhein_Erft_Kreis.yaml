@@ -1,0 +1,18 @@
+id: Rhein_Erft_Kreis
+name: Rhein-Erft-Kreis
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1565_3924
+- B1565_3925
+- B1566_3923
+- B1566_3924
+- B1566_3925
+- B1566_3926
+- B1567_3924
+- B1567_3925
+- B1567_3926
+- B1567_3927
+- B1568_3924
+- B1568_3927

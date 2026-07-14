@@ -1,0 +1,10 @@
+id: Sejas
+name: Sejas
+type: province
+country: Latvia
+tiles:
+- B1636_3726
+- B1636_3727
+- B1637_3726
+- B1637_3727
+- B1637_3728

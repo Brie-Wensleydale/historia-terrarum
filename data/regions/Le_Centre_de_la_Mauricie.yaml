@@ -1,0 +1,28 @@
+id: Le_Centre_de_la_Mauricie
+name: Le Centre-de-la-Mauricie
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1517_807
+- B1517_810
+- B1518_806
+- B1518_807
+- B1518_808
+- B1518_809
+- B1518_810
+- B1518_811
+- B1519_807
+- B1519_808
+- B1519_809
+- B1519_810
+- B1519_811
+- B1520_808
+- B1520_809
+- B1520_810
+- B1520_811
+- B1521_810
+- B1521_811
+- B1521_812
+- B1522_810
+- B1522_811

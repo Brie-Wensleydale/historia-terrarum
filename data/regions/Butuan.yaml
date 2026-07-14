@@ -1,0 +1,10 @@
+id: Butuan
+name: Butuan
+type: province
+country: Philippines
+tiles:
+- B1099_2604
+- B1099_2605
+- B1100_2603
+- B1100_2604
+- B1100_2605

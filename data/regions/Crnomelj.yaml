@@ -1,0 +1,9 @@
+id: Crnomelj
+name: Crnomelj
+type: province
+country: Slovenia
+tiles:
+- B1506_3830
+- B1506_3831
+- B1507_3830
+- B1507_3831

@@ -1,0 +1,19 @@
+id: Dingolfing_Landau
+name: Dingolfing-Landau
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1540_3859
+- B1541_3858
+- B1541_3859
+- B1541_3860
+- B1541_3861
+- B1541_3862
+- B1542_3857
+- B1542_3858
+- B1542_3859
+- B1542_3860
+- B1542_3861
+- B1542_3862
+- B1543_3858

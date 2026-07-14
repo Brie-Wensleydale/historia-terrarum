@@ -1,0 +1,19 @@
+id: Ipswich
+name: Ipswich
+type: province
+country: Australia
+parent: Queensland
+tiles:
+- B691_2306
+- B692_2301
+- B692_2302
+- B692_2303
+- B692_2305
+- B692_2306
+- B693_2301
+- B693_2302
+- B693_2303
+- B693_2304
+- B693_2305
+- B694_2303
+- B694_2304

@@ -1,0 +1,13 @@
+id: Luuka
+name: Luuka
+type: province
+country: Uganda
+tiles:
+- B1007_3628
+- B1008_3628
+- B1008_3629
+- B1009_3629
+- B1009_3630
+- B1010_3629
+- B1011_3629
+- B1012_3629

@@ -1,0 +1,13 @@
+id: Berri_and_Barmera
+name: Berri and Barmera
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B618_2438
+- B619_2438
+- B619_2439
+- B620_2437
+- B620_2438
+- B620_2439
+- B620_2440

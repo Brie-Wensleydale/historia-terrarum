@@ -1,0 +1,8 @@
+id: Marion
+name: Marion
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B610_2461
+- B611_2460

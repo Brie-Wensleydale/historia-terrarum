@@ -1,0 +1,16 @@
+id: Alzey_Worms
+name: Alzey-Worms
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1553_3908
+- B1553_3909
+- B1554_3906
+- B1554_3907
+- B1554_3908
+- B1554_3909
+- B1554_3910
+- B1554_3911
+- B1555_3909
+- B1555_3910

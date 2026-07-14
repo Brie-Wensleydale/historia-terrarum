@@ -1,0 +1,10 @@
+id: Champlain
+name: Champlain
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1506_815
+- B1506_816
+- B1507_815
+- B1507_816

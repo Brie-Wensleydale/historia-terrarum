@@ -1,0 +1,16 @@
+id: Günzburg
+name: Günzburg
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1537_3883
+- B1537_3884
+- B1537_3885
+- B1538_3883
+- B1538_3884
+- B1538_3885
+- B1539_3883
+- B1539_3884
+- B1539_3885
+- B1539_3886

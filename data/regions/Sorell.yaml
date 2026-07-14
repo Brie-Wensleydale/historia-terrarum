@@ -1,0 +1,14 @@
+id: Sorell
+name: Sorell
+type: province
+country: Australia
+parent: Tasmania
+tiles:
+- B523_2358
+- B524_2357
+- B524_2358
+- B524_2359
+- B525_2357
+- B525_2358
+- B525_2359
+- B525_2360

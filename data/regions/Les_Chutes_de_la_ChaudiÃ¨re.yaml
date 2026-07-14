@@ -1,0 +1,12 @@
+id: Les_Chutes_de_la_ChaudiÃ¨re
+name: Les Chutes-de-la-ChaudiÃ¨re
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1519_790
+- B1519_791
+- B1519_792
+- B1520_790
+- B1520_791
+- B1520_792

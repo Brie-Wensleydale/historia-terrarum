@@ -1,0 +1,8 @@
+id: Brandenburg_an_der_Havel
+name: Brandenburg an der Havel
+type: province
+country: Germany
+parent: Brandenburg
+tiles:
+- B1583_3860
+- B1583_3861

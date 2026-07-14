@@ -1,0 +1,14 @@
+id: Dumyat
+name: Dumyat
+type: province
+country: Egypt
+tiles:
+- B1348_3647
+- B1349_3647
+- B1349_3648
+- B1350_3644
+- B1350_3646
+- B1350_3647
+- B1350_3648
+- B1351_3644
+- B1351_3646

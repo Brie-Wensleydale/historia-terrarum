@@ -1,0 +1,11 @@
+id: Aglonas
+name: Aglonas
+type: province
+country: Latvia
+tiles:
+- B1624_3698
+- B1624_3699
+- B1625_3697
+- B1625_3698
+- B1625_3699
+- B1625_3700

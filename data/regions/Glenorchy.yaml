@@ -1,0 +1,8 @@
+id: Glenorchy
+name: Glenorchy
+type: province
+country: Australia
+parent: Tasmania
+tiles:
+- B524_2363
+- B524_2364

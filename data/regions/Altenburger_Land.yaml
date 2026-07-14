@@ -1,0 +1,13 @@
+id: Altenburger_Land
+name: Altenburger Land
+type: province
+country: Germany
+parent: Thüringen
+tiles:
+- B1566_3863
+- B1567_3860
+- B1567_3861
+- B1567_3862
+- B1567_3863
+- B1568_3861
+- B1568_3862

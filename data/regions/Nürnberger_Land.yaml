@@ -1,0 +1,17 @@
+id: Nürnberger_Land
+name: Nürnberger Land
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1550_3873
+- B1550_3874
+- B1550_3875
+- B1551_3871
+- B1551_3872
+- B1551_3873
+- B1551_3874
+- B1551_3875
+- B1552_3872
+- B1552_3873
+- B1552_3874

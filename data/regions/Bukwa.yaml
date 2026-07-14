@@ -1,0 +1,9 @@
+id: Bukwa
+name: Bukwa
+type: province
+country: Uganda
+tiles:
+- B1014_3614
+- B1014_3615
+- B1015_3613
+- B1015_3614

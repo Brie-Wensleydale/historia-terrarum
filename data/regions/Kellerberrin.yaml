@@ -1,0 +1,27 @@
+id: Kellerberrin
+name: Kellerberrin
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B647_2689
+- B647_2690
+- B647_2691
+- B647_2692
+- B648_2689
+- B648_2690
+- B648_2691
+- B648_2692
+- B649_2689
+- B649_2690
+- B649_2691
+- B649_2692
+- B650_2688
+- B650_2689
+- B650_2690
+- B650_2691
+- B650_2692
+- B651_2689
+- B651_2690
+- B651_2691
+- B651_2692

@@ -1,0 +1,7 @@
+id: Paris
+name: Paris
+type: province
+country: France
+tiles:
+- B1544_3973
+- B1544_3974

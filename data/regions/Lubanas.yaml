@@ -1,0 +1,11 @@
+id: Lubanas
+name: Lubanas
+type: province
+country: Latvia
+tiles:
+- B1633_3700
+- B1633_3704
+- B1633_3705
+- B1634_3701
+- B1634_3702
+- B1634_3703

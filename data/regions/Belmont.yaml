@@ -1,0 +1,7 @@
+id: Belmont
+name: Belmont
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B645_2711

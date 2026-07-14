@@ -1,0 +1,12 @@
+id: Olaines
+name: Olaines
+type: province
+country: Latvia
+tiles:
+- B1631_3731
+- B1631_3732
+- B1632_3732
+- B1632_3733
+- B1632_3734
+- B1632_3735
+- B1633_3732

@@ -1,0 +1,10 @@
+id: Batanes
+name: Batanes
+type: province
+country: Philippines
+tiles:
+- B1226_2646
+- B1227_2645
+- B1228_2644
+- B1231_2646
+- B1232_2645

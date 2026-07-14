@@ -1,0 +1,16 @@
+id: Hohenlohekreis
+name: Hohenlohekreis
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1548_3891
+- B1548_3892
+- B1548_3893
+- B1548_3894
+- B1549_3891
+- B1549_3892
+- B1549_3893
+- B1549_3894
+- B1550_3892
+- B1550_3893

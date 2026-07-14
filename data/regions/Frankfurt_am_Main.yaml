@@ -1,0 +1,9 @@
+id: Frankfurt_am_Main
+name: Frankfurt am Main
+type: province
+country: Germany
+parent: Hessen
+tiles:
+- B1558_3903
+- B1558_3904
+- B1559_3903

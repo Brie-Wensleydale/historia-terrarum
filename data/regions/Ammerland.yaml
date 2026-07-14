@@ -1,0 +1,18 @@
+id: Ammerland
+name: Ammerland
+type: province
+country: Germany
+parent: Niedersachsen
+tiles:
+- B1591_3910
+- B1591_3911
+- B1592_3909
+- B1592_3910
+- B1592_3911
+- B1592_3912
+- B1592_3913
+- B1593_3908
+- B1593_3909
+- B1593_3910
+- B1593_3911
+- B1593_3912

@@ -1,0 +1,10 @@
+id: Central_Eleuthera
+name: Central Eleuthera
+type: province
+country: The Bahamas
+tiles:
+- B1279_845
+- B1280_845
+- B1281_846
+- B1281_847
+- B1282_847

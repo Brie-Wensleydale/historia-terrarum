@@ -1,0 +1,18 @@
+id: Berlin
+name: Berlin
+type: province
+country: Germany
+parent: Berlin
+tiles:
+- B1584_3848
+- B1584_3849
+- B1584_3850
+- B1584_3851
+- B1584_3852
+- B1584_3853
+- B1585_3849
+- B1585_3850
+- B1585_3851
+- B1585_3852
+- B1585_3853
+- B1586_3850

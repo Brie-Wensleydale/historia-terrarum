@@ -1,0 +1,15 @@
+id: Bundibugyo
+name: Bundibugyo
+type: province
+country: Uganda
+tiles:
+- B1006_3666
+- B1007_3666
+- B1008_3665
+- B1008_3666
+- B1009_3664
+- B1009_3665
+- B1009_3666
+- B1010_3664
+- B1010_3665
+- B1010_3666

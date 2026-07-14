@@ -1,0 +1,13 @@
+id: Valverde
+name: Valverde
+type: province
+country: Dominican Republic
+tiles:
+- B1217_788
+- B1217_789
+- B1218_788
+- B1218_789
+- B1218_790
+- B1219_788
+- B1219_789
+- B1219_790

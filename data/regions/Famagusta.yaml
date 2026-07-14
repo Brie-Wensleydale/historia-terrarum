@@ -1,0 +1,8 @@
+id: Famagusta
+name: Famagusta
+type: province
+country: Cyprus
+tiles:
+- B1390_3621
+- B1390_3622
+- B1390_3623

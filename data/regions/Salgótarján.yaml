@@ -1,0 +1,8 @@
+id: Salgótarján
+name: Salgótarján
+type: province
+country: Hungary
+tiles:
+- B1535_3780
+- B1536_3779
+- B1536_3780

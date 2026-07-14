@@ -1,0 +1,24 @@
+id: Chatham_Islands_Territory
+name: Chatham Islands Territory
+type: province
+country: New Zealand
+tiles:
+- B508_1957
+- B510_1961
+- B510_1962
+- B511_1959
+- B511_1960
+- B511_1961
+- B511_1962
+- B512_1960
+- B512_1961
+- B513_1959
+- B513_1961
+- B513_1962
+- B513_1963
+- B513_1964
+- B514_1958
+- B514_1960
+- B514_1961
+- B514_1962
+- B514_1963

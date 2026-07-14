@@ -1,0 +1,13 @@
+id: Radoviš
+name: Radoviš
+type: province
+country: North Macedonia
+tiles:
+- B1463_3749
+- B1463_3750
+- B1463_3751
+- B1464_3748
+- B1464_3749
+- B1464_3750
+- B1464_3751
+- B1465_3750

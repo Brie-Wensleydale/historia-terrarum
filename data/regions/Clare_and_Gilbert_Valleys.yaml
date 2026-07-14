@@ -1,0 +1,30 @@
+id: Clare_and_Gilbert_Valleys
+name: Clare and Gilbert Valleys
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B619_2458
+- B620_2457
+- B620_2458
+- B620_2459
+- B621_2456
+- B621_2457
+- B621_2458
+- B621_2459
+- B622_2456
+- B622_2457
+- B622_2458
+- B622_2459
+- B623_2456
+- B623_2457
+- B623_2458
+- B623_2459
+- B624_2457
+- B624_2458
+- B624_2459
+- B624_2460
+- B625_2459
+- B625_2460
+- B626_2459
+- B626_2460

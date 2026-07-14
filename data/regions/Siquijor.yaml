@@ -1,0 +1,10 @@
+id: Siquijor
+name: Siquijor
+type: province
+country: Philippines
+tiles:
+- B1102_2626
+- B1102_2627
+- B1103_2625
+- B1103_2626
+- B1103_2627

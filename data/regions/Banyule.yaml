@@ -1,0 +1,7 @@
+id: Banyule
+name: Banyule
+type: province
+country: Australia
+parent: Victoria
+tiles:
+- B581_2387

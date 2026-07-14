@@ -1,0 +1,10 @@
+id: North_Eleuthera
+name: North Eleuthera
+type: province
+country: The Bahamas
+tiles:
+- B1282_849
+- B1283_850
+- B1283_851
+- B1284_851
+- B1284_852

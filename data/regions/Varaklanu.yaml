@@ -1,0 +1,9 @@
+id: Varaklanu
+name: Varaklanu
+type: province
+country: Latvia
+tiles:
+- B1630_3703
+- B1630_3704
+- B1631_3703
+- B1631_3704

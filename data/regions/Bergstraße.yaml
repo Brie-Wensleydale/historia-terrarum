@@ -1,0 +1,17 @@
+id: Bergstraße
+name: Bergstraße
+type: province
+country: Germany
+parent: Hessen
+tiles:
+- B1550_3901
+- B1552_3901
+- B1552_3902
+- B1552_3903
+- B1552_3904
+- B1552_3905
+- B1553_3902
+- B1553_3903
+- B1553_3904
+- B1553_3905
+- B1553_3906

@@ -1,0 +1,8 @@
+id: Penghu
+name: Penghu
+type: province
+country: Taiwan
+tiles:
+- B1262_2671
+- B1263_2670
+- B1263_2672

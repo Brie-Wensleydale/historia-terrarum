@@ -1,0 +1,11 @@
+id: Potsdam
+name: Potsdam
+type: province
+country: Germany
+parent: Brandenburg
+tiles:
+- B1583_3854
+- B1583_3855
+- B1584_3854
+- B1584_3855
+- B1584_3856

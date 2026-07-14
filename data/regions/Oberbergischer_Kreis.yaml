@@ -1,0 +1,20 @@
+id: Oberbergischer_Kreis
+name: Oberbergischer Kreis
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1566_3914
+- B1566_3915
+- B1567_3914
+- B1567_3915
+- B1567_3916
+- B1568_3914
+- B1568_3915
+- B1568_3916
+- B1568_3917
+- B1568_3918
+- B1569_3917
+- B1569_3918
+- B1570_3917
+- B1570_3918

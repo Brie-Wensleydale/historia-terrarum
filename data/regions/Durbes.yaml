@@ -1,0 +1,11 @@
+id: Durbes
+name: Durbes
+type: province
+country: Latvia
+tiles:
+- B1630_3760
+- B1630_3761
+- B1630_3762
+- B1630_3763
+- B1631_3762
+- B1631_3763

@@ -1,0 +1,8 @@
+id: Harari_People
+name: Harari People
+type: province
+country: Ethiopia
+tiles:
+- B1103_3531
+- B1104_3530
+- B1104_3531

@@ -1,0 +1,9 @@
+id: ThÃ©rÃ¨se_De_Blainville
+name: ThÃ©rÃ¨se-De Blainville
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1508_820
+- B1509_820
+- B1510_820

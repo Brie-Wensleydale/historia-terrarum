@@ -1,0 +1,17 @@
+id: Krong_Pailin
+name: Krong Pailin
+type: province
+country: Cambodia
+tiles:
+- B1142_2859
+- B1142_2860
+- B1143_2858
+- B1143_2859
+- B1143_2860
+- B1144_2858
+- B1144_2859
+- B1144_2860
+- B1145_2858
+- B1145_2859
+- B1145_2860
+- B1146_2859

@@ -1,0 +1,17 @@
+id: Neuburg_Schrobenhausen
+name: Neuburg-Schrobenhausen
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1540_3874
+- B1541_3874
+- B1541_3875
+- B1542_3873
+- B1542_3874
+- B1542_3875
+- B1542_3876
+- B1542_3877
+- B1543_3875
+- B1543_3876
+- B1543_3877

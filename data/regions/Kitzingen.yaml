@@ -1,0 +1,15 @@
+id: Kitzingen
+name: Kitzingen
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1553_3885
+- B1553_3886
+- B1554_3883
+- B1554_3884
+- B1554_3885
+- B1554_3886
+- B1554_3887
+- B1555_3885
+- B1555_3886

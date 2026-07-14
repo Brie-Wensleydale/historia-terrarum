@@ -1,0 +1,7 @@
+id: Damascus
+name: Damascus
+type: province
+country: Syria
+tiles:
+- B1373_3596
+- B1373_3597

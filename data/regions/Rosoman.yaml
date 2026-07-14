@@ -1,0 +1,7 @@
+id: Rosoman
+name: Rosoman
+type: province
+country: North Macedonia
+tiles:
+- B1462_3756
+- B1462_3757

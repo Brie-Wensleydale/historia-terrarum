@@ -1,0 +1,9 @@
+id: Bodensee
+name: Bodensee
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1530_3894
+- B1530_3895
+- B1531_3897

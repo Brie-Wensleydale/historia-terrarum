@@ -1,0 +1,10 @@
+id: Daegu
+name: Daegu
+type: province
+country: South Korea
+tiles:
+- B1399_2570
+- B1399_2571
+- B1400_2569
+- B1400_2570
+- B1400_2571

@@ -1,0 +1,7 @@
+id: Dublin
+name: Dublin
+type: province
+country: Ireland
+tiles:
+- B1594_69
+- B1594_70

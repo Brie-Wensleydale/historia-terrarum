@@ -1,0 +1,12 @@
+id: Berovo
+name: Berovo
+type: province
+country: North Macedonia
+tiles:
+- B1463_3745
+- B1463_3746
+- B1463_3747
+- B1464_3745
+- B1464_3746
+- B1464_3747
+- B1465_3747

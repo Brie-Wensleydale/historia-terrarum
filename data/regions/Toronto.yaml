@@ -1,0 +1,15 @@
+id: Toronto
+name: Toronto
+type: province
+country: Canada
+parent: Ontario
+tiles:
+- B1486_881
+- B1486_882
+- B1486_883
+- B1487_880
+- B1487_881
+- B1487_882
+- B1487_883
+- B1487_884
+- B1488_880

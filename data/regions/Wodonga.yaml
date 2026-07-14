@@ -1,0 +1,12 @@
+id: Wodonga
+name: Wodonga
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B598_2366
+- B598_2367
+- B598_2368
+- B599_2367
+- B599_2368
+- B599_2369

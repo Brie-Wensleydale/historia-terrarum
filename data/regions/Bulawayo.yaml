@@ -1,0 +1,9 @@
+id: Bulawayo
+name: Bulawayo
+type: province
+country: Zimbabwe
+tiles:
+- B776_3681
+- B776_3682
+- B777_3682
+- B777_3683

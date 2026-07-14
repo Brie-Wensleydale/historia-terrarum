@@ -1,0 +1,15 @@
+id: Jakarta_Raya
+name: Jakarta Raya
+type: province
+country: Indonesia
+tiles:
+- B930_2812
+- B931_2811
+- B931_2812
+- B931_2813
+- B932_2811
+- B932_2812
+- B932_2813
+- B932_2814
+- B933_2811
+- B933_2813

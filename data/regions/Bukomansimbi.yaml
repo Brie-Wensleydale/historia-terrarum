@@ -1,0 +1,11 @@
+id: Bukomansimbi
+name: Bukomansimbi
+type: province
+country: Uganda
+tiles:
+- B1000_3648
+- B1001_3648
+- B998_3647
+- B998_3648
+- B999_3647
+- B999_3648

@@ -1,0 +1,15 @@
+id: Bitola
+name: Bitola
+type: province
+country: North Macedonia
+tiles:
+- B1455_3763
+- B1456_3761
+- B1456_3762
+- B1456_3763
+- B1457_3762
+- B1457_3763
+- B1457_3764
+- B1457_3765
+- B1458_3763
+- B1458_3764

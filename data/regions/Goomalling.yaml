@@ -1,0 +1,24 @@
+id: Goomalling
+name: Goomalling
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B651_2700
+- B651_2701
+- B651_2702
+- B651_2703
+- B652_2700
+- B652_2701
+- B652_2702
+- B652_2703
+- B653_2701
+- B653_2702
+- B653_2703
+- B654_2701
+- B654_2702
+- B654_2703
+- B655_2701
+- B655_2702
+- B655_2703
+- B656_2701

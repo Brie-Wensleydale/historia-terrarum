@@ -1,0 +1,8 @@
+id: Devonport
+name: Devonport
+type: province
+country: Australia
+parent: Tasmania
+tiles:
+- B542_2374
+- B543_2374

@@ -1,0 +1,10 @@
+id: South_Eleuthera
+name: South Eleuthera
+type: province
+country: The Bahamas
+tiles:
+- B1275_846
+- B1276_846
+- B1276_847
+- B1277_846
+- B1278_846

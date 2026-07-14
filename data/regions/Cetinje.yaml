@@ -1,0 +1,16 @@
+id: Cetinje
+name: Cetinje
+type: province
+country: Montenegro
+tiles:
+- B1471_3789
+- B1472_3788
+- B1472_3789
+- B1472_3790
+- B1473_3789
+- B1473_3790
+- B1474_3789
+- B1474_3790
+- B1474_3791
+- B1475_3790
+- B1475_3791

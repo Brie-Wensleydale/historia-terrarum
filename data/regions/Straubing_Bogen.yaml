@@ -1,0 +1,23 @@
+id: Straubing_Bogen
+name: Straubing-Bogen
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1543_3859
+- B1543_3860
+- B1543_3861
+- B1543_3862
+- B1543_3863
+- B1543_3864
+- B1544_3857
+- B1544_3858
+- B1544_3861
+- B1545_3857
+- B1545_3858
+- B1545_3859
+- B1545_3860
+- B1545_3861
+- B1546_3858
+- B1546_3859
+- B1546_3860

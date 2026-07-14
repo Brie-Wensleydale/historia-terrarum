@@ -1,0 +1,16 @@
+id: George_Town
+name: George Town
+type: province
+country: Australia
+parent: Tasmania
+tiles:
+- B542_2366
+- B542_2367
+- B543_2365
+- B543_2366
+- B543_2367
+- B543_2368
+- B544_2364
+- B544_2365
+- B544_2366
+- B544_2367

@@ -1,0 +1,17 @@
+id: Miltenberg
+name: Miltenberg
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1552_3897
+- B1552_3898
+- B1553_3896
+- B1553_3897
+- B1553_3898
+- B1554_3897
+- B1554_3898
+- B1555_3895
+- B1555_3897
+- B1555_3898
+- B1555_3899

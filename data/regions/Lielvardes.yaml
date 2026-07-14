@@ -1,0 +1,8 @@
+id: Lielvardes
+name: Lielvardes
+type: province
+country: Latvia
+tiles:
+- B1631_3722
+- B1631_3723
+- B1632_3722

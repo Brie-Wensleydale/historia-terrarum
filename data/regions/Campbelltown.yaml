@@ -1,0 +1,10 @@
+id: Campbelltown
+name: Campbelltown
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B621_2323
+- B621_2324
+- B622_2323
+- B622_2324

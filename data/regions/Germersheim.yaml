@@ -1,0 +1,10 @@
+id: Germersheim
+name: Germersheim
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1546_3908
+- B1546_3909
+- B1547_3907
+- B1548_3907

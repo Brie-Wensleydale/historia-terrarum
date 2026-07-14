@@ -1,0 +1,12 @@
+id: Barbados
+name: Barbados
+type: province
+country: Barbados
+tiles:
+- B1146_661
+- B1146_662
+- B1147_660
+- B1147_661
+- B1147_662
+- B1148_661
+- B1148_662

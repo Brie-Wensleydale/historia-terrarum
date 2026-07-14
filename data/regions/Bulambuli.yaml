@@ -1,0 +1,11 @@
+id: Bulambuli
+name: Bulambuli
+type: province
+country: Uganda
+tiles:
+- B1014_3617
+- B1015_3619
+- B1016_3618
+- B1017_3617
+- B1017_3618
+- B1017_3619

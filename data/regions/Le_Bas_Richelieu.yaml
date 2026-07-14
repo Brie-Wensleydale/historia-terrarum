@@ -1,0 +1,15 @@
+id: Le_Bas_Richelieu
+name: Le Bas-Richelieu
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1511_809
+- B1511_810
+- B1511_812
+- B1511_813
+- B1512_809
+- B1512_810
+- B1512_811
+- B1512_812
+- B1513_811

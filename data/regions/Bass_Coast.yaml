@@ -1,0 +1,21 @@
+id: Bass_Coast
+name: Bass Coast
+type: province
+country: Australia
+parent: Victoria
+tiles:
+- B570_2382
+- B571_2380
+- B571_2381
+- B571_2382
+- B572_2381
+- B572_2382
+- B572_2383
+- B572_2384
+- B572_2385
+- B572_2386
+- B572_2387
+- B573_2381
+- B573_2382
+- B573_2383
+- B574_2382

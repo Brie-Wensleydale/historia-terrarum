@@ -1,0 +1,13 @@
+id: Ciudad_de_la_Habana
+name: Ciudad de la Habana
+type: province
+country: Cuba
+tiles:
+- B1256_915
+- B1257_913
+- B1257_914
+- B1257_915
+- B1258_912
+- B1258_913
+- B1258_914
+- B1258_915

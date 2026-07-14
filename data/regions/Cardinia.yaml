@@ -1,0 +1,22 @@
+id: Cardinia
+name: Cardinia
+type: province
+country: Australia
+parent: Victoria
+tiles:
+- B575_2381
+- B575_2382
+- B575_2383
+- B576_2381
+- B576_2382
+- B576_2383
+- B576_2384
+- B577_2381
+- B577_2382
+- B577_2383
+- B577_2384
+- B578_2380
+- B578_2381
+- B578_2382
+- B578_2383
+- B578_2384

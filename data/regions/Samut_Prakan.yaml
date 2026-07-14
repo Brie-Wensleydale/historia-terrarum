@@ -1,0 +1,15 @@
+id: Samut_Prakan
+name: Samut Prakan
+type: province
+country: Thailand
+tiles:
+- B1151_2879
+- B1151_2880
+- B1151_2881
+- B1151_2882
+- B1151_2883
+- B1152_2879
+- B1152_2880
+- B1152_2881
+- B1152_2882
+- B1153_2880

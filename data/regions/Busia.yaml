@@ -1,0 +1,12 @@
+id: Busia
+name: Busia
+type: province
+country: Uganda
+tiles:
+- B1003_3622
+- B1004_3622
+- B1004_3623
+- B1005_3621
+- B1005_3622
+- B1006_3621
+- B1006_3622

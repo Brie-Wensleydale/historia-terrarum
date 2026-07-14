@@ -1,0 +1,9 @@
+id: Warrnambool
+name: Warrnambool
+type: province
+country: Australia
+parent: Victoria
+tiles:
+- B573_2415
+- B573_2416
+- B574_2416

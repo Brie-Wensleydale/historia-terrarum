@@ -1,0 +1,18 @@
+id: Aschaffenburg
+name: Aschaffenburg
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1555_3896
+- B1556_3895
+- B1556_3896
+- B1556_3897
+- B1556_3899
+- B1557_3895
+- B1557_3896
+- B1557_3897
+- B1557_3898
+- B1557_3899
+- B1558_3896
+- B1558_3897

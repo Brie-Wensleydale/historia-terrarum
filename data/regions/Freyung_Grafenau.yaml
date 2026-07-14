@@ -1,0 +1,20 @@
+id: Freyung_Grafenau
+name: Freyung-Grafenau
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1543_3847
+- B1543_3848
+- B1543_3849
+- B1543_3850
+- B1543_3851
+- B1543_3852
+- B1544_3847
+- B1544_3848
+- B1544_3849
+- B1544_3850
+- B1544_3851
+- B1544_3852
+- B1545_3849
+- B1545_3851

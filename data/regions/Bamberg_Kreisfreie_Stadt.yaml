@@ -1,0 +1,7 @@
+id: Bamberg_Kreisfreie_Stadt
+name: Bamberg (Kreisfreie Stadt)
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1555_3878

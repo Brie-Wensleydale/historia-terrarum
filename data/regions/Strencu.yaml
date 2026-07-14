@@ -1,0 +1,12 @@
+id: Strencu
+name: Strencu
+type: province
+country: Latvia
+tiles:
+- B1640_3712
+- B1641_3712
+- B1641_3713
+- B1642_3712
+- B1642_3713
+- B1642_3714
+- B1642_3715

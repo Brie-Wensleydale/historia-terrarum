@@ -1,0 +1,15 @@
+id: Harare
+name: Harare
+type: province
+country: Zimbabwe
+tiles:
+- B801_3654
+- B801_3655
+- B802_3653
+- B802_3654
+- B802_3655
+- B802_3656
+- B803_3653
+- B803_3654
+- B803_3655
+- B804_3654

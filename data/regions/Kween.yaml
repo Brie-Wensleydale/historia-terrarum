@@ -1,0 +1,12 @@
+id: Kween
+name: Kween
+type: province
+country: Uganda
+tiles:
+- B1015_3615
+- B1016_3614
+- B1016_3615
+- B1017_3614
+- B1017_3615
+- B1017_3616
+- B1018_3616

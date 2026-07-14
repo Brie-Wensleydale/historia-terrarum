@@ -1,0 +1,22 @@
+id: Leeton
+name: Leeton
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B615_2372
+- B615_2373
+- B615_2374
+- B616_2372
+- B616_2373
+- B616_2374
+- B616_2375
+- B616_2376
+- B616_2377
+- B617_2372
+- B617_2373
+- B617_2374
+- B617_2375
+- B618_2373
+- B618_2374
+- B618_2375

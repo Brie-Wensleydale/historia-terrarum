@@ -1,0 +1,36 @@
+id: Unincorporated_Australian_Capita
+name: Unincorporated Australian Capita
+type: province
+country: Australia
+parent: Australian_Capital_Territory
+tiles:
+- B602_2343
+- B602_2344
+- B603_2343
+- B603_2344
+- B603_2345
+- B604_2343
+- B604_2344
+- B604_2345
+- B604_2346
+- B605_2343
+- B605_2344
+- B605_2345
+- B605_2346
+- B606_2343
+- B606_2344
+- B606_2345
+- B606_2346
+- B607_2342
+- B607_2343
+- B607_2344
+- B607_2345
+- B607_2346
+- B608_2341
+- B608_2342
+- B608_2343
+- B608_2344
+- B608_2345
+- B609_2342
+- B609_2343
+- B609_2344

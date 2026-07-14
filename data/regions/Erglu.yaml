@@ -1,0 +1,14 @@
+id: Erglu
+name: Erglu
+type: province
+country: Latvia
+tiles:
+- B1632_3714
+- B1633_3713
+- B1633_3714
+- B1633_3715
+- B1633_3716
+- B1634_3712
+- B1634_3713
+- B1634_3714
+- B1634_3715

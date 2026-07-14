@@ -1,0 +1,9 @@
+id: Idrija
+name: Idrija
+type: province
+country: Slovenia
+tiles:
+- B1511_3843
+- B1512_3843
+- B1512_3844
+- B1512_3845

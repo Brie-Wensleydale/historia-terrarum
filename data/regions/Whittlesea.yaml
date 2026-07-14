@@ -1,0 +1,11 @@
+id: Whittlesea
+name: Whittlesea
+type: province
+country: Australia
+parent: Victoria
+tiles:
+- B582_2388
+- B583_2387
+- B583_2388
+- B584_2387
+- B584_2388

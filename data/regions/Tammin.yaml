@@ -1,0 +1,20 @@
+id: Tammin
+name: Tammin
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B647_2693
+- B647_2694
+- B647_2695
+- B648_2693
+- B648_2694
+- B648_2695
+- B649_2693
+- B649_2694
+- B649_2695
+- B650_2693
+- B650_2694
+- B650_2695
+- B651_2693
+- B651_2694

@@ -1,0 +1,10 @@
+id: Békéscsaba
+name: Békéscsaba
+type: province
+country: Hungary
+tiles:
+- B1520_3764
+- B1520_3765
+- B1520_3766
+- B1521_3765
+- B1521_3766

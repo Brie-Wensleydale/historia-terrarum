@@ -1,0 +1,9 @@
+id: Aruba
+name: Aruba (Netherlands)
+type: province
+country: Aruba
+tiles:
+- B1139_776
+- B1139_777
+- B1140_777
+- B1140_778

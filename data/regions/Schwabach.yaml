@@ -1,0 +1,7 @@
+id: Schwabach
+name: Schwabach
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1549_3877

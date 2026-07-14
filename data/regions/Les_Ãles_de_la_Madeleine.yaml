@@ -1,0 +1,10 @@
+id: "Les_Ã\x8Eles_de_la_Madeleine"
+name: "Les Ã\x8Eles-de-la-Madeleine"
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1526_688
+- B1527_688
+- B1528_686
+- B1528_687

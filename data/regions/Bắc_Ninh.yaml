@@ -1,0 +1,13 @@
+id: Bắc_Ninh
+name: Bắc Ninh
+type: province
+country: Vietnam
+tiles:
+- B1234_2819
+- B1235_2819
+- B1235_2820
+- B1235_2821
+- B1235_2822
+- B1236_2820
+- B1236_2821
+- B1236_2822

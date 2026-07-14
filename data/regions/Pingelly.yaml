@@ -1,0 +1,24 @@
+id: Pingelly
+name: Pingelly
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B638_2694
+- B638_2695
+- B638_2696
+- B638_2697
+- B638_2698
+- B638_2699
+- B638_2700
+- B639_2694
+- B639_2695
+- B639_2696
+- B639_2697
+- B639_2698
+- B639_2699
+- B639_2700
+- B639_2701
+- B640_2695
+- B640_2696
+- B640_2697

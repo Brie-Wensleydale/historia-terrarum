@@ -1,0 +1,10 @@
+id: Astara
+name: Astara
+type: province
+country: Azerbaijan
+tiles:
+- B1428_3458
+- B1428_3459
+- B1429_3457
+- B1429_3458
+- B1429_3459

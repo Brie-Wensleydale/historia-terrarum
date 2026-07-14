@@ -1,0 +1,21 @@
+id: Garmisch_Partenkirchen
+name: Garmisch-Partenkirchen
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1528_3875
+- B1528_3876
+- B1528_3877
+- B1529_3874
+- B1529_3875
+- B1529_3876
+- B1529_3877
+- B1529_3878
+- B1530_3875
+- B1530_3876
+- B1530_3877
+- B1531_3874
+- B1531_3875
+- B1531_3876
+- B1531_3877

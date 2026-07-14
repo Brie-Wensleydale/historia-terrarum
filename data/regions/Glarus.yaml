@@ -1,0 +1,15 @@
+id: Glarus
+name: Glarus
+type: province
+country: Switzerland
+tiles:
+- B1522_3898
+- B1522_3899
+- B1522_3900
+- B1523_3897
+- B1523_3898
+- B1523_3899
+- B1523_3900
+- B1524_3898
+- B1524_3899
+- B1524_3900

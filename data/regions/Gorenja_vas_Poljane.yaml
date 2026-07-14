@@ -1,0 +1,7 @@
+id: Gorenja_vas_Poljane
+name: Gorenja vas-Poljane
+type: province
+country: Slovenia
+tiles:
+- B1513_3842
+- B1514_3842

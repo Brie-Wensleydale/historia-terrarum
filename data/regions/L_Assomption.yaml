@@ -1,0 +1,10 @@
+id: L_Assomption
+name: L'Assomption
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1509_816
+- B1510_815
+- B1510_816
+- B1511_815

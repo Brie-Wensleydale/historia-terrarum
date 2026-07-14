@@ -1,0 +1,10 @@
+id: Sironko
+name: Sironko
+type: province
+country: Uganda
+tiles:
+- B1013_3617
+- B1013_3618
+- B1013_3619
+- B1014_3618
+- B1014_3619

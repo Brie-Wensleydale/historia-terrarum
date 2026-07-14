@@ -1,0 +1,14 @@
+id: Ben_Arous_Tunis_Sud
+name: Ben Arous (Tunis Sud)
+type: province
+country: Tunisia
+tiles:
+- B1407_3885
+- B1407_3886
+- B1408_3885
+- B1408_3886
+- B1408_3887
+- B1408_3888
+- B1409_3884
+- B1409_3885
+- B1410_3885

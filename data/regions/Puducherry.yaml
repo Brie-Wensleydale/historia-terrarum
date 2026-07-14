@@ -1,0 +1,9 @@
+id: Puducherry
+name: Puducherry
+type: province
+country: India
+tiles:
+- B1122_3113
+- B1133_3113
+- B1134_3164
+- B1135_3163

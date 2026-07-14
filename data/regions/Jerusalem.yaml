@@ -1,0 +1,13 @@
+id: Jerusalem
+name: Jerusalem
+type: province
+country: Israel
+tiles:
+- B1353_3610
+- B1353_3611
+- B1353_3612
+- B1354_3608
+- B1354_3609
+- B1354_3610
+- B1354_3611
+- B1354_3612

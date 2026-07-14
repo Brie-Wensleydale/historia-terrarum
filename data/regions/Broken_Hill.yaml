@@ -1,0 +1,8 @@
+id: Broken_Hill
+name: Broken Hill
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B645_2427
+- B645_2428

@@ -1,0 +1,10 @@
+id: Kalamunda
+name: Kalamunda
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B644_2708
+- B644_2709
+- B645_2709
+- B645_2710

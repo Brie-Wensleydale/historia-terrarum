@@ -1,0 +1,10 @@
+id: Kosovska_Mitrovica
+name: Kosovska Mitrovica
+type: province
+country: Kosovo
+tiles:
+- B1477_3768
+- B1477_3769
+- B1478_3766
+- B1478_3767
+- B1479_3766

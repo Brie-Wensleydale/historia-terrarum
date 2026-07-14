@@ -1,0 +1,12 @@
+id: Podujevo
+name: Podujevo
+type: province
+country: Kosovo
+tiles:
+- B1477_3762
+- B1477_3763
+- B1477_3764
+- B1477_3765
+- B1478_3764
+- B1478_3765
+- B1479_3765

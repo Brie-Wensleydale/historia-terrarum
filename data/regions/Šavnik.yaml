@@ -1,0 +1,13 @@
+id: Šavnik
+name: Šavnik
+type: province
+country: Montenegro
+tiles:
+- B1478_3785
+- B1478_3786
+- B1478_3787
+- B1478_3788
+- B1479_3786
+- B1479_3787
+- B1479_3788
+- B1479_3789

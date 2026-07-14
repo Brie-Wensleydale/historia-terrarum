@@ -1,0 +1,8 @@
+id: Kaposvár
+name: Kaposvár
+type: province
+country: Hungary
+tiles:
+- B1516_3801
+- B1516_3802
+- B1517_3802

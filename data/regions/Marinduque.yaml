@@ -1,0 +1,17 @@
+id: Marinduque
+name: Marinduque
+type: province
+country: Philippines
+tiles:
+- B1148_2644
+- B1148_2645
+- B1149_2643
+- B1149_2644
+- B1149_2645
+- B1149_2646
+- B1150_2643
+- B1150_2644
+- B1150_2645
+- B1150_2646
+- B1151_2644
+- B1151_2645

@@ -1,0 +1,11 @@
+id: Krimuldas
+name: Krimuldas
+type: province
+country: Latvia
+tiles:
+- B1637_3723
+- B1637_3724
+- B1637_3725
+- B1638_3723
+- B1638_3724
+- B1638_3725

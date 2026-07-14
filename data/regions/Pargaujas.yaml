@@ -1,0 +1,14 @@
+id: Pargaujas
+name: Pargaujas
+type: province
+country: Latvia
+tiles:
+- B1638_3720
+- B1638_3721
+- B1638_3722
+- B1639_3719
+- B1639_3720
+- B1639_3721
+- B1639_3722
+- B1639_3723
+- B1640_3721

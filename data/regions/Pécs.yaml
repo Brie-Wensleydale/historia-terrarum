@@ -1,0 +1,9 @@
+id: Pécs
+name: Pécs
+type: province
+country: Hungary
+tiles:
+- B1512_3797
+- B1513_3796
+- B1513_3797
+- B1513_3798

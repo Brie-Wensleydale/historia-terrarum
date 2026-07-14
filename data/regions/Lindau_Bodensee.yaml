@@ -1,0 +1,11 @@
+id: Lindau_Bodensee
+name: Lindau (Bodensee)
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1530_3888
+- B1530_3889
+- B1530_3890
+- B1530_3891
+- B1530_3892

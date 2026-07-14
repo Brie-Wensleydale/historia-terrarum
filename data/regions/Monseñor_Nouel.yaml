@@ -1,0 +1,17 @@
+id: Monseñor_Nouel
+name: Monseñor Nouel
+type: province
+country: Dominican Republic
+tiles:
+- B1209_781
+- B1209_782
+- B1210_780
+- B1210_781
+- B1210_782
+- B1210_783
+- B1211_781
+- B1211_782
+- B1211_783
+- B1212_782
+- B1212_783
+- B1213_782

@@ -1,0 +1,12 @@
+id: Budapest
+name: Budapest
+type: province
+country: Hungary
+tiles:
+- B1528_3786
+- B1528_3787
+- B1528_3788
+- B1529_3786
+- B1529_3787
+- B1529_3788
+- B1529_3789

@@ -1,0 +1,7 @@
+id: Mitcham
+name: Mitcham
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B611_2459

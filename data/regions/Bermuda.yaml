@@ -1,0 +1,7 @@
+id: Bermuda
+name: Bermuda (United Kingdom)
+type: province
+country: Bermuda
+tiles:
+- B1359_720
+- B1360_719

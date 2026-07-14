@@ -1,0 +1,12 @@
+id: Mangrove_Cay
+name: Mangrove Cay
+type: province
+country: The Bahamas
+tiles:
+- B1268_864
+- B1268_865
+- B1269_863
+- B1269_864
+- B1269_865
+- B1270_863
+- B1270_864

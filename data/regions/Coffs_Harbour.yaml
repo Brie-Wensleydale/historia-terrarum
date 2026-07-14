@@ -1,0 +1,22 @@
+id: Coffs_Harbour
+name: Coffs Harbour
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B662_2299
+- B663_2299
+- B663_2300
+- B664_2298
+- B664_2299
+- B664_2300
+- B664_2301
+- B665_2298
+- B665_2299
+- B665_2300
+- B665_2301
+- B666_2297
+- B666_2298
+- B666_2299
+- B667_2297
+- B667_2298

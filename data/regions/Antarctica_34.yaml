@@ -1,0 +1,20 @@
+id: Antarctica_34
+name: Antarctica 34
+type: province
+country: Antarctica
+parent: Antarctica
+tiles:
+- B259_1682
+- B259_1683
+- B259_1684
+- B259_1685
+- B260_1682
+- B260_1683
+- B260_1684
+- B260_1685
+- B260_1686
+- B261_1683
+- B261_1684
+- B261_1685
+- B261_1686
+- B262_1685

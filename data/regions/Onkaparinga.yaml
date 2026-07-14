@@ -1,0 +1,13 @@
+id: Onkaparinga
+name: Onkaparinga
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B608_2460
+- B608_2461
+- B609_2459
+- B609_2460
+- B609_2461
+- B610_2459
+- B610_2460

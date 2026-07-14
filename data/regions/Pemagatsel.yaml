@@ -1,0 +1,11 @@
+id: Pemagatsel
+name: Pemagatsel
+type: province
+country: Bhutan
+tiles:
+- B1300_2984
+- B1300_2985
+- B1301_2983
+- B1301_2984
+- B1301_2985
+- B1302_2984

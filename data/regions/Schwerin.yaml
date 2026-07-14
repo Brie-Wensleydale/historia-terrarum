@@ -1,0 +1,8 @@
+id: Schwerin
+name: Schwerin
+type: province
+country: Germany
+parent: Mecklenburg_Vorpommern
+tiles:
+- B1597_3872
+- B1597_3873

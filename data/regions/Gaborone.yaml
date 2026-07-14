@@ -1,0 +1,8 @@
+id: Gaborone
+name: Gaborone
+type: province
+country: Botswana
+tiles:
+- B726_3712
+- B727_3711
+- B727_3712

@@ -1,0 +1,11 @@
+id: Dortmund
+name: Dortmund
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1573_3916
+- B1573_3917
+- B1574_3915
+- B1574_3916
+- B1574_3917

@@ -1,0 +1,15 @@
+id: Peine
+name: Peine
+type: province
+country: Germany
+parent: Niedersachsen
+tiles:
+- B1581_3885
+- B1582_3884
+- B1582_3885
+- B1582_3886
+- B1582_3887
+- B1582_3888
+- B1583_3884
+- B1583_3885
+- B1583_3886

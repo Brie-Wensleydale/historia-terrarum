@@ -1,0 +1,11 @@
+id: Mexico
+name: Mexico
+type: province
+country: Mexico
+tiles:
+- B1249_996
+- B1250_995
+- B1250_996
+- B1251_995
+- B1251_996
+- B1251_997

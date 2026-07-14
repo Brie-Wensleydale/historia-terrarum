@@ -1,0 +1,16 @@
+id: Lodi
+name: Lodi
+type: province
+country: Italy
+parent: Lodi
+tiles:
+- B1502_3892
+- B1503_3891
+- B1503_3892
+- B1503_3893
+- B1503_3894
+- B1504_3893
+- B1504_3894
+- B1504_3895
+- B1505_3894
+- B1505_3895

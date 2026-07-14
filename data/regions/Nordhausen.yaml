@@ -1,0 +1,14 @@
+id: Nordhausen
+name: Nordhausen
+type: province
+country: Germany
+parent: Thüringen
+tiles:
+- B1573_3878
+- B1573_3879
+- B1573_3880
+- B1573_3881
+- B1573_3882
+- B1574_3879
+- B1574_3880
+- B1574_3881

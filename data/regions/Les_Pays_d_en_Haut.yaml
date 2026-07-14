@@ -1,0 +1,18 @@
+id: Les_Pays_d_en_Haut
+name: Les Pays-d'en-Haut
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1510_827
+- B1511_823
+- B1511_824
+- B1511_825
+- B1511_826
+- B1511_827
+- B1512_822
+- B1512_823
+- B1512_825
+- B1512_826
+- B1513_822
+- B1513_823

@@ -1,0 +1,13 @@
+id: Preilu
+name: Preilu
+type: province
+country: Latvia
+tiles:
+- B1625_3701
+- B1625_3702
+- B1625_3703
+- B1626_3702
+- B1626_3703
+- B1627_3704
+- B1628_3703
+- B1628_3704

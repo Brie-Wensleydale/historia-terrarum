@@ -1,0 +1,11 @@
+id: Ennepe_Ruhr_Kreis
+name: Ennepe-Ruhr-Kreis
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1571_3917
+- B1571_3918
+- B1572_3918
+- B1572_3919
+- B1572_3920

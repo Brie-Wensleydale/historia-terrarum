@@ -1,0 +1,11 @@
+id: Pohnpei
+name: Pohnpei
+type: province
+country: Federated States of Micronesia
+tiles:
+- B1076_2241
+- B1076_2242
+- B1077_2241
+- B1077_2242
+- B1078_2241
+- B1078_2242

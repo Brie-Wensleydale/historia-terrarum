@@ -1,0 +1,22 @@
+id: Südwestpfalz
+name: Südwestpfalz
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1546_3912
+- B1546_3914
+- B1547_3913
+- B1547_3914
+- B1547_3915
+- B1547_3916
+- B1548_3912
+- B1548_3913
+- B1548_3914
+- B1548_3915
+- B1548_3916
+- B1548_3917
+- B1549_3914
+- B1549_3915
+- B1549_3916
+- B1549_3917

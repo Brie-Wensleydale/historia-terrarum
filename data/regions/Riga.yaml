@@ -1,0 +1,11 @@
+id: Riga
+name: Riga
+type: province
+country: Latvia
+tiles:
+- B1634_3730
+- B1634_3731
+- B1634_3732
+- B1634_3733
+- B1635_3731
+- B1635_3732

@@ -1,0 +1,25 @@
+id: Donnybrook_Balingup
+name: Donnybrook-Balingup
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B623_2711
+- B624_2711
+- B625_2709
+- B625_2710
+- B625_2711
+- B625_2712
+- B625_2713
+- B626_2709
+- B626_2710
+- B626_2711
+- B626_2712
+- B626_2713
+- B627_2709
+- B627_2710
+- B627_2711
+- B627_2712
+- B627_2713
+- B628_2710
+- B628_2711

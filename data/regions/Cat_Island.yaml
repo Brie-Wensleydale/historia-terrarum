@@ -1,0 +1,16 @@
+id: Cat_Island
+name: Cat Island
+type: province
+country: The Bahamas
+tiles:
+- B1269_837
+- B1269_838
+- B1270_836
+- B1270_837
+- B1271_837
+- B1271_838
+- B1272_838
+- B1273_840
+- B1274_840
+- B1275_840
+- B1275_841

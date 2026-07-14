@@ -1,0 +1,15 @@
+id: Qubadli
+name: Qubadli
+type: province
+country: Azerbaijan
+tiles:
+- B1436_3481
+- B1437_3480
+- B1437_3481
+- B1437_3482
+- B1438_3481
+- B1438_3482
+- B1438_3483
+- B1439_3481
+- B1439_3482
+- B1439_3483

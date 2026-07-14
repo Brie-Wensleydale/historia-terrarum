@@ -1,0 +1,14 @@
+id: Bubanza
+name: Bubanza
+type: province
+country: Burundi
+tiles:
+- B964_3674
+- B965_3672
+- B965_3673
+- B965_3674
+- B966_3672
+- B966_3673
+- B966_3674
+- B967_3672
+- B967_3673

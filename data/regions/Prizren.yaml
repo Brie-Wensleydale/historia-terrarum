@@ -1,0 +1,13 @@
+id: Prizren
+name: Prizren
+type: province
+country: Kosovo
+tiles:
+- B1469_3767
+- B1469_3768
+- B1469_3771
+- B1470_3768
+- B1470_3769
+- B1470_3770
+- B1470_3771
+- B1471_3770

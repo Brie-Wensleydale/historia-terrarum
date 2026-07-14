@@ -1,0 +1,23 @@
+id: Francheville
+name: Francheville
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1515_807
+- B1515_808
+- B1516_806
+- B1516_807
+- B1517_803
+- B1517_804
+- B1517_805
+- B1517_806
+- B1517_808
+- B1518_802
+- B1518_803
+- B1518_804
+- B1518_805
+- B1519_802
+- B1519_803
+- B1519_804
+- B1519_806

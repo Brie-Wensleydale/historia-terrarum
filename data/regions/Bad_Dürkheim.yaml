@@ -1,0 +1,16 @@
+id: Bad_Dürkheim
+name: Bad Dürkheim
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1549_3912
+- B1550_3908
+- B1550_3909
+- B1550_3910
+- B1550_3911
+- B1551_3908
+- B1551_3909
+- B1551_3910
+- B1552_3908
+- B1552_3909

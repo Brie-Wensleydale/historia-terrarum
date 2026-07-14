@@ -1,0 +1,15 @@
+id: Bijelo_Polje
+name: Bijelo Polje
+type: province
+country: Montenegro
+tiles:
+- B1478_3780
+- B1479_3777
+- B1479_3778
+- B1479_3779
+- B1479_3780
+- B1479_3781
+- B1479_3782
+- B1480_3780
+- B1480_3781
+- B1480_3782

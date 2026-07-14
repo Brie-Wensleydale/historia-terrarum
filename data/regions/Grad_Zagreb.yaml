@@ -1,0 +1,15 @@
+id: Grad_Zagreb
+name: Grad Zagreb
+type: province
+country: Croatia
+tiles:
+- B1509_3822
+- B1509_3823
+- B1510_3820
+- B1510_3821
+- B1510_3822
+- B1510_3823
+- B1511_3820
+- B1511_3821
+- B1511_3822
+- B1511_3823

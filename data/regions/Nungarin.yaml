@@ -1,0 +1,21 @@
+id: Nungarin
+name: Nungarin
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B652_2688
+- B652_2689
+- B653_2686
+- B653_2687
+- B653_2688
+- B654_2685
+- B654_2686
+- B654_2687
+- B654_2688
+- B655_2683
+- B655_2684
+- B655_2685
+- B655_2686
+- B655_2687
+- B656_2683

@@ -1,0 +1,7 @@
+id: Cherbourg
+name: Cherbourg
+type: province
+country: Australia
+parent: Queensland
+tiles:
+- B708_2311

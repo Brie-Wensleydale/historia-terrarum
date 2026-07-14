@@ -1,0 +1,12 @@
+id: Kalungu
+name: Kalungu
+type: province
+country: Uganda
+tiles:
+- B1000_3646
+- B1000_3647
+- B1001_3647
+- B998_3645
+- B998_3646
+- B999_3645
+- B999_3646

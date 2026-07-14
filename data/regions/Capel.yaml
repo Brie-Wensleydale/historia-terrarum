@@ -1,0 +1,13 @@
+id: Capel
+name: Capel
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B627_2714
+- B627_2715
+- B627_2716
+- B628_2714
+- B628_2715
+- B629_2714
+- B629_2715

@@ -1,0 +1,8 @@
+id: Almaty_City
+name: Almaty City
+type: province
+country: Kazakhstan
+tiles:
+- B1482_3144
+- B1482_3145
+- B1483_3144

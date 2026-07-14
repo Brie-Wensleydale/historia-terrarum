@@ -1,0 +1,7 @@
+id: Delmenhorst
+name: Delmenhorst
+type: province
+country: Germany
+parent: Niedersachsen
+tiles:
+- B1590_3904

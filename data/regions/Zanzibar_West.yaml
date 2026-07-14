@@ -1,0 +1,9 @@
+id: Zanzibar_West
+name: Zanzibar West
+type: province
+country: United Republic of Tanzania
+tiles:
+- B931_3563
+- B931_3564
+- B932_3564
+- B933_3564

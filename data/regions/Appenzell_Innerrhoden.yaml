@@ -1,0 +1,7 @@
+id: Appenzell_Innerrhoden
+name: Appenzell Innerrhoden
+type: province
+country: Switzerland
+tiles:
+- B1526_3895
+- B1527_3895

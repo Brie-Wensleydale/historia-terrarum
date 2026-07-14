@@ -1,0 +1,18 @@
+id: Deggendorf
+name: Deggendorf
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1542_3854
+- B1542_3855
+- B1542_3856
+- B1543_3853
+- B1543_3854
+- B1543_3855
+- B1543_3856
+- B1543_3857
+- B1544_3853
+- B1544_3854
+- B1544_3855
+- B1544_3856

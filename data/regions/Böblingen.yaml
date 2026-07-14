@@ -1,0 +1,16 @@
+id: Böblingen
+name: Böblingen
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1541_3899
+- B1541_3900
+- B1541_3901
+- B1541_3902
+- B1542_3899
+- B1542_3900
+- B1542_3901
+- B1543_3899
+- B1543_3900
+- B1543_3901

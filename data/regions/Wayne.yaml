@@ -1,0 +1,7 @@
+id: Wayne
+name: Wayne
+type: province
+country: Canada
+parent: Ontario
+tiles:
+- B1472_920

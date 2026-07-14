@@ -1,0 +1,10 @@
+id: Zilupes
+name: Zilupes
+type: province
+country: Latvia
+tiles:
+- B1626_3687
+- B1627_3687
+- B1627_3688
+- B1627_3689
+- B1628_3687

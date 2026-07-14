@@ -1,0 +1,8 @@
+id: UNDOF
+name: UNDOF
+type: province
+country: Syria
+tiles:
+- B1368_3601
+- B1369_3601
+- B1370_3601

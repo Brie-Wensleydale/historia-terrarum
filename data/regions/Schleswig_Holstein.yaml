@@ -1,0 +1,9 @@
+id: Schleswig_Holstein
+name: Schleswig-Holstein
+type: province
+country: Germany
+tiles:
+- B1601_3878
+- B1610_3889
+- B1611_3904
+- B1613_3906

@@ -1,0 +1,21 @@
+id: Bridgetown_Greenbushes
+name: Bridgetown-Greenbushes
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B621_2706
+- B621_2707
+- B621_2708
+- B621_2709
+- B621_2710
+- B622_2707
+- B622_2708
+- B622_2709
+- B622_2710
+- B623_2707
+- B623_2708
+- B623_2709
+- B623_2710
+- B624_2709
+- B624_2710

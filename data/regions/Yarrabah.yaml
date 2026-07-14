@@ -1,0 +1,7 @@
+id: Yarrabah
+name: Yarrabah
+type: province
+country: Australia
+parent: Queensland
+tiles:
+- B810_2378

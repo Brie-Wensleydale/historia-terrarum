@@ -1,0 +1,20 @@
+id: Düren
+name: Düren
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1564_3927
+- B1564_3928
+- B1564_3929
+- B1565_3926
+- B1565_3927
+- B1565_3928
+- B1565_3929
+- B1566_3927
+- B1566_3928
+- B1566_3929
+- B1567_3928
+- B1567_3929
+- B1567_3930
+- B1568_3928

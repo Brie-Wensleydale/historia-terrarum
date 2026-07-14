@@ -1,0 +1,11 @@
+id: Beverinas
+name: Beverinas
+type: province
+country: Latvia
+tiles:
+- B1640_3714
+- B1640_3715
+- B1640_3716
+- B1640_3717
+- B1641_3714
+- B1641_3715

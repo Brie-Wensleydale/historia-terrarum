@@ -1,0 +1,7 @@
+id: Ludwigshafen_am_Rhein
+name: Ludwigshafen am Rhein
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1551_3906

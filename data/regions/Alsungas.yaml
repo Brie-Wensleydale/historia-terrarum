@@ -1,0 +1,9 @@
+id: Alsungas
+name: Alsungas
+type: province
+country: Latvia
+tiles:
+- B1634_3759
+- B1634_3760
+- B1634_3761
+- B1635_3760

@@ -1,0 +1,11 @@
+id: Nicas
+name: Nicas
+type: province
+country: Latvia
+tiles:
+- B1626_3765
+- B1627_3765
+- B1627_3766
+- B1628_3764
+- B1628_3765
+- B1628_3766

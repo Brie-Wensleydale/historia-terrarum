@@ -1,0 +1,14 @@
+id: Dakar
+name: Dakar
+type: province
+country: Senegal
+tiles:
+- B1164_190
+- B1164_191
+- B1164_192
+- B1164_193
+- B1164_194
+- B1165_191
+- B1165_192
+- B1165_193
+- B1166_191

@@ -1,0 +1,11 @@
+id: Roussillon
+name: Roussillon
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1505_815
+- B1505_816
+- B1505_817
+- B1505_818
+- B1505_819

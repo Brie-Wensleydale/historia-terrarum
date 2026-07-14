@@ -1,0 +1,18 @@
+id: South_Lebanon
+name: South Lebanon
+type: province
+country: Lebanon
+tiles:
+- B1369_3608
+- B1369_3609
+- B1370_3607
+- B1370_3608
+- B1371_3607
+- B1371_3608
+- B1372_3604
+- B1372_3607
+- B1373_3604
+- B1373_3606
+- B1373_3607
+- B1374_3604
+- B1374_3606

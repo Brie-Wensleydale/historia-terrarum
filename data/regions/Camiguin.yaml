@@ -1,0 +1,9 @@
+id: Camiguin
+name: Camiguin
+type: province
+country: Philippines
+tiles:
+- B1102_2613
+- B1102_2614
+- B1103_2613
+- B1103_2614

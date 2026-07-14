@@ -1,0 +1,11 @@
+id: Nyíregyháza
+name: Nyíregyháza
+type: province
+country: Hungary
+tiles:
+- B1533_3757
+- B1533_3758
+- B1533_3759
+- B1534_3757
+- B1534_3758
+- B1534_3759

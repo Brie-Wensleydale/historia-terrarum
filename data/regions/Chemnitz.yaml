@@ -1,0 +1,10 @@
+id: Chemnitz
+name: Chemnitz
+type: province
+country: Germany
+parent: Sachsen
+tiles:
+- B1565_3856
+- B1566_3855
+- B1566_3856
+- B1566_3857

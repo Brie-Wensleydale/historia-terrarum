@@ -1,0 +1,9 @@
+id: Zug
+name: Zug
+type: province
+country: Switzerland
+tiles:
+- B1525_3903
+- B1525_3904
+- B1525_3905
+- B1525_3906

@@ -1,0 +1,10 @@
+id: Seine_Saint_Denis
+name: Seine-Saint-Denis
+type: province
+country: France
+tiles:
+- B1544_3971
+- B1544_3972
+- B1545_3971
+- B1545_3972
+- B1545_3973

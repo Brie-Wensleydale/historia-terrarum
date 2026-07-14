@@ -1,0 +1,9 @@
+id: Strumitsa
+name: Strumitsa
+type: province
+country: North Macedonia
+tiles:
+- B1460_3748
+- B1461_3747
+- B1461_3748
+- B1461_3749

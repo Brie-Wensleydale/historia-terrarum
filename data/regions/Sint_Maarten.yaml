@@ -1,0 +1,7 @@
+id: Sint_Maarten
+name: Sint Maarten (Netherlands)
+type: province
+country: Sint Maarten
+tiles:
+- B1201_700
+- B1201_701

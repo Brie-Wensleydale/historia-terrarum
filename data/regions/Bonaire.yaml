@@ -1,0 +1,11 @@
+id: Bonaire
+name: Bonaire
+type: province
+country: Netherlands
+tiles:
+- B1135_758
+- B1136_757
+- B1136_758
+- B1136_759
+- B1137_758
+- B1137_759

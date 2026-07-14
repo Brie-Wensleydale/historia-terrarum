@@ -1,0 +1,16 @@
+id: La_Nouvelle_Beauce
+name: La Nouvelle-Beauce
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1517_786
+- B1517_787
+- B1517_788
+- B1517_789
+- B1517_790
+- B1518_787
+- B1518_788
+- B1518_789
+- B1518_790
+- B1519_789

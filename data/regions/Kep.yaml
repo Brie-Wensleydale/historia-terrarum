@@ -1,0 +1,8 @@
+id: Kep
+name: Kep
+type: province
+country: Cambodia
+tiles:
+- B1117_2840
+- B1117_2841
+- B1118_2840

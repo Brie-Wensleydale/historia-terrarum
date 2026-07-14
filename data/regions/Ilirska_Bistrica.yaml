@@ -1,0 +1,12 @@
+id: Ilirska_Bistrica
+name: Ilirska Bistrica
+type: province
+country: Slovenia
+tiles:
+- B1507_3839
+- B1507_3840
+- B1507_3841
+- B1507_3842
+- B1508_3840
+- B1508_3841
+- B1508_3842

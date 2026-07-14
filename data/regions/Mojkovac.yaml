@@ -1,0 +1,11 @@
+id: Mojkovac
+name: Mojkovac
+type: province
+country: Montenegro
+tiles:
+- B1478_3781
+- B1478_3782
+- B1478_3783
+- B1478_3784
+- B1479_3783
+- B1479_3784

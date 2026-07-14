@@ -1,0 +1,8 @@
+id: Nagykanizsa
+name: Nagykanizsa
+type: province
+country: Hungary
+tiles:
+- B1517_3810
+- B1517_3811
+- B1518_3811

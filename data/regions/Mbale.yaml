@@ -1,0 +1,10 @@
+id: Mbale
+name: Mbale
+type: province
+country: Uganda
+tiles:
+- B1010_3620
+- B1011_3620
+- B1012_3619
+- B1012_3620
+- B1013_3620

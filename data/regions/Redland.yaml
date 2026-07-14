@@ -1,0 +1,17 @@
+id: Redland
+name: Redland
+type: province
+country: Australia
+parent: Queensland
+tiles:
+- B693_2295
+- B693_2296
+- B693_2297
+- B694_2294
+- B694_2295
+- B694_2296
+- B694_2297
+- B695_2294
+- B695_2295
+- B695_2297
+- B696_2294

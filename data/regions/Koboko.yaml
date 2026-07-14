@@ -1,0 +1,11 @@
+id: Koboko
+name: Koboko
+type: province
+country: Uganda
+tiles:
+- B1038_3655
+- B1039_3655
+- B1039_3656
+- B1040_3655
+- B1040_3656
+- B1041_3655

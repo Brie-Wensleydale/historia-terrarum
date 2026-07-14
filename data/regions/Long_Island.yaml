@@ -1,0 +1,19 @@
+id: Long_Island
+name: Long Island
+type: province
+country: The Bahamas
+tiles:
+- B1255_831
+- B1256_831
+- B1256_832
+- B1257_832
+- B1257_833
+- B1258_833
+- B1258_834
+- B1259_834
+- B1261_835
+- B1262_835
+- B1262_836
+- B1263_836
+- B1263_837
+- B1264_836

@@ -1,0 +1,10 @@
+id: Wolfsburg
+name: Wolfsburg
+type: province
+country: Germany
+parent: Niedersachsen
+tiles:
+- B1583_3879
+- B1583_3880
+- B1584_3879
+- B1584_3880

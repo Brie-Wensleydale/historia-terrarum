@@ -1,0 +1,23 @@
+id: Neckar_Odenwald_Kreis
+name: Neckar-Odenwald-Kreis
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1549_3897
+- B1549_3898
+- B1549_3899
+- B1550_3894
+- B1550_3895
+- B1550_3896
+- B1550_3897
+- B1550_3898
+- B1550_3899
+- B1551_3894
+- B1551_3895
+- B1551_3896
+- B1551_3897
+- B1551_3898
+- B1552_3894
+- B1552_3895
+- B1552_3896

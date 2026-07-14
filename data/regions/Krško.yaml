@@ -1,0 +1,10 @@
+id: Krško
+name: Krško
+type: province
+country: Slovenia
+tiles:
+- B1510_3828
+- B1511_3827
+- B1511_3828
+- B1512_3827
+- B1512_3828

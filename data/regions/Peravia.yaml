@@ -1,0 +1,16 @@
+id: Peravia
+name: Peravia
+type: province
+country: Dominican Republic
+tiles:
+- B1203_780
+- B1203_781
+- B1203_782
+- B1203_783
+- B1204_780
+- B1204_781
+- B1204_782
+- B1204_783
+- B1205_781
+- B1205_782
+- B1206_781

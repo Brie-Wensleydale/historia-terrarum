@@ -1,0 +1,19 @@
+id: Le_Haut_Richelieu
+name: Le Haut-Richelieu
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1502_812
+- B1502_813
+- B1502_814
+- B1503_812
+- B1503_813
+- B1503_814
+- B1504_812
+- B1504_813
+- B1504_814
+- B1505_811
+- B1505_812
+- B1505_813
+- B1505_814

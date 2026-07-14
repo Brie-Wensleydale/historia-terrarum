@@ -1,0 +1,14 @@
+id: Altötting
+name: Altötting
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1535_3859
+- B1536_3858
+- B1536_3859
+- B1536_3860
+- B1537_3857
+- B1537_3858
+- B1537_3859
+- B1538_3859

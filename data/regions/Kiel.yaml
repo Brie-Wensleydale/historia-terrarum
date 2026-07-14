@@ -1,0 +1,10 @@
+id: Kiel
+name: Kiel
+type: province
+country: Germany
+parent: Schleswig_Holstein
+tiles:
+- B1604_3887
+- B1605_3887
+- B1605_3888
+- B1606_3886

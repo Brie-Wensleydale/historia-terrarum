@@ -1,0 +1,12 @@
+id: Porto_Novo
+name: Porto Novo
+type: province
+country: Cabo Verde
+tiles:
+- B1189_280
+- B1189_281
+- B1190_278
+- B1190_279
+- B1190_280
+- B1190_281
+- B1191_280

@@ -1,0 +1,14 @@
+id: Posavina
+name: Posavina
+type: province
+country: Bosnia and Herzegovina
+tiles:
+- B1500_3791
+- B1501_3791
+- B1501_3792
+- B1501_3793
+- B1501_3796
+- B1502_3793
+- B1502_3795
+- B1502_3796
+- B1502_3797

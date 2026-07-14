@@ -1,0 +1,22 @@
+id: Wetteraukreis
+name: Wetteraukreis
+type: province
+country: Germany
+parent: Hessen
+tiles:
+- B1559_3902
+- B1560_3898
+- B1560_3899
+- B1560_3900
+- B1560_3901
+- B1560_3902
+- B1560_3903
+- B1561_3897
+- B1561_3898
+- B1561_3899
+- B1561_3900
+- B1561_3901
+- B1561_3902
+- B1561_3903
+- B1561_3904
+- B1562_3899

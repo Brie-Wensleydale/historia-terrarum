@@ -1,0 +1,12 @@
+id: Saint_Pierre_and_Miquelon
+name: Saint Pierre and Miquelon (France)
+type: province
+country: Saint Pierre and Miquelon
+tiles:
+- B1521_624
+- B1521_626
+- B1522_625
+- B1523_625
+- B1523_626
+- B1524_625
+- B1524_626

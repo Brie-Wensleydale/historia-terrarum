@@ -1,0 +1,22 @@
+id: Kentish
+name: Kentish
+type: province
+country: Australia
+parent: Tasmania
+tiles:
+- B538_2376
+- B538_2378
+- B539_2372
+- B539_2373
+- B539_2374
+- B539_2375
+- B539_2376
+- B539_2377
+- B539_2378
+- B540_2373
+- B540_2374
+- B540_2375
+- B540_2376
+- B541_2373
+- B541_2374
+- B541_2375

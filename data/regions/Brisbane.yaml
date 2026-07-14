@@ -1,0 +1,23 @@
+id: Brisbane
+name: Brisbane
+type: province
+country: Australia
+parent: Queensland
+tiles:
+- B693_2299
+- B694_2298
+- B694_2299
+- B694_2300
+- B694_2301
+- B694_2302
+- B695_2298
+- B695_2299
+- B695_2300
+- B695_2301
+- B695_2302
+- B696_2298
+- B696_2299
+- B697_2295
+- B697_2299
+- B698_2295
+- B699_2295

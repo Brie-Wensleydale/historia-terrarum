@@ -1,0 +1,13 @@
+id: Guam
+name: Guam (United States of America)
+type: province
+country: Guam
+tiles:
+- B1148_2392
+- B1149_2391
+- B1149_2392
+- B1150_2391
+- B1150_2392
+- B1151_2390
+- B1152_2389
+- B1152_2390

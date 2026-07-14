@@ -1,0 +1,16 @@
+id: Cochem_Zell
+name: Cochem-Zell
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1557_3918
+- B1557_3919
+- B1557_3920
+- B1558_3919
+- B1558_3920
+- B1558_3921
+- B1559_3919
+- B1559_3920
+- B1559_3921
+- B1559_3922

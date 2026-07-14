@@ -1,0 +1,11 @@
+id: Sveti_Nikole
+name: Sveti Nikole
+type: province
+country: North Macedonia
+tiles:
+- B1465_3755
+- B1466_3755
+- B1466_3756
+- B1467_3755
+- B1467_3756
+- B1467_3757

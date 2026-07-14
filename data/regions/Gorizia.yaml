@@ -1,0 +1,12 @@
+id: Gorizia
+name: Gorizia
+type: province
+country: Italy
+parent: Gorizia
+tiles:
+- B1509_3850
+- B1509_3852
+- B1510_3849
+- B1510_3850
+- B1511_3849
+- B1511_3850

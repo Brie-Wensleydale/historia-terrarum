@@ -1,0 +1,19 @@
+id: Saale_Holzland_Kreis
+name: Saale-Holzland-Kreis
+type: province
+country: Germany
+parent: Sachsen_Anhalt
+tiles:
+- B1565_3871
+- B1566_3868
+- B1566_3869
+- B1566_3870
+- B1566_3871
+- B1566_3872
+- B1567_3867
+- B1567_3868
+- B1567_3869
+- B1568_3867
+- B1568_3868
+- B1568_3869
+- B1568_3870

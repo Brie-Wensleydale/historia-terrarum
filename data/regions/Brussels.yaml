@@ -1,0 +1,7 @@
+id: Brussels
+name: Brussels
+type: province
+country: Belgium
+tiles:
+- B1566_3950
+- B1566_3951

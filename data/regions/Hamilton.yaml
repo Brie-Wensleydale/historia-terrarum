@@ -1,0 +1,21 @@
+id: Hamilton
+name: Hamilton
+type: province
+country: Canada
+parent: Ontario
+tiles:
+- B1480_886
+- B1480_887
+- B1481_885
+- B1481_886
+- B1481_887
+- B1481_888
+- B1481_889
+- B1481_890
+- B1482_886
+- B1482_888
+- B1482_889
+- B1482_890
+- B1483_888
+- B1483_889
+- B1483_890

@@ -1,0 +1,7 @@
+id: Moravske_Toplice
+name: Moravske Toplice
+type: province
+country: Slovenia
+tiles:
+- B1520_3818
+- B1520_3819

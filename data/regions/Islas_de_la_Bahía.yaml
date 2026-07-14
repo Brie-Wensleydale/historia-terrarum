@@ -1,0 +1,10 @@
+id: Islas_de_la_Bahía
+name: Islas de la Bahía
+type: province
+country: Honduras
+tiles:
+- B1179_966
+- B1180_965
+- B1182_961
+- B1183_959
+- B1183_960

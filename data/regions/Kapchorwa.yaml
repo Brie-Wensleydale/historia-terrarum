@@ -1,0 +1,12 @@
+id: Kapchorwa
+name: Kapchorwa
+type: province
+country: Uganda
+tiles:
+- B1013_3616
+- B1014_3616
+- B1015_3616
+- B1015_3617
+- B1015_3618
+- B1016_3616
+- B1016_3617

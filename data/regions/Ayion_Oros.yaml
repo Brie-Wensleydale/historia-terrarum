@@ -1,0 +1,15 @@
+id: Ayion_Oros
+name: Ayion Oros
+type: province
+country: Greece
+tiles:
+- B1447_3729
+- B1447_3730
+- B1448_3729
+- B1448_3730
+- B1448_3731
+- B1449_3730
+- B1449_3731
+- B1449_3732
+- B1449_3733
+- B1450_3732

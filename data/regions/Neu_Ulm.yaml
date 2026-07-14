@@ -1,0 +1,14 @@
+id: Neu_Ulm
+name: Neu-Ulm
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1536_3887
+- B1537_3886
+- B1537_3887
+- B1538_3886
+- B1538_3887
+- B1538_3888
+- B1539_3887
+- B1539_3888

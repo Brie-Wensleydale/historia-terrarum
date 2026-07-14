@@ -1,0 +1,7 @@
+id: Hobsons_Bay
+name: Hobsons Bay
+type: province
+country: Australia
+parent: Victoria
+tiles:
+- B579_2390

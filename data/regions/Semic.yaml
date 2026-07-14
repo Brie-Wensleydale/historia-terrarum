@@ -1,0 +1,8 @@
+id: Semic
+name: Semic
+type: province
+country: Slovenia
+tiles:
+- B1508_3830
+- B1508_3831
+- B1508_3832

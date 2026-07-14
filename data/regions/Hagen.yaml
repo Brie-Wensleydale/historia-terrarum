@@ -1,0 +1,9 @@
+id: Hagen
+name: Hagen
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1571_3916
+- B1572_3916
+- B1572_3917

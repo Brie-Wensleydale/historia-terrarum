@@ -1,0 +1,14 @@
+id: Copper_Coast
+name: Copper Coast
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B622_2468
+- B622_2469
+- B622_2470
+- B622_2471
+- B623_2468
+- B623_2469
+- B623_2470
+- B624_2470

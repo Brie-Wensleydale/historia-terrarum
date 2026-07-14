@@ -1,0 +1,7 @@
+id: Podvelka
+name: Podvelka
+type: province
+country: Slovenia
+tiles:
+- B1519_3828
+- B1519_3829

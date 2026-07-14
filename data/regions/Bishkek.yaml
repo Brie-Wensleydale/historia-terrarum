@@ -1,0 +1,6 @@
+id: Bishkek
+name: Bishkek
+type: province
+country: Kyrgyzstan
+tiles:
+- B1477_3171

@@ -1,0 +1,7 @@
+id: Coober_Pedy
+name: Coober Pedy
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B678_2502

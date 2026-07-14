@@ -1,0 +1,17 @@
+id: Kaiserslautern
+name: Kaiserslautern
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1549_3913
+- B1550_3912
+- B1550_3915
+- B1550_3916
+- B1550_3917
+- B1551_3912
+- B1551_3913
+- B1551_3914
+- B1551_3915
+- B1551_3916
+- B1552_3914

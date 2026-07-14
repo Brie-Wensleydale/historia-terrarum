@@ -1,0 +1,10 @@
+id: Masaya
+name: Masaya
+type: province
+country: Nicaragua
+tiles:
+- B1133_956
+- B1133_957
+- B1134_956
+- B1135_955
+- B1135_956

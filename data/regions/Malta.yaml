@@ -1,0 +1,14 @@
+id: Malta
+name: Malta
+type: province
+country: Malta
+tiles:
+- B1399_3838
+- B1399_3839
+- B1399_3840
+- B1400_3838
+- B1400_3839
+- B1400_3840
+- B1401_3841
+- B1401_3842
+- B1402_3841

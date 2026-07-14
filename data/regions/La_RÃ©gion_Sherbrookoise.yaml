@@ -1,0 +1,13 @@
+id: La_RÃ©gion_Sherbrookoise
+name: La RÃ©gion-Sherbrookoise
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1504_798
+- B1505_798
+- B1505_799
+- B1505_800
+- B1505_801
+- B1506_798
+- B1506_799

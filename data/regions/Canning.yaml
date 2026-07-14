@@ -1,0 +1,7 @@
+id: Canning
+name: Canning
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B644_2712

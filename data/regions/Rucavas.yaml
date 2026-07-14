@@ -1,0 +1,13 @@
+id: Rucavas
+name: Rucavas
+type: province
+country: Latvia
+tiles:
+- B1625_3764
+- B1625_3765
+- B1625_3766
+- B1626_3762
+- B1626_3763
+- B1626_3764
+- B1626_3766
+- B1627_3764

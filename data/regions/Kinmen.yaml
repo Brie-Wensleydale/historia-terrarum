@@ -1,0 +1,9 @@
+id: Kinmen
+name: Kinmen
+type: province
+country: Taiwan
+tiles:
+- B1272_2684
+- B1272_2685
+- B1273_2683
+- B1273_2684

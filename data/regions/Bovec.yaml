@@ -1,0 +1,10 @@
+id: Bovec
+name: Bovec
+type: province
+country: Slovenia
+tiles:
+- B1516_3847
+- B1516_3848
+- B1516_3849
+- B1516_3850
+- B1517_3848

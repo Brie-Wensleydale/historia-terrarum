@@ -1,0 +1,11 @@
+id: Vainodes
+name: Vainodes
+type: province
+country: Latvia
+tiles:
+- B1627_3758
+- B1628_3756
+- B1628_3757
+- B1628_3758
+- B1629_3757
+- B1629_3758

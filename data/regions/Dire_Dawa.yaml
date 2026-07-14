@@ -1,0 +1,16 @@
+id: Dire_Dawa
+name: Dire Dawa
+type: province
+country: Ethiopia
+tiles:
+- B1106_3532
+- B1106_3534
+- B1106_3535
+- B1107_3532
+- B1107_3533
+- B1107_3534
+- B1107_3535
+- B1108_3530
+- B1108_3531
+- B1108_3534
+- B1109_3530

@@ -1,0 +1,21 @@
+id: Coomalie
+name: Coomalie
+type: province
+country: Australia
+parent: Northern_Territory
+tiles:
+- B854_2542
+- B854_2543
+- B854_2544
+- B854_2545
+- B855_2542
+- B855_2543
+- B855_2544
+- B856_2542
+- B856_2543
+- B856_2544
+- B856_2545
+- B857_2542
+- B857_2543
+- B857_2544
+- B857_2545

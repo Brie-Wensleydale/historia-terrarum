@@ -1,0 +1,15 @@
+id: Rimini
+name: Rimini
+type: province
+country: Italy
+parent: Rimini
+tiles:
+- B1488_3859
+- B1489_3859
+- B1489_3860
+- B1490_3858
+- B1490_3859
+- B1490_3860
+- B1490_3861
+- B1491_3860
+- B1491_3861

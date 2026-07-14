@@ -1,0 +1,16 @@
+id: Serpentine_Jarrahdale
+name: Serpentine-Jarrahdale
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B640_2708
+- B640_2709
+- B640_2710
+- B640_2711
+- B640_2712
+- B641_2709
+- B641_2710
+- B641_2711
+- B642_2710
+- B642_2711

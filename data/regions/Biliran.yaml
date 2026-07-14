@@ -1,0 +1,13 @@
+id: Biliran
+name: Biliran
+type: province
+country: Philippines
+tiles:
+- B1128_2616
+- B1129_2615
+- B1129_2616
+- B1129_2617
+- B1130_2615
+- B1130_2616
+- B1130_2617
+- B1130_2618

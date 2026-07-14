@@ -1,0 +1,13 @@
+id: Kole
+name: Kole
+type: province
+country: Uganda
+tiles:
+- B1024_3635
+- B1025_3635
+- B1025_3636
+- B1025_3637
+- B1026_3636
+- B1026_3637
+- B1027_3636
+- B1027_3637

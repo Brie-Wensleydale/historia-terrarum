@@ -1,0 +1,16 @@
+id: Tübingen
+name: Tübingen
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1539_3898
+- B1539_3899
+- B1539_3900
+- B1539_3901
+- B1539_3902
+- B1540_3898
+- B1540_3899
+- B1540_3900
+- B1540_3901
+- B1540_3902

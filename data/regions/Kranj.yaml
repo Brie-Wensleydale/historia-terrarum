@@ -1,0 +1,8 @@
+id: Kranj
+name: Kranj
+type: province
+country: Slovenia
+tiles:
+- B1515_3840
+- B1515_3841
+- B1516_3840

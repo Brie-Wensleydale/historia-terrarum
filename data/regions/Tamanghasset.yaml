@@ -1,0 +1,11 @@
+id: Tamanghasset
+name: Tamanghasset
+type: province
+country: Algeria
+tiles:
+- B1310_3928
+- B1311_3927
+- B1311_3928
+- B1312_3927
+- B1312_3928
+- B1313_3928

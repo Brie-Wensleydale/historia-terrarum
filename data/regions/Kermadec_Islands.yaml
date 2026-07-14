@@ -1,0 +1,7 @@
+id: Kermadec_Islands
+name: Kermadec Islands
+type: province
+country: New Zealand
+tiles:
+- B675_1976
+- B675_1977

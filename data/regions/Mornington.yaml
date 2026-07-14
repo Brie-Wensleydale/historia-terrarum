@@ -1,0 +1,22 @@
+id: Mornington
+name: Mornington
+type: province
+country: Australia
+parent: Queensland
+tiles:
+- B810_2450
+- B811_2449
+- B813_2454
+- B815_2451
+- B815_2452
+- B815_2453
+- B816_2450
+- B816_2451
+- B816_2452
+- B817_2448
+- B817_2449
+- B817_2450
+- B817_2451
+- B817_2452
+- B818_2448
+- B818_2449

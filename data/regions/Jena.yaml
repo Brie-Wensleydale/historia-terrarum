@@ -1,0 +1,8 @@
+id: Jena
+name: Jena
+type: province
+country: Germany
+parent: Thüringen
+tiles:
+- B1567_3870
+- B1567_3871

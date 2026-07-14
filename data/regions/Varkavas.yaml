@@ -1,0 +1,11 @@
+id: Varkavas
+name: Varkavas
+type: province
+country: Latvia
+tiles:
+- B1625_3704
+- B1625_3705
+- B1626_3704
+- B1626_3705
+- B1626_3706
+- B1626_3707

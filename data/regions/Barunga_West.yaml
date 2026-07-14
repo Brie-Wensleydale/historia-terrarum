@@ -1,0 +1,25 @@
+id: Barunga_West
+name: Barunga West
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B622_2465
+- B622_2466
+- B622_2467
+- B623_2466
+- B623_2467
+- B624_2466
+- B624_2467
+- B624_2468
+- B624_2469
+- B625_2466
+- B625_2467
+- B625_2468
+- B625_2469
+- B626_2466
+- B626_2467
+- B626_2468
+- B627_2466
+- B627_2467
+- B628_2466

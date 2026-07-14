@@ -1,0 +1,8 @@
+id: Gradsko
+name: Gradsko
+type: province
+country: North Macedonia
+tiles:
+- B1463_3755
+- B1463_3756
+- B1463_3757

@@ -1,0 +1,13 @@
+id: Ohrid
+name: Ohrid
+type: province
+country: North Macedonia
+tiles:
+- B1456_3769
+- B1457_3768
+- B1457_3769
+- B1458_3767
+- B1458_3768
+- B1458_3769
+- B1459_3767
+- B1459_3768

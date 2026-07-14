@@ -1,0 +1,23 @@
+id: Northern_Territory
+name: Northern Territory
+type: province
+country: Australia
+tiles:
+- B821_2471
+- B832_2564
+- B845_2489
+- B848_2489
+- B851_2489
+- B855_2554
+- B860_2549
+- B861_2546
+- B863_2488
+- B863_2548
+- B865_2499
+- B869_2510
+- B869_2512
+- B873_2516
+- B875_2482
+- B876_2531
+- B876_2551
+- B878_2527

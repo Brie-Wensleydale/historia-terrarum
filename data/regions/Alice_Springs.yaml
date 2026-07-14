@@ -1,0 +1,9 @@
+id: Alice_Springs
+name: Alice Springs
+type: province
+country: Australia
+parent: Northern_Territory
+tiles:
+- B736_2512
+- B736_2513
+- B737_2512

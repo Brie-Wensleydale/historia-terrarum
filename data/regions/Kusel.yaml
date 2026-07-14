@@ -1,0 +1,14 @@
+id: Kusel
+name: Kusel
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1550_3918
+- B1551_3917
+- B1551_3918
+- B1552_3915
+- B1552_3916
+- B1552_3917
+- B1553_3915
+- B1553_3916

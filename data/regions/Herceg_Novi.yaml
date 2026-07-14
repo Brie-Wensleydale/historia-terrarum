@@ -1,0 +1,8 @@
+id: Herceg_Novi
+name: Herceg Novi
+type: province
+country: Montenegro
+tiles:
+- B1472_3793
+- B1473_3793
+- B1473_3794

@@ -1,0 +1,14 @@
+id: Montevideo
+name: Montevideo
+type: province
+country: Uruguay
+tiles:
+- B612_623
+- B612_624
+- B612_625
+- B613_623
+- B613_624
+- B613_625
+- B613_626
+- B614_623
+- B614_625

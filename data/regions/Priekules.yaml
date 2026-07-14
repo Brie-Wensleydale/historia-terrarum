@@ -1,0 +1,15 @@
+id: Priekules
+name: Priekules
+type: province
+country: Latvia
+tiles:
+- B1627_3759
+- B1627_3760
+- B1627_3761
+- B1628_3759
+- B1628_3760
+- B1628_3761
+- B1629_3759
+- B1629_3760
+- B1629_3761
+- B1629_3762

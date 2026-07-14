@@ -1,0 +1,14 @@
+id: Priština
+name: Priština
+type: province
+country: Kosovo
+tiles:
+- B1474_3765
+- B1475_3762
+- B1475_3763
+- B1475_3764
+- B1475_3765
+- B1476_3762
+- B1476_3763
+- B1476_3764
+- B1476_3765

@@ -1,0 +1,13 @@
+id: San_José_de_Ocoa
+name: San José de Ocoa
+type: province
+country: Dominican Republic
+tiles:
+- B1206_782
+- B1207_782
+- B1207_783
+- B1207_784
+- B1208_782
+- B1208_783
+- B1208_784
+- B1209_783

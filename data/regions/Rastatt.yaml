@@ -1,0 +1,18 @@
+id: Rastatt
+name: Rastatt
+type: province
+country: Germany
+parent: Baden_Württemberg
+tiles:
+- B1541_3907
+- B1542_3906
+- B1542_3907
+- B1542_3909
+- B1542_3910
+- B1543_3906
+- B1543_3907
+- B1543_3909
+- B1543_3910
+- B1544_3908
+- B1544_3909
+- B1545_3908

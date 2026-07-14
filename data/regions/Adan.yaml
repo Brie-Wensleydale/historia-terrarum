@@ -1,0 +1,13 @@
+id: Adan
+name: '`Adan'
+type: province
+country: Yemen
+tiles:
+- B1142_3501
+- B1143_3499
+- B1143_3500
+- B1143_3501
+- B1143_3502
+- B1143_3503
+- B1144_3499
+- B1144_3500

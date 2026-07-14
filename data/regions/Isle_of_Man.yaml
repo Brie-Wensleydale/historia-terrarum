@@ -1,0 +1,18 @@
+id: Isle_of_Man
+name: Isle of Man (United Kingdom)
+type: province
+country: Isle of Man
+tiles:
+- B1602_51
+- B1602_52
+- B1603_49
+- B1603_50
+- B1603_51
+- B1603_52
+- B1604_48
+- B1604_49
+- B1604_50
+- B1604_51
+- B1605_48
+- B1605_49
+- B1606_48

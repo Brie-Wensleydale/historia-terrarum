@@ -1,0 +1,12 @@
+id: Plavinu
+name: Plavinu
+type: province
+country: Latvia
+tiles:
+- B1630_3715
+- B1630_3716
+- B1631_3712
+- B1631_3713
+- B1631_3714
+- B1631_3715
+- B1632_3713

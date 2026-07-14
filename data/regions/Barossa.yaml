@@ -1,0 +1,17 @@
+id: Barossa
+name: Barossa
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B614_2454
+- B614_2455
+- B615_2454
+- B615_2455
+- B615_2456
+- B615_2457
+- B616_2454
+- B616_2455
+- B616_2457
+- B617_2454
+- B617_2455

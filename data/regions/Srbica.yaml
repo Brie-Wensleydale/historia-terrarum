@@ -1,0 +1,10 @@
+id: Srbica
+name: Srbica
+type: province
+country: Kosovo
+tiles:
+- B1475_3769
+- B1476_3768
+- B1476_3769
+- B1476_3770
+- B1477_3770

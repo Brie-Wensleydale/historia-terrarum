@@ -1,0 +1,24 @@
+id: Blue_Mountains
+name: Blue Mountains
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B624_2327
+- B624_2328
+- B624_2330
+- B625_2326
+- B625_2327
+- B625_2328
+- B625_2329
+- B625_2330
+- B626_2326
+- B626_2327
+- B626_2328
+- B626_2329
+- B626_2330
+- B627_2327
+- B627_2328
+- B627_2329
+- B627_2330
+- B628_2328

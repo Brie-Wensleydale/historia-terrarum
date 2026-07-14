@@ -1,0 +1,7 @@
+id: Würzburg_Kreisfreie_Stadt
+name: Würzburg (Kreisfreie Stadt)
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1554_3889

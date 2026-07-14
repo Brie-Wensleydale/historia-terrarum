@@ -1,0 +1,18 @@
+id: Whyalla
+name: Whyalla
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B630_2474
+- B631_2473
+- B631_2474
+- B632_2472
+- B632_2473
+- B633_2471
+- B633_2472
+- B633_2473
+- B634_2469
+- B634_2472
+- B635_2469
+- B635_2470

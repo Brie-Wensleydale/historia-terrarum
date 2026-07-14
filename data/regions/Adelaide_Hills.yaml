@@ -1,0 +1,16 @@
+id: Adelaide_Hills
+name: Adelaide Hills
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B611_2457
+- B611_2458
+- B612_2456
+- B612_2457
+- B612_2458
+- B613_2455
+- B613_2456
+- B613_2457
+- B614_2456
+- B614_2457

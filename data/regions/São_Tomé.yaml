@@ -1,0 +1,15 @@
+id: São_Tomé
+name: São Tomé
+type: province
+country: São Tomé and Principe
+tiles:
+- B1001_3927
+- B1002_3926
+- B1002_3927
+- B1003_3925
+- B1003_3926
+- B1003_3927
+- B1004_3925
+- B1004_3926
+- B1004_3927
+- B1005_3925

@@ -1,0 +1,17 @@
+id: Bahoruco
+name: Bahoruco
+type: province
+country: Dominican Republic
+tiles:
+- B1205_791
+- B1206_790
+- B1206_791
+- B1206_792
+- B1206_793
+- B1206_794
+- B1207_790
+- B1207_791
+- B1207_792
+- B1207_793
+- B1207_794
+- B1207_795

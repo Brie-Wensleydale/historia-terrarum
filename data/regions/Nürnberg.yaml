@@ -1,0 +1,10 @@
+id: Nürnberg
+name: Nürnberg
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1550_3876
+- B1550_3877
+- B1551_3876
+- B1551_3877

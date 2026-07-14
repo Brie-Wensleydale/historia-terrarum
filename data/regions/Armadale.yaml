@@ -1,0 +1,13 @@
+id: Armadale
+name: Armadale
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B642_2707
+- B642_2708
+- B642_2709
+- B643_2708
+- B643_2709
+- B643_2710
+- B643_2711

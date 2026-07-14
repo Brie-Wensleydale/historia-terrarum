@@ -1,0 +1,17 @@
+id: Schweinfurt
+name: Schweinfurt
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1555_3884
+- B1556_3884
+- B1556_3885
+- B1556_3886
+- B1556_3887
+- B1557_3885
+- B1557_3887
+- B1558_3884
+- B1558_3885
+- B1558_3886
+- B1559_3884

@@ -1,0 +1,9 @@
+id: Baltinavas
+name: Baltinavas
+type: province
+country: Latvia
+tiles:
+- B1633_3693
+- B1633_3694
+- B1634_3692
+- B1634_3693

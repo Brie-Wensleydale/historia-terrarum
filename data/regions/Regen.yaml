@@ -1,0 +1,18 @@
+id: Regen
+name: Regen
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1545_3852
+- B1545_3853
+- B1545_3854
+- B1545_3855
+- B1545_3856
+- B1546_3852
+- B1546_3853
+- B1546_3854
+- B1546_3855
+- B1546_3856
+- B1546_3857
+- B1547_3855

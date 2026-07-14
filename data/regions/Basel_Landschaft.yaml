@@ -1,0 +1,13 @@
+id: Basel_Landschaft
+name: Basel-Landschaft
+type: province
+country: Switzerland
+tiles:
+- B1528_3912
+- B1528_3913
+- B1528_3914
+- B1528_3916
+- B1529_3912
+- B1529_3914
+- B1529_3915
+- B1529_3916

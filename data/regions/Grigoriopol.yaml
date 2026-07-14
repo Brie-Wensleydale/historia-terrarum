@@ -1,0 +1,17 @@
+id: Grigoriopol
+name: Grigoriopol
+type: province
+country: Moldova
+tiles:
+- B1523_3671
+- B1523_3672
+- B1523_3673
+- B1524_3671
+- B1524_3672
+- B1524_3673
+- B1525_3672
+- B1525_3673
+- B1525_3674
+- B1526_3671
+- B1526_3672
+- B1526_3673

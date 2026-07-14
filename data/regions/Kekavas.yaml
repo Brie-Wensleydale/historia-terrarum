@@ -1,0 +1,10 @@
+id: Kekavas
+name: Kekavas
+type: province
+country: Latvia
+tiles:
+- B1632_3727
+- B1632_3728
+- B1632_3730
+- B1632_3731
+- B1633_3731

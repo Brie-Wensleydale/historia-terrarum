@@ -1,0 +1,11 @@
+id: Chirang
+name: Chirang
+type: province
+country: Bhutan
+tiles:
+- B1299_2999
+- B1300_2998
+- B1301_2997
+- B1301_2998
+- B1302_2997
+- B1302_2998

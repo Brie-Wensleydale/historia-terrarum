@@ -1,0 +1,12 @@
+id: Cagayan_de_Oro
+name: Cagayan de Oro
+type: province
+country: Philippines
+tiles:
+- B1093_2616
+- B1094_2613
+- B1094_2615
+- B1094_2616
+- B1095_2613
+- B1095_2614
+- B1095_2615

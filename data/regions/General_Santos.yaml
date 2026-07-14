@@ -1,0 +1,12 @@
+id: General_Santos
+name: General Santos
+type: province
+country: Philippines
+tiles:
+- B1067_2610
+- B1068_2609
+- B1068_2610
+- B1069_2609
+- B1069_2610
+- B1070_2608
+- B1070_2609

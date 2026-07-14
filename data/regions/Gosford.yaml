@@ -1,0 +1,20 @@
+id: Gosford
+name: Gosford
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B627_2319
+- B628_2317
+- B628_2318
+- B628_2319
+- B628_2320
+- B629_2317
+- B629_2318
+- B629_2319
+- B629_2320
+- B629_2321
+- B630_2319
+- B630_2320
+- B631_2320
+- B632_2320

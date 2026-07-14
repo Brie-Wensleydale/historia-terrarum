@@ -1,0 +1,9 @@
+id: München_Kreisfreie_Stadt
+name: München (Kreisfreie Stadt)
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1536_3870
+- B1536_3871
+- B1536_3872

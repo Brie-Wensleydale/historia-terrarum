@@ -1,0 +1,13 @@
+id: Byron
+name: Byron
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B681_2293
+- B681_2294
+- B682_2293
+- B682_2294
+- B683_2293
+- B683_2294
+- B683_2295

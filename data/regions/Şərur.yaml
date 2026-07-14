@@ -1,0 +1,14 @@
+id: Şərur
+name: Şərur
+type: province
+country: Azerbaijan
+tiles:
+- B1439_3499
+- B1440_3498
+- B1440_3499
+- B1440_3500
+- B1441_3498
+- B1441_3499
+- B1441_3500
+- B1442_3499
+- B1442_3500

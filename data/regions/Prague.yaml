@@ -1,0 +1,12 @@
+id: Prague
+name: Prague
+type: province
+country: Czechia
+tiles:
+- B1557_3837
+- B1557_3838
+- B1557_3839
+- B1557_3840
+- B1558_3838
+- B1558_3839
+- B1558_3840

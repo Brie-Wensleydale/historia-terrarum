@@ -1,0 +1,8 @@
+id: Stirling
+name: Stirling
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B646_2712
+- B646_2713

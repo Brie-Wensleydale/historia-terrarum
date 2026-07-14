@@ -1,0 +1,8 @@
+id: Komen
+name: Komen
+type: province
+country: Slovenia
+tiles:
+- B1510_3846
+- B1510_3847
+- B1510_3848

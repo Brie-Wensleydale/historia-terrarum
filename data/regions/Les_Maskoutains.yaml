@@ -1,0 +1,23 @@
+id: Les_Maskoutains
+name: Les Maskoutains
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1507_807
+- B1507_808
+- B1507_809
+- B1507_810
+- B1507_811
+- B1508_808
+- B1508_809
+- B1508_810
+- B1508_811
+- B1509_808
+- B1509_809
+- B1509_810
+- B1509_811
+- B1510_809
+- B1510_810
+- B1510_811
+- B1511_811

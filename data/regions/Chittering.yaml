@@ -1,0 +1,22 @@
+id: Chittering
+name: Chittering
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B649_2711
+- B649_2712
+- B650_2709
+- B650_2710
+- B650_2711
+- B650_2712
+- B651_2709
+- B651_2710
+- B652_2708
+- B652_2709
+- B652_2710
+- B653_2708
+- B653_2709
+- B653_2710
+- B654_2709
+- B654_2710

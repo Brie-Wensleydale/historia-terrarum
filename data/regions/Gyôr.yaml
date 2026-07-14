@@ -1,0 +1,10 @@
+id: Gyôr
+name: Gyôr
+type: province
+country: Hungary
+tiles:
+- B1530_3803
+- B1530_3804
+- B1531_3802
+- B1531_3803
+- B1531_3804

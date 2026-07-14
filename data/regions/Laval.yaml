@@ -1,0 +1,10 @@
+id: Laval
+name: Laval
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1507_819
+- B1507_820
+- B1508_818
+- B1508_819

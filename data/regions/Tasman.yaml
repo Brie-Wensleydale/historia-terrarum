@@ -1,0 +1,22 @@
+id: Tasman
+name: Tasman
+type: province
+country: Australia
+parent: Tasmania
+tiles:
+- B520_2356
+- B520_2357
+- B520_2358
+- B521_2355
+- B521_2356
+- B521_2357
+- B521_2358
+- B521_2359
+- B522_2356
+- B522_2357
+- B522_2358
+- B522_2359
+- B523_2355
+- B523_2356
+- B523_2357
+- B524_2356

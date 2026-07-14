@@ -1,0 +1,20 @@
+id: Robe
+name: Robe
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B586_2442
+- B586_2443
+- B586_2444
+- B586_2445
+- B586_2446
+- B587_2442
+- B587_2443
+- B587_2444
+- B587_2445
+- B587_2446
+- B588_2444
+- B588_2445
+- B588_2446
+- B588_2447

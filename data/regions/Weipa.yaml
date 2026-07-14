@@ -1,0 +1,7 @@
+id: Weipa
+name: Weipa
+type: province
+country: Australia
+parent: Queensland
+tiles:
+- B860_2423

@@ -1,0 +1,9 @@
+id: Jarash
+name: Jarash
+type: province
+country: Jordan
+tiles:
+- B1358_3601
+- B1359_3600
+- B1359_3601
+- B1360_3600

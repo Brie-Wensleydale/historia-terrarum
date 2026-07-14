@@ -1,0 +1,22 @@
+id: Southern_Patagonian_Ice_Field
+name: Southern Patagonian Ice Field
+type: province
+country: Southern Patagonian Ice Field
+tiles:
+- B448_814
+- B448_815
+- B448_816
+- B449_812
+- B449_813
+- B449_814
+- B449_815
+- B449_816
+- B450_812
+- B450_813
+- B450_814
+- B450_815
+- B450_816
+- B451_813
+- B451_814
+- B451_815
+- B451_816

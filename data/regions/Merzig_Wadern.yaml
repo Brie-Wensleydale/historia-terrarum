@@ -1,0 +1,17 @@
+id: Merzig_Wadern
+name: Merzig-Wadern
+type: province
+country: Germany
+parent: Saarland
+tiles:
+- B1550_3925
+- B1550_3926
+- B1550_3927
+- B1551_3923
+- B1551_3924
+- B1551_3925
+- B1551_3926
+- B1551_3927
+- B1551_3928
+- B1551_3929
+- B1552_3923

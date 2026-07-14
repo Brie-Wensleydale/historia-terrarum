@@ -1,0 +1,17 @@
+id: La_Estrelleta
+name: La Estrelleta
+type: province
+country: Dominican Republic
+tiles:
+- B1209_795
+- B1209_796
+- B1210_796
+- B1211_796
+- B1211_797
+- B1212_795
+- B1212_796
+- B1213_794
+- B1213_795
+- B1214_793
+- B1214_794
+- B1214_795

@@ -1,0 +1,23 @@
+id: Unstrut_Hainich_Kreis
+name: Unstrut-Hainich-Kreis
+type: province
+country: Germany
+parent: Thüringen
+tiles:
+- B1569_3879
+- B1569_3880
+- B1569_3881
+- B1569_3882
+- B1569_3883
+- B1569_3884
+- B1570_3879
+- B1570_3880
+- B1570_3881
+- B1570_3882
+- B1570_3883
+- B1570_3884
+- B1570_3885
+- B1570_3886
+- B1571_3882
+- B1571_3883
+- B1571_3884

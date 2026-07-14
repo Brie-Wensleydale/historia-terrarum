@@ -1,0 +1,16 @@
+id: Schaumburg
+name: Schaumburg
+type: province
+country: Germany
+parent: Niedersachsen
+tiles:
+- B1581_3898
+- B1582_3895
+- B1582_3896
+- B1582_3897
+- B1582_3898
+- B1582_3899
+- B1583_3895
+- B1583_3896
+- B1583_3897
+- B1583_3898

@@ -1,0 +1,7 @@
+id: Charles_Sturt
+name: Charles Sturt
+type: province
+country: Australia
+parent: South_Australia
+tiles:
+- B612_2461

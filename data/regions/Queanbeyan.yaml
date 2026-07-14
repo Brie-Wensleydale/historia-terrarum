@@ -1,0 +1,8 @@
+id: Queanbeyan
+name: Queanbeyan
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B606_2342
+- B607_2341

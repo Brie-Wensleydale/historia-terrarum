@@ -1,0 +1,23 @@
+id: Rhein_Sieg_Kreis
+name: Rhein-Sieg-Kreis
+type: province
+country: Germany
+parent: Nordrhein_Westfalen
+tiles:
+- B1563_3922
+- B1564_3918
+- B1564_3919
+- B1564_3922
+- B1564_3923
+- B1565_3916
+- B1565_3917
+- B1565_3918
+- B1565_3919
+- B1565_3922
+- B1565_3923
+- B1566_3916
+- B1566_3917
+- B1566_3918
+- B1566_3919
+- B1566_3920
+- B1567_3917

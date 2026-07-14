@@ -1,0 +1,20 @@
+id: Kingborough
+name: Kingborough
+type: province
+country: Australia
+parent: Tasmania
+tiles:
+- B517_2363
+- B517_2365
+- B518_2362
+- B518_2363
+- B518_2364
+- B519_2363
+- B519_2364
+- B520_2363
+- B520_2364
+- B521_2362
+- B521_2364
+- B522_2363
+- B522_2364
+- B523_2364

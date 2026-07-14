@@ -1,0 +1,9 @@
+id: Nova_Goriška
+name: Nova Goriška
+type: province
+country: Slovenia
+tiles:
+- B1511_3847
+- B1512_3846
+- B1512_3847
+- B1512_3848

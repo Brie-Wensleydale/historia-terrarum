@@ -1,0 +1,10 @@
+id: Wanica
+name: Wanica
+type: province
+country: Suriname
+tiles:
+- B1064_612
+- B1064_613
+- B1064_614
+- B1065_613
+- B1065_614

@@ -1,0 +1,14 @@
+id: Apes
+name: Apes
+type: province
+country: Latvia
+tiles:
+- B1639_3704
+- B1639_3705
+- B1639_3706
+- B1639_3707
+- B1640_3703
+- B1640_3704
+- B1640_3705
+- B1640_3706
+- B1640_3707

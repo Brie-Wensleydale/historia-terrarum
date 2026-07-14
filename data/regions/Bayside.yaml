@@ -1,0 +1,7 @@
+id: Bayside
+name: Bayside
+type: province
+country: Australia
+parent: Victoria
+tiles:
+- B578_2388

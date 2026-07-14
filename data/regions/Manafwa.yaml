@@ -1,0 +1,10 @@
+id: Manafwa
+name: Manafwa
+type: province
+country: Uganda
+tiles:
+- B1010_3618
+- B1010_3619
+- B1011_3617
+- B1011_3618
+- B1011_3619

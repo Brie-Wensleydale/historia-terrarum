@@ -1,0 +1,7 @@
+id: Bouvet_Island
+name: Bouvet Island
+type: province
+country: Norway
+tiles:
+- B395_3961
+- B395_3962

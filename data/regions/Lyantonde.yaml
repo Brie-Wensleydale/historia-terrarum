@@ -1,0 +1,16 @@
+id: Lyantonde
+name: Lyantonde
+type: province
+country: Uganda
+tiles:
+- B1000_3654
+- B995_3653
+- B996_3653
+- B997_3653
+- B997_3654
+- B998_3652
+- B998_3653
+- B998_3654
+- B999_3652
+- B999_3653
+- B999_3654

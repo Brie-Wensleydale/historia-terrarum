@@ -1,0 +1,8 @@
+id: Sevnica
+name: Sevnica
+type: province
+country: Slovenia
+tiles:
+- B1512_3829
+- B1512_3830
+- B1513_3830

@@ -1,0 +1,11 @@
+id: Kriva_Palanka
+name: Kriva Palanka
+type: province
+country: North Macedonia
+tiles:
+- B1469_3751
+- B1469_3752
+- B1470_3751
+- B1470_3752
+- B1471_3752
+- B1471_3753

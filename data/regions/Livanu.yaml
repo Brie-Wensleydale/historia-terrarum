@@ -1,0 +1,15 @@
+id: Livanu
+name: Livanu
+type: province
+country: Latvia
+tiles:
+- B1626_3708
+- B1627_3705
+- B1627_3706
+- B1627_3707
+- B1627_3708
+- B1628_3705
+- B1628_3706
+- B1628_3707
+- B1628_3708
+- B1628_3709

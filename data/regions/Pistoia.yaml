@@ -1,0 +1,18 @@
+id: Pistoia
+name: Pistoia
+type: province
+country: Italy
+parent: Pistoia
+tiles:
+- B1488_3878
+- B1488_3879
+- B1488_3880
+- B1489_3878
+- B1489_3879
+- B1489_3880
+- B1489_3881
+- B1490_3878
+- B1490_3879
+- B1490_3880
+- B1491_3879
+- B1491_3880

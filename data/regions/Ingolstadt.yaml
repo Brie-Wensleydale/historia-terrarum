@@ -1,0 +1,9 @@
+id: Ingolstadt
+name: Ingolstadt
+type: province
+country: Germany
+parent: Bayern
+tiles:
+- B1543_3872
+- B1543_3873
+- B1543_3874

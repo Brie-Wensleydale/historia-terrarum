@@ -1,0 +1,21 @@
+id: Bangkok_Metropolis
+name: Bangkok Metropolis
+type: province
+country: Thailand
+tiles:
+- B1152_2883
+- B1152_2884
+- B1153_2879
+- B1153_2881
+- B1153_2882
+- B1153_2883
+- B1153_2884
+- B1154_2879
+- B1154_2880
+- B1154_2881
+- B1154_2882
+- B1154_2883
+- B1155_2879
+- B1155_2880
+- B1155_2881
+- B1155_2882

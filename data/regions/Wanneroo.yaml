@@ -1,0 +1,15 @@
+id: Wanneroo
+name: Wanneroo
+type: province
+country: Australia
+parent: Western_Australia
+tiles:
+- B647_2712
+- B648_2712
+- B648_2713
+- B648_2714
+- B649_2713
+- B649_2714
+- B650_2713
+- B650_2714
+- B650_2715

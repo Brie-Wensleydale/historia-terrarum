@@ -1,0 +1,15 @@
+id: Medimurska
+name: Medimurska
+type: province
+country: Croatia
+tiles:
+- B1516_3813
+- B1516_3814
+- B1516_3815
+- B1516_3816
+- B1516_3817
+- B1517_3815
+- B1517_3816
+- B1517_3817
+- B1517_3818
+- B1518_3818

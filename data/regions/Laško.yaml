@@ -1,0 +1,9 @@
+id: Laško
+name: Laško
+type: province
+country: Slovenia
+tiles:
+- B1513_3829
+- B1514_3829
+- B1514_3830
+- B1514_3831

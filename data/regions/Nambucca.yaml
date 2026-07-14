@@ -1,0 +1,23 @@
+id: Nambucca
+name: Nambucca
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B657_2301
+- B657_2302
+- B658_2300
+- B658_2301
+- B658_2302
+- B658_2303
+- B659_2300
+- B659_2301
+- B659_2302
+- B659_2303
+- B659_2304
+- B660_2300
+- B660_2301
+- B660_2302
+- B660_2303
+- B660_2304
+- B661_2305

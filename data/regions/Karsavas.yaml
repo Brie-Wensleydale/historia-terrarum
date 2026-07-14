@@ -1,0 +1,13 @@
+id: Karsavas
+name: Karsavas
+type: province
+country: Latvia
+tiles:
+- B1631_3692
+- B1631_3693
+- B1631_3694
+- B1632_3690
+- B1632_3691
+- B1632_3692
+- B1632_3693
+- B1632_3694

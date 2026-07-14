@@ -1,0 +1,14 @@
+id: Hódmezôvásárhely
+name: Hódmezôvásárhely
+type: province
+country: Hungary
+tiles:
+- B1515_3772
+- B1516_3771
+- B1516_3772
+- B1516_3773
+- B1516_3774
+- B1517_3771
+- B1517_3772
+- B1517_3773
+- B1517_3774

@@ -1,0 +1,9 @@
+id: Macquarie_Island
+name: Macquarie Island
+type: province
+country: Australia
+parent: Macquarie_Island
+tiles:
+- B392_2234
+- B393_2234
+- B394_2234

@@ -1,0 +1,11 @@
+id: Joliette
+name: Joliette
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1512_815
+- B1512_816
+- B1513_816
+- B1513_817
+- B1514_816

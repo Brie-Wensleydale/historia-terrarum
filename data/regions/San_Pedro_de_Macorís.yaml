@@ -1,0 +1,18 @@
+id: San_Pedro_de_Macorís
+name: San Pedro de Macorís
+type: province
+country: Dominican Republic
+tiles:
+- B1205_768
+- B1205_772
+- B1206_768
+- B1206_769
+- B1206_770
+- B1206_771
+- B1206_772
+- B1207_768
+- B1207_769
+- B1207_771
+- B1207_772
+- B1208_771
+- B1208_772

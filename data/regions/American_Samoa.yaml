@@ -1,0 +1,8 @@
+id: American_Samoa
+name: American Samoa (United States of America)
+type: province
+country: American Samoa
+tiles:
+- B839_1868
+- B841_1897
+- B842_1883

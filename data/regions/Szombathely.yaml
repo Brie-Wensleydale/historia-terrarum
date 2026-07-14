@@ -1,0 +1,7 @@
+id: Szombathely
+name: Szombathely
+type: province
+country: Hungary
+tiles:
+- B1525_3815
+- B1526_3815

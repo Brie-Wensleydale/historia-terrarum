@@ -1,0 +1,8 @@
+id: Loška_dolina
+name: Loška dolina
+type: province
+country: Slovenia
+tiles:
+- B1508_3839
+- B1509_3838
+- B1509_3839

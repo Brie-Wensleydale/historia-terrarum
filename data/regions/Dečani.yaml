@@ -1,0 +1,10 @@
+id: Dečani
+name: Dečani
+type: province
+country: Kosovo
+tiles:
+- B1473_3774
+- B1473_3775
+- B1474_3774
+- B1474_3775
+- B1474_3776

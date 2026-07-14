@@ -1,0 +1,11 @@
+id: Schaffhausen
+name: Schaffhausen
+type: province
+country: Switzerland
+tiles:
+- B1531_3902
+- B1531_3903
+- B1531_3904
+- B1531_3905
+- B1531_3906
+- B1532_3904

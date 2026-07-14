@@ -1,0 +1,7 @@
+id: Holroyd
+name: Holroyd
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B624_2322

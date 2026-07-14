@@ -1,0 +1,7 @@
+id: Randwick
+name: Randwick
+type: province
+country: Australia
+parent: New_South_Wales
+tiles:
+- B623_2319

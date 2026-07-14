@@ -1,0 +1,23 @@
+id: Trier_Saarburg
+name: Trier-Saarburg
+type: province
+country: Germany
+parent: Rheinland_Pfalz
+tiles:
+- B1552_3924
+- B1552_3925
+- B1552_3926
+- B1552_3927
+- B1552_3928
+- B1553_3922
+- B1553_3923
+- B1553_3924
+- B1553_3925
+- B1553_3926
+- B1553_3927
+- B1554_3923
+- B1554_3924
+- B1554_3925
+- B1554_3927
+- B1555_3925
+- B1555_3926

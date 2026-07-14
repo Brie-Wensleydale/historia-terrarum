@@ -1,0 +1,7 @@
+id: Franklin
+name: Franklin
+type: province
+country: Canada
+parent: Québec
+tiles:
+- B1501_829
