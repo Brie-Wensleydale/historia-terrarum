@@ -747,10 +747,11 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
         county_tile_list = dd(list)
         matched = 0
 
-        # Build bbox index for fast lookups
-        county_bboxes = []
-        for cname, cdata in province_counties.items():
-            county_bboxes.append((cname, cdata["polygon"], cdata["bbox"]))
+        # Build spatial index for fast point-in-polygon lookup
+        from shapely.strtree import STRtree
+        county_list = list(province_counties.keys())
+        county_polys = [province_counties[c]["polygon"] for c in county_list]
+        tree = STRtree(county_polys) if county_polys else None
 
         for tid in tile_list:
             # Try tile_to_county first (works for NE admin-2)
@@ -761,20 +762,28 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
                 matched += 1
                 continue
 
-            # Fallback: point-in-polygon test (for GADM provinces)
+            # Fallback: STRtree spatial index lookup (for GADM provinces)
+            if not tree:
+                continue
             tdata = registry.get(tid, {})
             lat = tdata.get("lat", 0)
             lon = tdata.get("lon", 0)
             if lat == 0 and lon == 0:
                 continue
             pt = Point(lon, lat)
-            for cname, cpoly, cbbox in county_bboxes:
-                if cbbox[0] <= lon <= cbbox[2] and cbbox[1] <= lat <= cbbox[3]:
-                    if cpoly.contains(pt):
-                        county_tile_count[cname] += 1
-                        county_tile_list[cname].append(tid)
-                        matched += 1
-                        break
+            # Query STRtree for nearby polygons, then test contains
+            candidates = tree.query(pt)
+            for cand_poly in candidates:
+                if cand_poly.contains(pt):
+                    # Find which county this polygon belongs to
+                    for i, cpoly in enumerate(county_polys):
+                        if cpoly is cand_poly:
+                            cname = county_list[i]
+                            county_tile_count[cname] += 1
+                            county_tile_list[cname].append(tid)
+                            matched += 1
+                            break
+                    break
 
         print(f"    {matched:,}/{len(tile_list):,} tiles matched to counties ({100*matched/max(len(tile_list),1):.1f}%)")
 
