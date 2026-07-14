@@ -738,9 +738,10 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
                 _geometric_split_province(prov_poly, rid, rname, country, tile_list,
                                           tile_latlon, registry, max_tiles_val,
                                           new_assignments, new_names, new_countries, new_parents)
+                continue
             else:
                 print(f", skipping")
-            continue
+                continue
 
         print(f"    {len(province_counties)} admin-2 counties inside province")
 
