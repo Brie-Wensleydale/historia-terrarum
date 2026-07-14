@@ -703,6 +703,10 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
         # Find the admin-1 polygon (keyed by country + sanitized name)
         prov_poly = province_polygons.get((country.lower(), rid))
         if prov_poly is None:
+            # Try just the base name (handles "Greenland (Denmark)" → "Greenland")
+            base_name = rid.split("_")[0] if "_" in rid else rid
+            prov_poly = province_polygons.get((country.lower(), base_name))
+        if prov_poly is None:
             print(f"    WARNING: no admin-1 polygon found for {rname}, skipping")
             continue
 
@@ -772,18 +776,19 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
                 continue
             pt = Point(lon, lat)
             # Query STRtree for nearby polygons, then test contains
-            candidates = tree.query(pt)
-            for cand_poly in candidates:
-                if cand_poly.contains(pt):
-                    # Find which county this polygon belongs to
-                    for i, cpoly in enumerate(county_polys):
-                        if cpoly is cand_poly:
-                            cname = county_list[i]
-                            county_tile_count[cname] += 1
-                            county_tile_list[cname].append(tid)
-                            matched += 1
-                            break
-                    break
+            try:
+                candidates = tree.query(pt)
+                for idx in candidates:
+                    # shapely >=2.0 returns indices, <2.0 returns geometries
+                    cand_poly = county_polys[int(idx)] if isinstance(idx, (int, float)) else idx
+                    if hasattr(cand_poly, 'contains') and cand_poly.contains(pt):
+                        cname = county_list[int(idx)] if isinstance(idx, (int, float)) else county_list[county_polys.index(cand_poly)]
+                        county_tile_count[cname] += 1
+                        county_tile_list[cname].append(tid)
+                        matched += 1
+                        break
+            except Exception:
+                pass  # STRtree query failed — skip this tile
 
         print(f"    {matched:,}/{len(tile_list):,} tiles matched to counties ({100*matched/max(len(tile_list),1):.1f}%)")
 
