@@ -740,17 +740,41 @@ def auto_split_mega_regions(assignments, region_names, region_countries, region_
 
         print(f"    {len(province_counties)} admin-2 counties inside province")
 
-        # Count tiles per county using the pre-computed tile_to_county dict
-        # (from the main 3-point test — avoids re-testing millions of tiles)
+        # Count tiles per county.
+        # For NE admin-2 (US): use tile_to_county from main assignment.
+        # For GADM: do fast point-in-polygon lookup with bbox pre-filter.
         county_tile_count = dd(int)
         county_tile_list = dd(list)
         matched = 0
+
+        # Build bbox index for fast lookups
+        county_bboxes = []
+        for cname, cdata in province_counties.items():
+            county_bboxes.append((cname, cdata["polygon"], cdata["bbox"]))
+
         for tid in tile_list:
+            # Try tile_to_county first (works for NE admin-2)
             cname = tile_to_county.get(tid) if tile_to_county else None
             if cname and cname in province_counties:
                 county_tile_count[cname] += 1
                 county_tile_list[cname].append(tid)
                 matched += 1
+                continue
+
+            # Fallback: point-in-polygon test (for GADM provinces)
+            tdata = registry.get(tid, {})
+            lat = tdata.get("lat", 0)
+            lon = tdata.get("lon", 0)
+            if lat == 0 and lon == 0:
+                continue
+            pt = Point(lon, lat)
+            for cname, cpoly, cbbox in county_bboxes:
+                if cbbox[0] <= lon <= cbbox[2] and cbbox[1] <= lat <= cbbox[3]:
+                    if cpoly.contains(pt):
+                        county_tile_count[cname] += 1
+                        county_tile_list[cname].append(tid)
+                        matched += 1
+                        break
 
         print(f"    {matched:,}/{len(tile_list):,} tiles matched to counties ({100*matched/max(len(tile_list),1):.1f}%)")
 
