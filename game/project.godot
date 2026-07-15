@@ -37,3 +37,19 @@ pan={
 	"deadzone": 0.5,
 	"events": [Object(InputEventMouseButton, "button_index": 1)]
 }
+map_political={
+	"deadzone": 0.5,
+	"events": [Object(InputEventKey, "keycode": 49)]
+}
+map_province={
+	"deadzone": 0.5,
+	"events": [Object(InputEventKey, "keycode": 50)]
+}
+map_terrain={
+	"deadzone": 0.5,
+	"events": [Object(InputEventKey, "keycode": 51)]
+}
+map_diplomatic={
+	"deadzone": 0.5,
+	"events": [Object(InputEventKey, "keycode": 52)]
+}

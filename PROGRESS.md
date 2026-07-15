@@ -1,6 +1,6 @@
 # PROGRESS.md — Historia Terrarum
 
-> Last updated: 2026-07-14
+> Last updated: 2026-07-15
 
 ---
 
@@ -75,14 +75,16 @@
 
 ### Phase 4b: Country Registry & Palette Indices
 
-**Status:** ⬜ Not started
+**Status:** ✅ Complete
 
-- [ ] Build country registry from 5,171 regions
-- [ ] Assign palette indices to countries
-- [ ] Wire into PaletteManager for shader rendering
-- [ ] `territory_data.gd` — Godot-side territory data loader
-- [ ] Dynamic territory updates (occupation, annexation)
-- [ ] Dirty-tracking for LOD regeneration
+- [x] Build country registry from 5,171 regions → `data/countries/country_registry.yaml`
+- [x] Deterministic palette color assignment (continent/tier/hue) → `data/countries/palette.json`
+- [x] 249 countries, 228 unique palette indices (major=7, regional=27, minor=91, micro=124)
+- [x] 100km tile mapping via majority-vote aggregation → `data/countries/tile_mapping_100km.json`
+- [x] Wire into PaletteManager — loads JSON at startup, shader uniforms per frame
+- [x] `territory_data.gd` — loads tile mapping, supports occupation/annexation
+- [x] `earth_display.gd` — real country colors instead of test stripes
+- [x] Display mode switching — keys 1/2/3/4 (Political/Province/Terrain/Diplomatic)
 
 ---
 

@@ -18,6 +18,9 @@ data/output/grid_80km/
 data/output/grid_160km/
 data/output/*.json
 
+# Phase 4b — large tile mapping (regenerated from pipeline)
+data/countries/tile_mapping.json
+
 # Shapefiles (large GIS data, downloaded separately)
 data/shapefiles/
 *.shp

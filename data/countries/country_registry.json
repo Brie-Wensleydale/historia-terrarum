@@ -1,0 +1,2248 @@
+{
+  "palette_size": 256,
+  "ocean_index": 0,
+  "unclaimed_index": 255,
+  "countries": [
+    {
+      "id": "Afghanistan",
+      "palette_index": 57,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 7738,
+      "region_count": 32,
+      "admin2_count": 0
+    },
+    {
+      "id": "Akrotiri Sovereign Base Area",
+      "palette_index": 228,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 3,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Aland",
+      "palette_index": 210,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 17,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Albania",
+      "palette_index": 136,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 392,
+      "region_count": 12,
+      "admin2_count": 0
+    },
+    {
+      "id": "Algeria",
+      "palette_index": 17,
+      "tier": "regional",
+      "continent": "Africa",
+      "tile_count": 28699,
+      "region_count": 52,
+      "admin2_count": 4
+    },
+    {
+      "id": "American Samoa",
+      "palette_index": 229,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 3,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Andorra",
+      "palette_index": 142,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 5,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Angola",
+      "palette_index": 25,
+      "tier": "regional",
+      "continent": "Africa",
+      "tile_count": 12853,
+      "region_count": 18,
+      "admin2_count": 0
+    },
+    {
+      "id": "Anguilla",
+      "palette_index": 235,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 2,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Antarctica",
+      "palette_index": 7,
+      "tier": "major",
+      "continent": "Antarctica",
+      "tile_count": 182293,
+      "region_count": 37,
+      "admin2_count": 36
+    },
+    {
+      "id": "Antigua and Barbuda",
+      "palette_index": 182,
+      "tier": "micro",
+      "continent": "North America",
+      "tile_count": 9,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Argentina",
+      "palette_index": 30,
+      "tier": "regional",
+      "continent": "South America",
+      "tile_count": 24312,
+      "region_count": 19,
+      "admin2_count": 0
+    },
+    {
+      "id": "Armenia",
+      "palette_index": 150,
+      "tier": "micro",
+      "continent": "Asia",
+      "tile_count": 442,
+      "region_count": 11,
+      "admin2_count": 1
+    },
+    {
+      "id": "Aruba",
+      "palette_index": 226,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 4,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Australia",
+      "palette_index": 6,
+      "tier": "major",
+      "continent": "Oceania",
+      "tile_count": 86633,
+      "region_count": 504,
+      "admin2_count": 496
+    },
+    {
+      "id": "Austria",
+      "palette_index": 50,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 1244,
+      "region_count": 9,
+      "admin2_count": 0
+    },
+    {
+      "id": "Azerbaijan",
+      "palette_index": 55,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 1148,
+      "region_count": 71,
+      "admin2_count": 0
+    },
+    {
+      "id": "Bahrain",
+      "palette_index": 160,
+      "tier": "micro",
+      "continent": "Asia",
+      "tile_count": 15,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Bangladesh",
+      "palette_index": 76,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 1557,
+      "region_count": 7,
+      "admin2_count": 0
+    },
+    {
+      "id": "Barbados",
+      "palette_index": 184,
+      "tier": "micro",
+      "continent": "North America",
+      "tile_count": 7,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Baykonur Cosmodrome",
+      "palette_index": 204,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 94,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Belarus",
+      "palette_index": 44,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 3468,
+      "region_count": 7,
+      "admin2_count": 0
+    },
+    {
+      "id": "Belgium",
+      "palette_index": 135,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 485,
+      "region_count": 10,
+      "admin2_count": 0
+    },
+    {
+      "id": "Belize",
+      "palette_index": 177,
+      "tier": "micro",
+      "continent": "North America",
+      "tile_count": 202,
+      "region_count": 5,
+      "admin2_count": 0
+    },
+    {
+      "id": "Benin",
+      "palette_index": 104,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 1360,
+      "region_count": 11,
+      "admin2_count": 0
+    },
+    {
+      "id": "Bermuda",
+      "palette_index": 236,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 2,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Bhutan",
+      "palette_index": 149,
+      "tier": "micro",
+      "continent": "Asia",
+      "tile_count": 450,
+      "region_count": 20,
+      "admin2_count": 0
+    },
+    {
+      "id": "Bolivia",
+      "palette_index": 115,
+      "tier": "minor",
+      "continent": "South America",
+      "tile_count": 6201,
+      "region_count": 7,
+      "admin2_count": 0
+    },
+    {
+      "id": "Bosnia and Herzegovina",
+      "palette_index": 131,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 723,
+      "region_count": 18,
+      "admin2_count": 0
+    },
+    {
+      "id": "Botswana",
+      "palette_index": 89,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 5564,
+      "region_count": 10,
+      "admin2_count": 0
+    },
+    {
+      "id": "Brazil",
+      "palette_index": 5,
+      "tier": "major",
+      "continent": "South America",
+      "tile_count": 70843,
+      "region_count": 66,
+      "admin2_count": 42
+    },
+    {
+      "id": "British Indian Ocean Territory",
+      "palette_index": 242,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 1,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "British Virgin Islands",
+      "palette_index": 230,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 3,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Brunei",
+      "palette_index": 159,
+      "tier": "micro",
+      "continent": "Asia",
+      "tile_count": 55,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Bulgaria",
+      "palette_index": 46,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 2032,
+      "region_count": 27,
+      "admin2_count": 0
+    },
+    {
+      "id": "Burkina Faso",
+      "palette_index": 97,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 2805,
+      "region_count": 45,
+      "admin2_count": 0
+    },
+    {
+      "id": "Burundi",
+      "palette_index": 167,
+      "tier": "micro",
+      "continent": "Africa",
+      "tile_count": 271,
+      "region_count": 17,
+      "admin2_count": 0
+    },
+    {
+      "id": "Cabo Verde",
+      "palette_index": 82,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 8669,
+      "region_count": 21,
+      "admin2_count": 0
+    },
+    {
+      "id": "Cambodia",
+      "palette_index": 72,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 1885,
+      "region_count": 24,
+      "admin2_count": 0
+    },
+    {
+      "id": "Cameroon",
+      "palette_index": 101,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 2334,
+      "region_count": 4,
+      "admin2_count": 0
+    },
+    {
+      "id": "Canada",
+      "palette_index": 3,
+      "tier": "major",
+      "continent": "North America",
+      "tile_count": 153903,
+      "region_count": 254,
+      "admin2_count": 242
+    },
+    {
+      "id": "Cayman Islands",
+      "palette_index": 220,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 9,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Central African Republic",
+      "palette_index": 87,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 6252,
+      "region_count": 16,
+      "admin2_count": 0
+    },
+    {
+      "id": "Chad",
+      "palette_index": 22,
+      "tier": "regional",
+      "continent": "Africa",
+      "tile_count": 13172,
+      "region_count": 22,
+      "admin2_count": 0
+    },
+    {
+      "id": "Chile",
+      "palette_index": 34,
+      "tier": "regional",
+      "continent": "South America",
+      "tile_count": 10316,
+      "region_count": 16,
+      "admin2_count": 0
+    },
+    {
+      "id": "China",
+      "palette_index": 2,
+      "tier": "major",
+      "continent": "Asia",
+      "tile_count": 117947,
+      "region_count": 84,
+      "admin2_count": 52
+    },
+    {
+      "id": "Clipperton Island",
+      "palette_index": 243,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 1,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Colombia",
+      "palette_index": 32,
+      "tier": "regional",
+      "continent": "South America",
+      "tile_count": 12606,
+      "region_count": 30,
+      "admin2_count": 0
+    },
+    {
+      "id": "Comoros",
+      "palette_index": 170,
+      "tier": "micro",
+      "continent": "Africa",
+      "tile_count": 32,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Cook Islands",
+      "palette_index": 225,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 6,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Costa Rica",
+      "palette_index": 175,
+      "tier": "micro",
+      "continent": "North America",
+      "tile_count": 627,
+      "region_count": 7,
+      "admin2_count": 0
+    },
+    {
+      "id": "Croatia",
+      "palette_index": 129,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 853,
+      "region_count": 20,
+      "admin2_count": 0
+    },
+    {
+      "id": "Cuba",
+      "palette_index": 112,
+      "tier": "minor",
+      "continent": "North America",
+      "tile_count": 1333,
+      "region_count": 16,
+      "admin2_count": 0
+    },
+    {
+      "id": "Cura\u00e7ao",
+      "palette_index": 217,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 11,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Cyprus",
+      "palette_index": 158,
+      "tier": "micro",
+      "continent": "Asia",
+      "tile_count": 65,
+      "region_count": 5,
+      "admin2_count": 0
+    },
+    {
+      "id": "Cyprus No Mans Area",
+      "palette_index": 218,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 11,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Czechia",
+      "palette_index": 53,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 1216,
+      "region_count": 14,
+      "admin2_count": 0
+    },
+    {
+      "id": "Democratic Republic of the Congo",
+      "palette_index": 18,
+      "tier": "regional",
+      "continent": "Africa",
+      "tile_count": 23432,
+      "region_count": 18,
+      "admin2_count": 7
+    },
+    {
+      "id": "Denmark",
+      "palette_index": 128,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 898,
+      "region_count": 5,
+      "admin2_count": 0
+    },
+    {
+      "id": "Dhekelia Sovereign Base Area",
+      "palette_index": 237,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 2,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Djibouti",
+      "palette_index": 168,
+      "tier": "micro",
+      "continent": "Africa",
+      "tile_count": 234,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Dominica",
+      "palette_index": 180,
+      "tier": "micro",
+      "continent": "North America",
+      "tile_count": 13,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Dominican Republic",
+      "palette_index": 111,
+      "tier": "minor",
+      "continent": "North America",
+      "tile_count": 1583,
+      "region_count": 32,
+      "admin2_count": 0
+    },
+    {
+      "id": "East Timor",
+      "palette_index": 154,
+      "tier": "micro",
+      "continent": "Asia",
+      "tile_count": 167,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Ecuador",
+      "palette_index": 118,
+      "tier": "minor",
+      "continent": "South America",
+      "tile_count": 2626,
+      "region_count": 24,
+      "admin2_count": 0
+    },
+    {
+      "id": "Egypt",
+      "palette_index": 21,
+      "tier": "regional",
+      "continent": "Africa",
+      "tile_count": 17297,
+      "region_count": 27,
+      "admin2_count": 1
+    },
+    {
+      "id": "El Salvador",
+      "palette_index": 176,
+      "tier": "micro",
+      "continent": "North America",
+      "tile_count": 459,
+      "region_count": 12,
+      "admin2_count": 0
+    },
+    {
+      "id": "Equatorial Guinea",
+      "palette_index": 166,
+      "tier": "micro",
+      "continent": "Africa",
+      "tile_count": 280,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Eritrea",
+      "palette_index": 105,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 1323,
+      "region_count": 6,
+      "admin2_count": 0
+    },
+    {
+      "id": "Estonia",
+      "palette_index": 127,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 937,
+      "region_count": 15,
+      "admin2_count": 0
+    },
+    {
+      "id": "Ethiopia",
+      "palette_index": 27,
+      "tier": "regional",
+      "continent": "Africa",
+      "tile_count": 11452,
+      "region_count": 11,
+      "admin2_count": 0
+    },
+    {
+      "id": "Falkland Islands",
+      "palette_index": 198,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 257,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Faroe Islands",
+      "palette_index": 207,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 28,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Federated States of Micronesia",
+      "palette_index": 215,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 12,
+      "region_count": 4,
+      "admin2_count": 0
+    },
+    {
+      "id": "Fiji",
+      "palette_index": 188,
+      "tier": "micro",
+      "continent": "Oceania",
+      "tile_count": 243,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Finland",
+      "palette_index": 43,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 3910,
+      "region_count": 18,
+      "admin2_count": 0
+    },
+    {
+      "id": "France",
+      "palette_index": 35,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 9668,
+      "region_count": 101,
+      "admin2_count": 0
+    },
+    {
+      "id": "French Polynesia",
+      "palette_index": 205,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 77,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "French Southern and Antarctic Lands",
+      "palette_index": 201,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 148,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Gabon",
+      "palette_index": 98,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 2654,
+      "region_count": 9,
+      "admin2_count": 0
+    },
+    {
+      "id": "Gambia",
+      "palette_index": 169,
+      "tier": "micro",
+      "continent": "Africa",
+      "tile_count": 117,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Georgia",
+      "palette_index": 126,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 950,
+      "region_count": 12,
+      "admin2_count": 0
+    },
+    {
+      "id": "Germany",
+      "palette_index": 38,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 5828,
+      "region_count": 408,
+      "admin2_count": 395
+    },
+    {
+      "id": "Ghana",
+      "palette_index": 90,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 4306,
+      "region_count": 7,
+      "admin2_count": 0
+    },
+    {
+      "id": "Gibraltar",
+      "palette_index": 244,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 1,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Greece",
+      "palette_index": 47,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 1969,
+      "region_count": 14,
+      "admin2_count": 0
+    },
+    {
+      "id": "Greenland",
+      "palette_index": 28,
+      "tier": "regional",
+      "continent": "North America",
+      "tile_count": 31248,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Grenada",
+      "palette_index": 186,
+      "tier": "micro",
+      "continent": "North America",
+      "tile_count": 5,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Guam",
+      "palette_index": 221,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 8,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Guatemala",
+      "palette_index": 114,
+      "tier": "minor",
+      "continent": "North America",
+      "tile_count": 1150,
+      "region_count": 22,
+      "admin2_count": 0
+    },
+    {
+      "id": "Guernsey",
+      "palette_index": 238,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 2,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Guinea",
+      "palette_index": 99,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 2522,
+      "region_count": 33,
+      "admin2_count": 0
+    },
+    {
+      "id": "Guinea-Bissau",
+      "palette_index": 164,
+      "tier": "micro",
+      "continent": "Africa",
+      "tile_count": 369,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Guyana",
+      "palette_index": 119,
+      "tier": "minor",
+      "continent": "South America",
+      "tile_count": 2149,
+      "region_count": 10,
+      "admin2_count": 0
+    },
+    {
+      "id": "Haiti",
+      "palette_index": 110,
+      "tier": "minor",
+      "continent": "North America",
+      "tile_count": 1935,
+      "region_count": 9,
+      "admin2_count": 0
+    },
+    {
+      "id": "Heard Island and McDonald Islands",
+      "palette_index": 216,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 12,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Honduras",
+      "palette_index": 109,
+      "tier": "minor",
+      "continent": "North America",
+      "tile_count": 2649,
+      "region_count": 18,
+      "admin2_count": 0
+    },
+    {
+      "id": "Hong Kong S.A.R.",
+      "palette_index": 209,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 18,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Hungary",
+      "palette_index": 48,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 1369,
+      "region_count": 41,
+      "admin2_count": 0
+    },
+    {
+      "id": "Iceland",
+      "palette_index": 49,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 1315,
+      "region_count": 9,
+      "admin2_count": 0
+    },
+    {
+      "id": "India",
+      "palette_index": 11,
+      "tier": "regional",
+      "continent": "Asia",
+      "tile_count": 34089,
+      "region_count": 34,
+      "admin2_count": 0
+    },
+    {
+      "id": "Indian Ocean Territories",
+      "palette_index": 231,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 3,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Indonesia",
+      "palette_index": 13,
+      "tier": "regional",
+      "continent": "Asia",
+      "tile_count": 20371,
+      "region_count": 33,
+      "admin2_count": 0
+    },
+    {
+      "id": "Iran",
+      "palette_index": 14,
+      "tier": "regional",
+      "continent": "Asia",
+      "tile_count": 19413,
+      "region_count": 31,
+      "admin2_count": 0
+    },
+    {
+      "id": "Iraq",
+      "palette_index": 62,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 5230,
+      "region_count": 18,
+      "admin2_count": 0
+    },
+    {
+      "id": "Ireland",
+      "palette_index": 51,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 1243,
+      "region_count": 30,
+      "admin2_count": 0
+    },
+    {
+      "id": "Isle of Man",
+      "palette_index": 213,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 13,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Israel",
+      "palette_index": 152,
+      "tier": "micro",
+      "continent": "Asia",
+      "tile_count": 264,
+      "region_count": 6,
+      "admin2_count": 0
+    },
+    {
+      "id": "Italy",
+      "palette_index": 41,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 5044,
+      "region_count": 124,
+      "admin2_count": 110
+    },
+    {
+      "id": "Ivory Coast",
+      "palette_index": 96,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 2853,
+      "region_count": 18,
+      "admin2_count": 0
+    },
+    {
+      "id": "Jamaica",
+      "palette_index": 178,
+      "tier": "micro",
+      "continent": "North America",
+      "tile_count": 139,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Japan",
+      "palette_index": 63,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 5119,
+      "region_count": 47,
+      "admin2_count": 0
+    },
+    {
+      "id": "Jersey",
+      "palette_index": 232,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 3,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Jordan",
+      "palette_index": 78,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 1043,
+      "region_count": 12,
+      "admin2_count": 0
+    },
+    {
+      "id": "Kazakhstan",
+      "palette_index": 8,
+      "tier": "regional",
+      "continent": "Europe",
+      "tile_count": 40687,
+      "region_count": 23,
+      "admin2_count": 7
+    },
+    {
+      "id": "Kenya",
+      "palette_index": 92,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 4101,
+      "region_count": 5,
+      "admin2_count": 0
+    },
+    {
+      "id": "Kiribati",
+      "palette_index": 191,
+      "tier": "micro",
+      "continent": "Oceania",
+      "tile_count": 24,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Kosovo",
+      "palette_index": 140,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 149,
+      "region_count": 30,
+      "admin2_count": 0
+    },
+    {
+      "id": "Kuwait",
+      "palette_index": 153,
+      "tier": "micro",
+      "continent": "Asia",
+      "tile_count": 213,
+      "region_count": 6,
+      "admin2_count": 0
+    },
+    {
+      "id": "Kyrgyzstan",
+      "palette_index": 69,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 2648,
+      "region_count": 8,
+      "admin2_count": 0
+    },
+    {
+      "id": "Laos",
+      "palette_index": 70,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 2419,
+      "region_count": 17,
+      "admin2_count": 0
+    },
+    {
+      "id": "Latvia",
+      "palette_index": 54,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 1190,
+      "region_count": 113,
+      "admin2_count": 0
+    },
+    {
+      "id": "Lebanon",
+      "palette_index": 156,
+      "tier": "micro",
+      "continent": "Asia",
+      "tile_count": 123,
+      "region_count": 5,
+      "admin2_count": 0
+    },
+    {
+      "id": "Lesotho",
+      "palette_index": 165,
+      "tier": "micro",
+      "continent": "Africa",
+      "tile_count": 349,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Liberia",
+      "palette_index": 163,
+      "tier": "micro",
+      "continent": "Africa",
+      "tile_count": 963,
+      "region_count": 14,
+      "admin2_count": 0
+    },
+    {
+      "id": "Libya",
+      "palette_index": 20,
+      "tier": "regional",
+      "continent": "Africa",
+      "tile_count": 18390,
+      "region_count": 22,
+      "admin2_count": 0
+    },
+    {
+      "id": "Liechtenstein",
+      "palette_index": 143,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 3,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Lithuania",
+      "palette_index": 56,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 1142,
+      "region_count": 10,
+      "admin2_count": 0
+    },
+    {
+      "id": "Macao S.A.R",
+      "palette_index": 245,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 1,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Madagascar",
+      "palette_index": 88,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 5906,
+      "region_count": 21,
+      "admin2_count": 0
+    },
+    {
+      "id": "Malawi",
+      "palette_index": 107,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 1228,
+      "region_count": 26,
+      "admin2_count": 0
+    },
+    {
+      "id": "Malaysia",
+      "palette_index": 67,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 3458,
+      "region_count": 15,
+      "admin2_count": 0
+    },
+    {
+      "id": "Maldives",
+      "palette_index": 162,
+      "tier": "micro",
+      "continent": "Asia",
+      "tile_count": 4,
+      "region_count": 3,
+      "admin2_count": 0
+    },
+    {
+      "id": "Mali",
+      "palette_index": 23,
+      "tier": "regional",
+      "continent": "Africa",
+      "tile_count": 13167,
+      "region_count": 12,
+      "admin2_count": 3
+    },
+    {
+      "id": "Malta",
+      "palette_index": 141,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 9,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Marshall Islands",
+      "palette_index": 194,
+      "tier": "micro",
+      "continent": "Oceania",
+      "tile_count": 6,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Mauritania",
+      "palette_index": 81,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 8724,
+      "region_count": 12,
+      "admin2_count": 0
+    },
+    {
+      "id": "Mauritius",
+      "palette_index": 171,
+      "tier": "micro",
+      "continent": "Africa",
+      "tile_count": 27,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Mexico",
+      "palette_index": 29,
+      "tier": "regional",
+      "continent": "North America",
+      "tile_count": 22020,
+      "region_count": 33,
+      "admin2_count": 0
+    },
+    {
+      "id": "Moldova",
+      "palette_index": 134,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 491,
+      "region_count": 38,
+      "admin2_count": 0
+    },
+    {
+      "id": "Monaco",
+      "palette_index": 144,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 1,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Mongolia",
+      "palette_index": 12,
+      "tier": "regional",
+      "continent": "Asia",
+      "tile_count": 22818,
+      "region_count": 22,
+      "admin2_count": 0
+    },
+    {
+      "id": "Montenegro",
+      "palette_index": 139,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 192,
+      "region_count": 21,
+      "admin2_count": 0
+    },
+    {
+      "id": "Montserrat",
+      "palette_index": 233,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 3,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Morocco",
+      "palette_index": 84,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 6909,
+      "region_count": 16,
+      "admin2_count": 0
+    },
+    {
+      "id": "Mozambique",
+      "palette_index": 83,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 8383,
+      "region_count": 10,
+      "admin2_count": 0
+    },
+    {
+      "id": "Myanmar",
+      "palette_index": 58,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 7286,
+      "region_count": 14,
+      "admin2_count": 0
+    },
+    {
+      "id": "Namibia",
+      "palette_index": 80,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 8984,
+      "region_count": 13,
+      "admin2_count": 0
+    },
+    {
+      "id": "Nauru",
+      "palette_index": 195,
+      "tier": "micro",
+      "continent": "Oceania",
+      "tile_count": 1,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Nepal",
+      "palette_index": 74,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 1671,
+      "region_count": 14,
+      "admin2_count": 0
+    },
+    {
+      "id": "Netherlands",
+      "palette_index": 133,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 611,
+      "region_count": 13,
+      "admin2_count": 0
+    },
+    {
+      "id": "New Caledonia",
+      "palette_index": 197,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 262,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "New Zealand",
+      "palette_index": 122,
+      "tier": "minor",
+      "continent": "Oceania",
+      "tile_count": 3217,
+      "region_count": 20,
+      "admin2_count": 1
+    },
+    {
+      "id": "Nicaragua",
+      "palette_index": 113,
+      "tier": "minor",
+      "continent": "North America",
+      "tile_count": 1278,
+      "region_count": 15,
+      "admin2_count": 0
+    },
+    {
+      "id": "Niger",
+      "palette_index": 26,
+      "tier": "regional",
+      "continent": "Africa",
+      "tile_count": 12433,
+      "region_count": 10,
+      "admin2_count": 2
+    },
+    {
+      "id": "Nigeria",
+      "palette_index": 79,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 9321,
+      "region_count": 37,
+      "admin2_count": 0
+    },
+    {
+      "id": "Niue",
+      "palette_index": 227,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 4,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Norfolk Island",
+      "palette_index": 239,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 2,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "North Korea",
+      "palette_index": 75,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 1651,
+      "region_count": 11,
+      "admin2_count": 0
+    },
+    {
+      "id": "North Macedonia",
+      "palette_index": 137,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 340,
+      "region_count": 75,
+      "admin2_count": 0
+    },
+    {
+      "id": "Northern Cyprus",
+      "palette_index": 206,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 49,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Northern Mariana Islands",
+      "palette_index": 219,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 10,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Norway",
+      "palette_index": 39,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 5582,
+      "region_count": 21,
+      "admin2_count": 0
+    },
+    {
+      "id": "Oman",
+      "palette_index": 68,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 3396,
+      "region_count": 11,
+      "admin2_count": 0
+    },
+    {
+      "id": "Pakistan",
+      "palette_index": 16,
+      "tier": "regional",
+      "continent": "Asia",
+      "tile_count": 10756,
+      "region_count": 8,
+      "admin2_count": 1
+    },
+    {
+      "id": "Palau",
+      "palette_index": 193,
+      "tier": "micro",
+      "continent": "Oceania",
+      "tile_count": 11,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Palestine",
+      "palette_index": 157,
+      "tier": "micro",
+      "continent": "Asia",
+      "tile_count": 73,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Panama",
+      "palette_index": 174,
+      "tier": "micro",
+      "continent": "North America",
+      "tile_count": 779,
+      "region_count": 11,
+      "admin2_count": 0
+    },
+    {
+      "id": "Papua New Guinea",
+      "palette_index": 121,
+      "tier": "minor",
+      "continent": "Oceania",
+      "tile_count": 3449,
+      "region_count": 17,
+      "admin2_count": 0
+    },
+    {
+      "id": "Paraguay",
+      "palette_index": 117,
+      "tier": "minor",
+      "continent": "South America",
+      "tile_count": 4233,
+      "region_count": 16,
+      "admin2_count": 0
+    },
+    {
+      "id": "Peru",
+      "palette_index": 33,
+      "tier": "regional",
+      "continent": "South America",
+      "tile_count": 12582,
+      "region_count": 24,
+      "admin2_count": 0
+    },
+    {
+      "id": "Philippines",
+      "palette_index": 66,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 3485,
+      "region_count": 105,
+      "admin2_count": 0
+    },
+    {
+      "id": "Pitcairn Islands",
+      "palette_index": 246,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 1,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Poland",
+      "palette_index": 40,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 5110,
+      "region_count": 16,
+      "admin2_count": 0
+    },
+    {
+      "id": "Portugal",
+      "palette_index": 52,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 1241,
+      "region_count": 20,
+      "admin2_count": 0
+    },
+    {
+      "id": "Puerto Rico",
+      "palette_index": 202,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 113,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Qatar",
+      "palette_index": 155,
+      "tier": "micro",
+      "continent": "Asia",
+      "tile_count": 138,
+      "region_count": 7,
+      "admin2_count": 0
+    },
+    {
+      "id": "Republic of Serbia",
+      "palette_index": 125,
+      "tier": "minor",
+      "continent": "Unknown",
+      "tile_count": 1077,
+      "region_count": 24,
+      "admin2_count": 0
+    },
+    {
+      "id": "Republic of the Congo",
+      "palette_index": 95,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 3064,
+      "region_count": 11,
+      "admin2_count": 0
+    },
+    {
+      "id": "Romania",
+      "palette_index": 45,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 3400,
+      "region_count": 42,
+      "admin2_count": 0
+    },
+    {
+      "id": "Russia",
+      "palette_index": 1,
+      "tier": "major",
+      "continent": "Europe",
+      "tile_count": 251584,
+      "region_count": 218,
+      "admin2_count": 132
+    },
+    {
+      "id": "Rwanda",
+      "palette_index": 173,
+      "tier": "micro",
+      "continent": "Africa",
+      "tile_count": 8,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Saint Barthelemy",
+      "palette_index": 247,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 1,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Saint Helena",
+      "palette_index": 222,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 8,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Saint Kitts and Nevis",
+      "palette_index": 185,
+      "tier": "micro",
+      "continent": "North America",
+      "tile_count": 6,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Saint Lucia",
+      "palette_index": 181,
+      "tier": "micro",
+      "continent": "North America",
+      "tile_count": 10,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Saint Martin",
+      "palette_index": 248,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 1,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Saint Pierre and Miquelon",
+      "palette_index": 224,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 7,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Saint Vincent and the Grenadines",
+      "palette_index": 183,
+      "tier": "micro",
+      "continent": "North America",
+      "tile_count": 8,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Samoa",
+      "palette_index": 190,
+      "tier": "micro",
+      "continent": "Oceania",
+      "tile_count": 44,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "San Marino",
+      "palette_index": 145,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 1,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Saudi Arabia",
+      "palette_index": 15,
+      "tier": "regional",
+      "continent": "Asia",
+      "tile_count": 15595,
+      "region_count": 12,
+      "admin2_count": 0
+    },
+    {
+      "id": "Senegal",
+      "palette_index": 103,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 1857,
+      "region_count": 13,
+      "admin2_count": 0
+    },
+    {
+      "id": "Seychelles",
+      "palette_index": 172,
+      "tier": "micro",
+      "continent": "Africa",
+      "tile_count": 11,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Siachen Glacier",
+      "palette_index": 208,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 25,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Sierra Leone",
+      "palette_index": 85,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 6810,
+      "region_count": 3,
+      "admin2_count": 0
+    },
+    {
+      "id": "Singapore",
+      "palette_index": 161,
+      "tier": "micro",
+      "continent": "Asia",
+      "tile_count": 8,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Sint Maarten",
+      "palette_index": 240,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 2,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Slovakia",
+      "palette_index": 130,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 728,
+      "region_count": 8,
+      "admin2_count": 0
+    },
+    {
+      "id": "Slovenia",
+      "palette_index": 138,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 289,
+      "region_count": 141,
+      "admin2_count": 0
+    },
+    {
+      "id": "Solomon Islands",
+      "palette_index": 187,
+      "tier": "micro",
+      "continent": "Oceania",
+      "tile_count": 416,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Somalia",
+      "palette_index": 93,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 4077,
+      "region_count": 12,
+      "admin2_count": 0
+    },
+    {
+      "id": "Somaliland",
+      "palette_index": 124,
+      "tier": "minor",
+      "continent": "Unknown",
+      "tile_count": 1732,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "South Africa",
+      "palette_index": 24,
+      "tier": "regional",
+      "continent": "Africa",
+      "tile_count": 12872,
+      "region_count": 8,
+      "admin2_count": 0
+    },
+    {
+      "id": "South Georgia and the Islands",
+      "palette_index": 203,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 101,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "South Korea",
+      "palette_index": 77,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 1336,
+      "region_count": 17,
+      "admin2_count": 0
+    },
+    {
+      "id": "South Sudan",
+      "palette_index": 86,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 6350,
+      "region_count": 10,
+      "admin2_count": 0
+    },
+    {
+      "id": "Southern Patagonian Ice Field",
+      "palette_index": 211,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 17,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Spain",
+      "palette_index": 10,
+      "tier": "regional",
+      "continent": "Europe",
+      "tile_count": 10204,
+      "region_count": 52,
+      "admin2_count": 0
+    },
+    {
+      "id": "Sri Lanka",
+      "palette_index": 148,
+      "tier": "micro",
+      "continent": "Asia",
+      "tile_count": 721,
+      "region_count": 25,
+      "admin2_count": 0
+    },
+    {
+      "id": "Sudan",
+      "palette_index": 19,
+      "tier": "regional",
+      "continent": "Africa",
+      "tile_count": 21549,
+      "region_count": 20,
+      "admin2_count": 3
+    },
+    {
+      "id": "Suriname",
+      "palette_index": 120,
+      "tier": "minor",
+      "continent": "South America",
+      "tile_count": 1487,
+      "region_count": 10,
+      "admin2_count": 0
+    },
+    {
+      "id": "Sweden",
+      "palette_index": 37,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 6328,
+      "region_count": 21,
+      "admin2_count": 0
+    },
+    {
+      "id": "Switzerland",
+      "palette_index": 132,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 675,
+      "region_count": 25,
+      "admin2_count": 0
+    },
+    {
+      "id": "Syria",
+      "palette_index": 71,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 2271,
+      "region_count": 15,
+      "admin2_count": 0
+    },
+    {
+      "id": "S\u00e3o Tom\u00e9 and Principe",
+      "palette_index": 214,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 13,
+      "region_count": 2,
+      "admin2_count": 0
+    },
+    {
+      "id": "Taiwan",
+      "palette_index": 151,
+      "tier": "micro",
+      "continent": "Asia",
+      "tile_count": 423,
+      "region_count": 21,
+      "admin2_count": 0
+    },
+    {
+      "id": "Tajikistan",
+      "palette_index": 73,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 1811,
+      "region_count": 5,
+      "admin2_count": 0
+    },
+    {
+      "id": "Thailand",
+      "palette_index": 61,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 5463,
+      "region_count": 77,
+      "admin2_count": 0
+    },
+    {
+      "id": "The Bahamas",
+      "palette_index": 199,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 245,
+      "region_count": 25,
+      "admin2_count": 0
+    },
+    {
+      "id": "Togo",
+      "palette_index": 106,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 1257,
+      "region_count": 4,
+      "admin2_count": 0
+    },
+    {
+      "id": "Tonga",
+      "palette_index": 192,
+      "tier": "micro",
+      "continent": "Oceania",
+      "tile_count": 14,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Trinidad and Tobago",
+      "palette_index": 179,
+      "tier": "micro",
+      "continent": "North America",
+      "tile_count": 62,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Tunisia",
+      "palette_index": 102,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 1931,
+      "region_count": 23,
+      "admin2_count": 0
+    },
+    {
+      "id": "Turkey",
+      "palette_index": 9,
+      "tier": "regional",
+      "continent": "Europe",
+      "tile_count": 10224,
+      "region_count": 81,
+      "admin2_count": 0
+    },
+    {
+      "id": "Turkmenistan",
+      "palette_index": 59,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 6108,
+      "region_count": 5,
+      "admin2_count": 0
+    },
+    {
+      "id": "Turks and Caicos Islands",
+      "palette_index": 212,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 15,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Tuvalu",
+      "palette_index": 196,
+      "tier": "micro",
+      "continent": "Oceania",
+      "tile_count": 1,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "US Naval Base Guantanamo Bay",
+      "palette_index": 241,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 2,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Uganda",
+      "palette_index": 100,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 2435,
+      "region_count": 111,
+      "admin2_count": 0
+    },
+    {
+      "id": "Ukraine",
+      "palette_index": 36,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 8761,
+      "region_count": 25,
+      "admin2_count": 0
+    },
+    {
+      "id": "United Arab Emirates",
+      "palette_index": 147,
+      "tier": "micro",
+      "continent": "Asia",
+      "tile_count": 810,
+      "region_count": 8,
+      "admin2_count": 0
+    },
+    {
+      "id": "United Kingdom",
+      "palette_index": 42,
+      "tier": "minor",
+      "continent": "Europe",
+      "tile_count": 4467,
+      "region_count": 4,
+      "admin2_count": 0
+    },
+    {
+      "id": "United Republic of Tanzania",
+      "palette_index": 123,
+      "tier": "minor",
+      "continent": "Unknown",
+      "tile_count": 9575,
+      "region_count": 30,
+      "admin2_count": 0
+    },
+    {
+      "id": "United States Minor Outlying Islands",
+      "palette_index": 249,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 1,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "United States Virgin Islands",
+      "palette_index": 223,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 8,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "United States of America",
+      "palette_index": 4,
+      "tier": "major",
+      "continent": "North America",
+      "tile_count": 125010,
+      "region_count": 89,
+      "admin2_count": 39
+    },
+    {
+      "id": "Uruguay",
+      "palette_index": 116,
+      "tier": "minor",
+      "continent": "South America",
+      "tile_count": 4599,
+      "region_count": 17,
+      "admin2_count": 0
+    },
+    {
+      "id": "Uzbekistan",
+      "palette_index": 60,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 5996,
+      "region_count": 13,
+      "admin2_count": 0
+    },
+    {
+      "id": "Vanuatu",
+      "palette_index": 189,
+      "tier": "micro",
+      "continent": "Oceania",
+      "tile_count": 196,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Vatican",
+      "palette_index": 146,
+      "tier": "micro",
+      "continent": "Europe",
+      "tile_count": 1,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Venezuela",
+      "palette_index": 31,
+      "tier": "regional",
+      "continent": "South America",
+      "tile_count": 24237,
+      "region_count": 28,
+      "admin2_count": 4
+    },
+    {
+      "id": "Vietnam",
+      "palette_index": 65,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 3567,
+      "region_count": 63,
+      "admin2_count": 0
+    },
+    {
+      "id": "Wallis and Futuna",
+      "palette_index": 234,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 3,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Western Sahara",
+      "palette_index": 108,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 1005,
+      "region_count": 1,
+      "admin2_count": 0
+    },
+    {
+      "id": "Yemen",
+      "palette_index": 64,
+      "tier": "minor",
+      "continent": "Asia",
+      "tile_count": 4394,
+      "region_count": 20,
+      "admin2_count": 0
+    },
+    {
+      "id": "Zambia",
+      "palette_index": 94,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 3320,
+      "region_count": 5,
+      "admin2_count": 0
+    },
+    {
+      "id": "Zimbabwe",
+      "palette_index": 91,
+      "tier": "minor",
+      "continent": "Africa",
+      "tile_count": 4136,
+      "region_count": 10,
+      "admin2_count": 0
+    },
+    {
+      "id": "eSwatini",
+      "palette_index": 200,
+      "tier": "micro",
+      "continent": "Unknown",
+      "tile_count": 193,
+      "region_count": 1,
+      "admin2_count": 0
+    }
+  ]
+}
