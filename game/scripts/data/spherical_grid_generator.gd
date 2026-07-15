@@ -92,6 +92,33 @@ static func count_tiles(band_structure: Dictionary) -> int:
 	return total
 
 
+## Compute band structures for all LOD levels 0-4.
+## Returns Array[Dictionary] indexed by LOD level.
+## LOD 0 = base_cell_km, LOD 1 = 2× base_cell_km, etc.
+static func compute_all_lod_structures(radius_km: float, base_cell_km: float) -> Array:
+	var lods: Array = []
+	for mult in LOD_MULTIPLIERS:
+		var cell_km := base_cell_km * float(mult)
+		lods.append(compute_band_structure(radius_km, cell_km))
+	return lods
+
+
+## Get tile count at a specific LOD level.
+## lod_level: 0 = finest, 4 = coarsest.
+## lod_structures: Array from compute_all_lod_structures().
+static func get_lod_tile_count(lod_level: int, lod_structures: Array) -> int:
+	if lod_level < 0 or lod_level >= lod_structures.size():
+		return 0
+	return count_tiles(lod_structures[lod_level])
+
+
+## Get the band structure for a specific LOD level.
+static func get_lod_structure(lod_level: int, lod_structures: Array) -> Dictionary:
+	if lod_level < 0 or lod_level >= lod_structures.size():
+		return {}
+	return lod_structures[lod_level]
+
+
 ## Generate wireframe grid mesh for a spherical body.
 ## Returns a MeshInstance3D positioned at origin.
 static func generate(body_name: String, radius_km: float, body_color: Color, base_cell_km: float = 100.0) -> MeshInstance3D:

@@ -31,6 +31,20 @@ func _ready() -> void:
 		_band_structure.get("total_bands", 0),
 		SphericalGridGenerator.count_tiles(_band_structure),
 	])
+	_print_lod_summary()
+
+
+func _print_lod_summary() -> void:
+	var lod_structures := SphericalGridGenerator.compute_all_lod_structures(
+		EARTH_RADIUS_KM, BASE_CELL_KM
+	)
+	print("LOD Pyramid (base %.0f km):" % BASE_CELL_KM)
+	for lod in range(lod_structures.size()):
+		var count := SphericalGridGenerator.get_lod_tile_count(lod, lod_structures)
+		var bs: Dictionary = SphericalGridGenerator.get_lod_structure(lod, lod_structures)
+		print("  LOD %d: %s tiles (%d bands, %d equator segs)" % [
+			lod, count, bs.get("total_bands", 0), bs.get("equator_segs", 0),
+		])
 
 
 func _setup_earth_body() -> void:
