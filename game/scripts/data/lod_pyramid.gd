@@ -288,3 +288,8 @@ func generate_all_lod_meshes(territory_data: Node, palette_manager: Node) -> voi
 			if palette_manager and palette_manager.has_method("register_material"):
 				palette_manager.register_material(mi.material_override)
 	print("LOD mesh generation complete (%d levels)" % (_lod_meshes.size() - 1))
+
+
+## Register the existing LOD 0 tint mesh for visibility tracking.
+func register_lod_zero(mesh: MeshInstance3D) -> void:
+	_lod_meshes[0] = mesh

@@ -15,6 +15,7 @@ var _river_overlay: Node
 var _palette_manager: Node
 var _territory_data: Node
 var _lod_pyramid: Node
+var _camera: Camera3D
 var _band_structure: Dictionary = {}
 var _tile_colors: Dictionary = {}  # tile_id → Color(palette_idx/255, 0, 0, 1)
 
@@ -277,3 +278,31 @@ func _create_lod_meshes() -> void:
 
 	if _lod_pyramid.has_method("generate_all_lod_meshes"):
 		_lod_pyramid.generate_all_lod_meshes(_territory_data, _palette_manager)
+
+	# Register LOD 0 (existing tint mesh) with the pyramid
+	if _tint_mesh and _lod_pyramid and _lod_pyramid.has_method("register_lod_zero"):
+		_lod_pyramid.register_lod_zero(_tint_mesh)
+
+
+func _process(_delta: float) -> void:
+	_update_lod()
+
+
+## Select LOD based on camera distance and update visibility.
+func _update_lod() -> void:
+	if not _lod_pyramid:
+		return
+
+	# Find camera if not cached
+	if not _camera:
+		_camera = get_viewport().get_camera_3d()
+
+	if not _camera:
+		return
+
+	var camera_distance := _camera.global_position.length()
+
+	if _lod_pyramid.has_method("select_lod"):
+		var active_lod: int = _lod_pyramid.select_lod(camera_distance)
+		if _lod_pyramid.has_method("update_visibility"):
+			_lod_pyramid.update_visibility(active_lod)
