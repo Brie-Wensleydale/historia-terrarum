@@ -12,6 +12,7 @@ var _grid_mesh: MeshInstance3D
 var _tint_mesh: MeshInstance3D
 var _coastline_overlay: Node
 var _river_overlay: Node
+var _border_overlay: Node
 var _palette_manager: Node
 var _territory_data: Node
 var _lod_pyramid: Node
@@ -31,6 +32,7 @@ func _ready() -> void:
 	_create_lod_meshes()
 	_create_coastlines()
 	_create_rivers()
+	_create_borders()
 	print("Earth display ready. Grid: %d bands, %d tiles" % [
 		_band_structure.get("total_bands", 0),
 		SphericalGridGenerator.count_tiles(_band_structure),
@@ -261,9 +263,23 @@ func _create_rivers() -> void:
 	call_deferred("_init_river_overlay")
 
 
+func _create_borders() -> void:
+	var border_script := load("res://scripts/planetary/border_overlay.gd")
+	_border_overlay = Node.new()
+	_border_overlay.name = "BorderOverlay"
+	_border_overlay.set_script(border_script)
+	add_child(_border_overlay)
+	call_deferred("_init_border_overlay")
+
+
 func _init_river_overlay() -> void:
 	if _river_overlay and _river_overlay.has_method("initialize"):
 		_river_overlay.initialize(_band_structure)
+
+
+func _init_border_overlay() -> void:
+	if _border_overlay and _border_overlay.has_method("initialize"):
+		_border_overlay.initialize(_band_structure, _territory_data)
 
 
 ## Generate LOD 1-4 meshes from the LOD pyramid manager.
