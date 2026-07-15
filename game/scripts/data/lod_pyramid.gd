@@ -19,8 +19,11 @@ const LOD_THRESHOLDS := [
 # Band structures for LOD 0-4 (Array[Dictionary])
 var _lod_structures: Array = []
 
-# Mesh instance per LOD level
+# Mesh instance per LOD level (solid quads)
 var _lod_meshes: Array = []
+
+# Textured quad meshes per LOD (container Node3D with per-quad MeshInstance3D children)
+var _lod_textured: Array = []
 
 # ShaderMaterial per LOD level
 var _lod_materials: Array = []
@@ -40,6 +43,7 @@ func _ready() -> void:
 		EARTH_RADIUS_KM, BASE_CELL_KM
 	)
 	_lod_meshes.resize(NUM_LODS)
+	_lod_textured.resize(NUM_LODS)
 	_lod_materials.resize(NUM_LODS)
 	_print_summary()
 
@@ -127,8 +131,11 @@ func update_visibility(active_lod: int) -> void:
 
 	_active_lod = active_lod
 	for lod in range(NUM_LODS):
+		var visible := (lod == _active_lod)
 		if lod < _lod_meshes.size() and _lod_meshes[lod]:
-			_lod_meshes[lod].visible = (lod == _active_lod)
+			_lod_meshes[lod].visible = visible
+		if lod < _lod_textured.size() and _lod_textured[lod]:
+			_lod_textured[lod].visible = visible
 
 
 ## Get classification stats for all quads at a LOD level.
@@ -160,26 +167,31 @@ func get_classification_stats(lod: int, territory_data: Node) -> Dictionary:
 	return {"solid": solid, "textured": textured}
 
 
-## Generate a full LOD mesh for a given level.
-## For solid quads: vertex colors with palette indices.
-## For textured quads: skipped (Task 5 adds R8 texture support).
-## Returns MeshInstance3D with solid_tint ShaderMaterial applied.
-func generate_lod_mesh(lod: int, territory_data: Node) -> MeshInstance3D:
+## Generate meshes for a given LOD level.
+## Returns Dictionary with "solid" (MeshInstance3D) and "textured" (Node3D container).
+## Solid quads use vertex colors + solid_tint shader.
+## Textured quads use per-quad R8 textures + territory_palette shader.
+func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
+	var result := {"solid": null, "textured": null}
+
 	if lod <= 0 or lod >= NUM_LODS:
-		return null
+		return result
 
 	var bs: Dictionary = _lod_structures[lod]
 	var band_segs: Array = bs["band_segs"]
 	var total_bands: int = bs["total_bands"]
 	var radius_m: float = EARTH_RADIUS_KM * 1000.0
-	var offset_factor := 1.003 + lod * 0.0005  # Slight offset per LOD to avoid z-fighting
+	var offset_factor := 1.003 + lod * 0.0005
 
-	var st := SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var st_solid := SurfaceTool.new()
+	st_solid.begin(Mesh.PRIMITIVE_TRIANGLES)
 
 	var solid_count := 0
 	var textured_count := 0
 	var ocean_count := 0
+
+	# Collect textured quad data for separate mesh generation
+	var textured_quads: Array = []  # [{qband, qseg, indices_2d}]
 
 	for b_idx in range(total_bands - 1):
 		var segs_a: int = band_segs[b_idx]
@@ -189,7 +201,6 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> MeshInstance3D:
 
 		var sparser_segs: int = mini(segs_a, segs_b)
 
-		# Latitude bounds for this band at the LOD resolution
 		var bot_lat: float = -PI * 0.5 + PI * float(b_idx) / float(total_bands)
 		var top_lat: float = -PI * 0.5 + PI * float(b_idx + 1) / float(total_bands)
 		var r_bot: float = radius_m * cos(bot_lat) * offset_factor
@@ -202,24 +213,6 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> MeshInstance3D:
 			var key := "%d_%d_%d" % [lod, b_idx, s]
 			_quad_classifications[key] = classification
 
-			if classification == "textured":
-				textured_count += 1
-				continue  # Task 5 will handle these
-
-			# Solid quad — get the dominant palette index
-			var palette_idx := get_solid_owner(lod, b_idx, s, territory_data)
-
-			if palette_idx == 0:
-				ocean_count += 1
-				continue  # Skip ocean quads entirely
-
-			solid_count += 1
-
-			# Vertex color encodes palette index in R channel
-			var vc := Color(palette_idx / 255.0, 0.0, 0.0, 1.0)
-			st.set_color(vc)
-
-			# Quad corners at LOD resolution
 			var lon_s: float = TAU * float(s) / float(sparser_segs)
 			var lon_s_next: float = TAU * float(s + 1) / float(sparser_segs)
 
@@ -228,30 +221,122 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> MeshInstance3D:
 			var v_tl := Vector3(r_top * cos(lon_s), y_top, r_top * sin(lon_s))
 			var v_tr := Vector3(r_top * cos(lon_s_next), y_top, r_top * sin(lon_s_next))
 
-			st.add_vertex(v_bl); st.add_vertex(v_br); st.add_vertex(v_tr)
-			st.add_vertex(v_bl); st.add_vertex(v_tr); st.add_vertex(v_tl)
+			if classification == "textured":
+				textured_count += 1
+				# Build 2D array of sub-tile palette indices
+				var indices_2d := _build_texture_indices(lod, b_idx, s, territory_data)
+				textured_quads.append({
+					"v_bl": v_bl, "v_br": v_br, "v_tl": v_tl, "v_tr": v_tr,
+					"indices": indices_2d,
+					"key": key,
+				})
+				continue
+
+			# Solid quad
+			var palette_idx := get_solid_owner(lod, b_idx, s, territory_data)
+			if palette_idx == 0:
+				ocean_count += 1
+				continue
+
+			solid_count += 1
+			var vc := Color(palette_idx / 255.0, 0.0, 0.0, 1.0)
+			st_solid.set_color(vc)
+			st_solid.add_vertex(v_bl); st_solid.add_vertex(v_br); st_solid.add_vertex(v_tr)
+			st_solid.add_vertex(v_bl); st_solid.add_vertex(v_tr); st_solid.add_vertex(v_tl)
+
+	# Build solid mesh
+	if solid_count > 0:
+		var solid_mesh: ArrayMesh = st_solid.commit()
+		if solid_mesh:
+			var scaled := _scale_array_mesh(solid_mesh, 1.0 / 1000.0)
+			var mi := MeshInstance3D.new()
+			mi.name = "LOD_%d_Solid" % lod
+			mi.mesh = scaled
+			mi.visible = false
+			var mat := ShaderMaterial.new()
+			mat.shader = load("res://shaders/solid_tint.gdshader")
+			mi.material_override = mat
+			result["solid"] = mi
+
+	# Build textured mesh (one MeshInstance3D per quad for per-quad textures)
+	if textured_count > 0:
+		var container := Node3D.new()
+		container.name = "LOD_%d_Textured" % lod
+		container.visible = false
+
+		for qdata in textured_quads:
+			var quad_mi := _build_textured_quad(qdata)
+			if quad_mi:
+				container.add_child(quad_mi)
+
+		result["textured"] = container
+
+	print("  LOD %d: %d solid, %d textured, %d ocean" % [lod, solid_count, textured_count, ocean_count])
+	return result
+
+
+## Build a 2D array of palette indices for a textured quad.
+## Each element corresponds to a Level 0 sub-tile within the quad.
+func _build_texture_indices(lod: int, qband: int, qseg: int, territory_data: Node) -> Array:
+	var span := 1 << lod
+	var indices: Array = []
+	for db in range(span):
+		var row: Array = []
+		for ds in range(span):
+			var band0 := qband * span + db
+			var seg0 := qseg * span + ds
+			var tile_id := "B%d_%d" % [band0, seg0]
+			var idx := territory_data.get_tile_owner_palette(tile_id)
+			row.append(idx)
+		indices.append(row)
+	return indices
+
+
+## Create a single textured quad MeshInstance3D with its own R8 texture.
+func _build_textured_quad(qdata: Dictionary) -> MeshInstance3D:
+	var v_bl: Vector3 = qdata["v_bl"]
+	var v_br: Vector3 = qdata["v_br"]
+	var v_tl: Vector3 = qdata["v_tl"]
+	var v_tr: Vector3 = qdata["v_tr"]
+	var indices_2d: Array = qdata["indices"]
+
+	# Generate R8 texture from indices
+	var img := PaletteTextureGen.create_from_indices(indices_2d)
+	var texture := ImageTexture.create_from_image(img)
+
+	# Build quad mesh
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+
+	# Set UVs for texture sampling
+	st.set_uv(Vector2(0, 0))
+	st.add_vertex(v_bl)
+	st.set_uv(Vector2(1, 0))
+	st.add_vertex(v_br)
+	st.set_uv(Vector2(1, 1))
+	st.add_vertex(v_tr)
+
+	st.set_uv(Vector2(0, 0))
+	st.add_vertex(v_bl)
+	st.set_uv(Vector2(1, 1))
+	st.add_vertex(v_tr)
+	st.set_uv(Vector2(0, 1))
+	st.add_vertex(v_tl)
 
 	var mesh: ArrayMesh = st.commit()
 	if not mesh:
-		print("  LOD %d: no geometry generated" % lod)
 		return null
 
-	# Scale from meters to km (Godot units)
 	var scaled := _scale_array_mesh(mesh, 1.0 / 1000.0)
 
 	var mi := MeshInstance3D.new()
-	mi.name = "LOD_%d" % lod
+	mi.name = "TexQuad_%s" % qdata.get("key", "?")
 	mi.mesh = scaled
-	mi.visible = false  # Hidden until selected by camera
 
-	# Apply solid_tint shader (palette-index from vertex color R channel)
 	var mat := ShaderMaterial.new()
-	mat.shader = load("res://shaders/solid_tint.gdshader")
+	mat.shader = load("res://shaders/territory_palette.gdshader")
+	mat.set_shader_parameter("cell_detail", texture)
 	mi.material_override = mat
-
-	print("  LOD %d mesh: %d solid quads, %d textured (deferred), %d ocean (skipped)" % [
-		lod, solid_count, textured_count, ocean_count,
-	])
 
 	return mi
 
@@ -280,13 +365,27 @@ func _scale_array_mesh(mesh: ArrayMesh, factor: float) -> ArrayMesh:
 func generate_all_lod_meshes(territory_data: Node, palette_manager: Node) -> void:
 	print("Generating LOD meshes...")
 	for lod in range(1, NUM_LODS):
-		var mi: MeshInstance3D = generate_lod_mesh(lod, territory_data)
-		if mi:
-			_lod_meshes[lod] = mi
-			add_child(mi)
-			# Register with palette manager for uniform updates
+		var result: Dictionary = generate_lod_mesh(lod, territory_data)
+
+		# Store solid mesh
+		var solid_mi: MeshInstance3D = result.get("solid")
+		if solid_mi:
+			_lod_meshes[lod] = solid_mi
+			add_child(solid_mi)
 			if palette_manager and palette_manager.has_method("register_material"):
-				palette_manager.register_material(mi.material_override)
+				palette_manager.register_material(solid_mi.material_override)
+
+		# Store textured container
+		var textured_container: Node3D = result.get("textured")
+		if textured_container:
+			_lod_textured[lod] = textured_container
+			add_child(textured_container)
+			# Register each textured quad's material with palette manager
+			for child in textured_container.get_children():
+				if child is MeshInstance3D and child.material_override:
+					if palette_manager and palette_manager.has_method("register_material"):
+						palette_manager.register_material(child.material_override)
+
 	print("LOD mesh generation complete (%d levels)" % (_lod_meshes.size() - 1))
 
 
