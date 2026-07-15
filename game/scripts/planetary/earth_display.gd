@@ -27,6 +27,7 @@ func _ready() -> void:
 	_assign_real_tile_colors()
 	_create_grid()
 	_create_tint()
+	_create_lod_meshes()
 	_create_coastlines()
 	_create_rivers()
 	print("Earth display ready. Grid: %d bands, %d tiles" % [
@@ -262,3 +263,17 @@ func _create_rivers() -> void:
 func _init_river_overlay() -> void:
 	if _river_overlay and _river_overlay.has_method("initialize"):
 		_river_overlay.initialize(_band_structure)
+
+
+## Generate LOD 1-4 meshes from the LOD pyramid manager.
+## LOD 0 is the existing tint mesh (already created by _create_tint).
+func _create_lod_meshes() -> void:
+	if not _lod_pyramid:
+		return
+
+	# Set LOD 0 = existing tint mesh
+	if _lod_pyramid.has_method("_lod_meshes"):
+		pass  # Deferred registration handled by generate_all_lod_meshes
+
+	if _lod_pyramid.has_method("generate_all_lod_meshes"):
+		_lod_pyramid.generate_all_lod_meshes(_territory_data, _palette_manager)

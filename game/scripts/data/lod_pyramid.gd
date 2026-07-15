@@ -158,3 +158,133 @@ func get_classification_stats(lod: int, territory_data: Node) -> Dictionary:
 				textured += 1
 
 	return {"solid": solid, "textured": textured}
+
+
+## Generate a full LOD mesh for a given level.
+## For solid quads: vertex colors with palette indices.
+## For textured quads: skipped (Task 5 adds R8 texture support).
+## Returns MeshInstance3D with solid_tint ShaderMaterial applied.
+func generate_lod_mesh(lod: int, territory_data: Node) -> MeshInstance3D:
+	if lod <= 0 or lod >= NUM_LODS:
+		return null
+
+	var bs: Dictionary = _lod_structures[lod]
+	var band_segs: Array = bs["band_segs"]
+	var total_bands: int = bs["total_bands"]
+	var radius_m: float = EARTH_RADIUS_KM * 1000.0
+	var offset_factor := 1.003 + lod * 0.0005  # Slight offset per LOD to avoid z-fighting
+
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+
+	var solid_count := 0
+	var textured_count := 0
+	var ocean_count := 0
+
+	for b_idx in range(total_bands - 1):
+		var segs_a: int = band_segs[b_idx]
+		var segs_b: int = band_segs[b_idx + 1]
+		if segs_a <= 0 or segs_b <= 0:
+			continue
+
+		var sparser_segs: int = mini(segs_a, segs_b)
+
+		# Latitude bounds for this band at the LOD resolution
+		var bot_lat: float = -PI * 0.5 + PI * float(b_idx) / float(total_bands)
+		var top_lat: float = -PI * 0.5 + PI * float(b_idx + 1) / float(total_bands)
+		var r_bot: float = radius_m * cos(bot_lat) * offset_factor
+		var r_top: float = radius_m * cos(top_lat) * offset_factor
+		var y_bot: float = radius_m * sin(bot_lat) * offset_factor
+		var y_top: float = radius_m * sin(top_lat) * offset_factor
+
+		for s in range(sparser_segs):
+			var classification := classify_quad(lod, b_idx, s, territory_data)
+			var key := "%d_%d_%d" % [lod, b_idx, s]
+			_quad_classifications[key] = classification
+
+			if classification == "textured":
+				textured_count += 1
+				continue  # Task 5 will handle these
+
+			# Solid quad — get the dominant palette index
+			var palette_idx := get_solid_owner(lod, b_idx, s, territory_data)
+
+			if palette_idx == 0:
+				ocean_count += 1
+				continue  # Skip ocean quads entirely
+
+			solid_count += 1
+
+			# Vertex color encodes palette index in R channel
+			var vc := Color(palette_idx / 255.0, 0.0, 0.0, 1.0)
+			st.set_color(vc)
+
+			# Quad corners at LOD resolution
+			var lon_s: float = TAU * float(s) / float(sparser_segs)
+			var lon_s_next: float = TAU * float(s + 1) / float(sparser_segs)
+
+			var v_bl := Vector3(r_bot * cos(lon_s), y_bot, r_bot * sin(lon_s))
+			var v_br := Vector3(r_bot * cos(lon_s_next), y_bot, r_bot * sin(lon_s_next))
+			var v_tl := Vector3(r_top * cos(lon_s), y_top, r_top * sin(lon_s))
+			var v_tr := Vector3(r_top * cos(lon_s_next), y_top, r_top * sin(lon_s_next))
+
+			st.add_vertex(v_bl); st.add_vertex(v_br); st.add_vertex(v_tr)
+			st.add_vertex(v_bl); st.add_vertex(v_tr); st.add_vertex(v_tl)
+
+	var mesh: ArrayMesh = st.commit()
+	if not mesh:
+		print("  LOD %d: no geometry generated" % lod)
+		return null
+
+	# Scale from meters to km (Godot units)
+	var scaled := _scale_array_mesh(mesh, 1.0 / 1000.0)
+
+	var mi := MeshInstance3D.new()
+	mi.name = "LOD_%d" % lod
+	mi.mesh = scaled
+	mi.visible = false  # Hidden until selected by camera
+
+	# Apply solid_tint shader (palette-index from vertex color R channel)
+	var mat := ShaderMaterial.new()
+	mat.shader = load("res://shaders/solid_tint.gdshader")
+	mi.material_override = mat
+
+	print("  LOD %d mesh: %d solid quads, %d textured (deferred), %d ocean (skipped)" % [
+		lod, solid_count, textured_count, ocean_count,
+	])
+
+	return mi
+
+
+## Scale an ArrayMesh by a factor (meters → kilometers).
+func _scale_array_mesh(mesh: ArrayMesh, factor: float) -> ArrayMesh:
+	var scaled := ArrayMesh.new()
+	for surface_idx in range(mesh.get_surface_count()):
+		var arrays: Array = mesh.surface_get_arrays(surface_idx)
+		if arrays.is_empty():
+			continue
+		var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		if verts.is_empty():
+			continue
+		var scaled_verts := PackedVector3Array()
+		scaled_verts.resize(verts.size())
+		for i in range(verts.size()):
+			scaled_verts[i] = verts[i] * factor
+		arrays[Mesh.ARRAY_VERTEX] = scaled_verts
+		var prim: int = mesh.surface_get_primitive_type(surface_idx)
+		scaled.add_surface_from_arrays(prim, arrays)
+	return scaled
+
+
+## Generate meshes for all LOD levels and store them.
+func generate_all_lod_meshes(territory_data: Node, palette_manager: Node) -> void:
+	print("Generating LOD meshes...")
+	for lod in range(1, NUM_LODS):
+		var mi: MeshInstance3D = generate_lod_mesh(lod, territory_data)
+		if mi:
+			_lod_meshes[lod] = mi
+			add_child(mi)
+			# Register with palette manager for uniform updates
+			if palette_manager and palette_manager.has_method("register_material"):
+				palette_manager.register_material(mi.material_override)
+	print("LOD mesh generation complete (%d levels)" % (_lod_meshes.size() - 1))
