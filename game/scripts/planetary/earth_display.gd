@@ -14,6 +14,7 @@ var _coastline_overlay: Node
 var _river_overlay: Node
 var _palette_manager: Node
 var _territory_data: Node
+var _lod_pyramid: Node
 var _band_structure: Dictionary = {}
 var _tile_colors: Dictionary = {}  # tile_id → Color(palette_idx/255, 0, 0, 1)
 
@@ -22,6 +23,7 @@ func _ready() -> void:
 	_setup_earth_body()
 	_setup_palette_manager()
 	_setup_territory_data()
+	_setup_lod_pyramid()
 	_assign_real_tile_colors()
 	_create_grid()
 	_create_tint()
@@ -91,6 +93,14 @@ func _setup_territory_data() -> void:
 	_territory_data.name = "TerritoryData"
 	_territory_data.set_script(td_script)
 	add_child(_territory_data)
+
+
+func _setup_lod_pyramid() -> void:
+	var lp_script := load("res://scripts/data/lod_pyramid.gd")
+	_lod_pyramid = Node.new()
+	_lod_pyramid.name = "LODPyramid"
+	_lod_pyramid.set_script(lp_script)
+	add_child(_lod_pyramid)
 
 
 func _assign_real_tile_colors() -> void:
