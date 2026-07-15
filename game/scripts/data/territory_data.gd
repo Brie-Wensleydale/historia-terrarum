@@ -3,6 +3,8 @@
 # and supports territory updates (occupation, annexation) with dirty-tracking.
 extends Node
 
+signal territory_changed
+
 # Tile → palette_index mapping (loaded from tile_mapping.json)
 var _tile_palette: Dictionary = {}
 
@@ -72,6 +74,7 @@ func get_tile_owner_palette(tile_id: String) -> int:
 func set_tile_owner(tile_id: String, palette_idx: int) -> void:
 	_tile_ownership[tile_id] = {"owner_idx": palette_idx, "occupier_idx": 0}
 	_dirty_tiles.append(tile_id)
+	territory_changed.emit()
 
 
 func occupy_tile(tile_id: String, occupier_idx: int) -> void:
@@ -80,6 +83,7 @@ func occupy_tile(tile_id: String, occupier_idx: int) -> void:
 	else:
 		_tile_ownership[tile_id]["occupier_idx"] = occupier_idx
 	_dirty_tiles.append(tile_id)
+	territory_changed.emit()
 
 
 func clear_occupation(tile_id: String) -> void:

@@ -22,7 +22,18 @@ func _ready() -> void:
 func initialize(band_structure: Dictionary, territory_data: Node) -> void:
 	_band_structure = band_structure
 	_territory_data = territory_data
+
+	# Connect to territory change signal for auto-regeneration
+	if territory_data and territory_data.has_signal("territory_changed"):
+		if not territory_data.territory_changed.is_connected(_on_territory_changed):
+			territory_data.territory_changed.connect(_on_territory_changed)
+
 	regenerate_borders()
+
+
+## Called when territory changes — regenerate borders.
+func _on_territory_changed() -> void:
+	call_deferred("regenerate_borders")
 
 
 ## Regenerate all border meshes. Called on territory change.
