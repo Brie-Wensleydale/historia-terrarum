@@ -259,7 +259,7 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 	var band_segs: Array = bs["band_segs"]
 	var total_bands: int = bs["total_bands"]
 	var radius_m: float = EARTH_RADIUS_KM * 1000.0
-	var offset_factor := 1.003 + lod * 0.0005
+	var offset_factor: float = 1.003 + lod * 0.0005
 
 	var st_solid: SurfaceTool = SurfaceTool.new()
 	st_solid.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -268,8 +268,7 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 	var textured_count: int = 0
 	var ocean_count: int = 0
 
-	# Collect textured quad data for separate mesh generation
-	var textured_quads: Array = []  # [{qband, qseg, indices_2d}]
+	var textured_quads: Array = []
 
 	for b_idx in range(total_bands - 1):
 		var segs_a: int = band_segs[b_idx]
@@ -300,55 +299,53 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 			var v_tr: Vector3 = Vector3(r_top * cos(lon_s_next), y_top, r_top * sin(lon_s_next))
 
 			if classification == "textured":
-					textured_count += 1
-					# Build 2D array of RGB sub-tile colors
-					var rgb_2d: Array = _build_texture_rgb(lod, b_idx, s, territory_data)
-					textured_quads.append({
-						"v_bl": v_bl, "v_br": v_br, "v_tl": v_tl, "v_tr": v_tr,
-						"colors": rgb_2d,
-						"key": key,
-					})
+				textured_count += 1
+				var rgb_2d: Array = _build_texture_rgb(lod, b_idx, s, territory_data)
+				textured_quads.append({
+					"v_bl": v_bl, "v_br": v_br, "v_tl": v_tl, "v_tr": v_tr,
+					"colors": rgb_2d,
+					"key": key,
+				})
 				continue
 
 			# Solid quad
-				var palette_idx: int = get_solid_owner(lod, b_idx, s, territory_data)
-				if palette_idx == 0:
-					ocean_count += 1
-					continue
+			var palette_idx: int = get_solid_owner(lod, b_idx, s, territory_data)
+			if palette_idx == 0:
+				ocean_count += 1
+				continue
 
-				solid_count += 1
-				var rgb: Color = _palette_colors.get(palette_idx, Color(0.5, 0.5, 0.5, 0.7))
-				st_solid.set_color(rgb)
-				st_solid.add_vertex(v_bl); st_solid.add_vertex(v_br); st_solid.add_vertex(v_tr)
-				st_solid.add_vertex(v_bl); st_solid.add_vertex(v_tr); st_solid.add_vertex(v_tl)
+			solid_count += 1
+			var rgb: Color = _palette_colors.get(palette_idx, Color(0.5, 0.5, 0.5, 0.7))
+			st_solid.set_color(rgb)
+			st_solid.add_vertex(v_bl); st_solid.add_vertex(v_br); st_solid.add_vertex(v_tr)
+			st_solid.add_vertex(v_bl); st_solid.add_vertex(v_tr); st_solid.add_vertex(v_tl)
 
 	# Build solid mesh
 	if solid_count > 0:
 		var solid_mesh: ArrayMesh = st_solid.commit()
 		if solid_mesh:
-			var scaled := _scale_array_mesh(solid_mesh, 1.0 / 1000.0)
+			var scaled: ArrayMesh = _scale_array_mesh(solid_mesh, 1.0 / 1000.0)
 			var mi: MeshInstance3D = MeshInstance3D.new()
-				mi.name = "LOD_%d_Solid" % lod
-				mi.mesh = scaled
-				mi.visible = false
-				# Use StandardMaterial3D with vertex colors — RGB baked directly
-				var mat: StandardMaterial3D = StandardMaterial3D.new()
-				mat.vertex_color_use_as_albedo = true
-				mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-				mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-				mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-				mat.flags_unshaded = true
-				mi.material_override = mat
-				result["solid"] = mi
+			mi.name = "LOD_%d_Solid" % lod
+			mi.mesh = scaled
+			mi.visible = false
+			var mat: StandardMaterial3D = StandardMaterial3D.new()
+			mat.vertex_color_use_as_albedo = true
+			mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+			mat.flags_unshaded = true
+			mi.material_override = mat
+			result["solid"] = mi
 
-	# Build textured mesh (one MeshInstance3D per quad for per-quad textures)
+	# Build textured mesh
 	if textured_count > 0:
 		var container: Node3D = Node3D.new()
 		container.name = "LOD_%d_Textured" % lod
 		container.visible = false
 
 		for qdata in textured_quads:
-			var quad_mi := _build_textured_quad(qdata)
+			var quad_mi: MeshInstance3D = _build_textured_quad(qdata)
 			if quad_mi:
 				container.add_child(quad_mi)
 
