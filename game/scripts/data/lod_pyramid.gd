@@ -79,23 +79,22 @@ func _animate_transition(delta: float) -> void:
 	if t >= 1.0:
 		# Transition complete — hide old, show new fully
 		_set_lod_alpha(_transition_from, 1.0)
+		# Reset active LOD to fully opaque
+		_set_lod_alpha(_transition_to, 1.0)
 		_show_only_lod(_transition_to)
 		_transition_active = false
 		_active_lod = _transition_to
 
 
 func _set_lod_alpha(lod: int, alpha: float) -> void:
-	# Set modulate alpha on solid mesh
-	if lod < _lod_meshes.size() and _lod_meshes[lod]:
-		var c: Color = _lod_meshes[lod].modulate
-		c.a = alpha
-		_lod_meshes[lod].modulate = c
+	# Use transparency for crossfade (0 = opaque, 1 = fully transparent)
+	var transp: float = 1.0 - alpha
 
-	# Set modulate alpha on textured container children
+	if lod < _lod_meshes.size() and _lod_meshes[lod]:
+		_lod_meshes[lod].transparency = transp
+
 	if lod < _lod_textured.size() and _lod_textured[lod]:
-		var c: Color = _lod_textured[lod].modulate
-		c.a = alpha
-		_lod_textured[lod].modulate = c
+		_lod_textured[lod].transparency = transp
 
 
 func _show_only_lod(lod: int) -> void:
