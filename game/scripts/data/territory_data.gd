@@ -41,9 +41,9 @@ func _ready() -> void:
 
 
 func _load_tile_mapping() -> void:
-	var path: String = "res://../data/countries/tile_mapping.json"  # 10km mapping
+	var path: String = "res://../data/countries/tile_mapping_100km.json"
 	if not FileAccess.file_exists(path):
-		path = "res://../data/countries/tile_mapping_100km.json"  # fallback 100km
+		path = "res://../data/countries/tile_mapping.json"  # fallback 10km
 	if not FileAccess.file_exists(path):
 		push_warning("TerritoryData: no tile mapping found")
 		return
@@ -251,10 +251,10 @@ func _tile_id_to_latlon(tid: String) -> Dictionary:
 	var band: int = parts[0].substr(1).to_int()
 	var seg: int = parts[1].to_int()
 
-	const TOTAL_BANDS := 2002
-	const EQUATOR_SEGS := 4000
+	const TOTAL_BANDS := 200
+	const EQUATOR_SEGS := 400
 
-	# Approximate: band 0 = south pole, band 1001 = equator, band 2001 = north pole.
+	# Approximate: band 0 = south pole, band 100 = equator, band 199 = north pole.
 	# Segments: 0-399 around equator, fewer at poles.
 	var lat: float = -90.0 + 180.0 * (float(band) + 0.5) / float(TOTAL_BANDS)
 	var segs_at_band: int = _approx_segs_at_band(band)
@@ -270,8 +270,8 @@ func _approx_segs_at_band(band: int) -> int:
 	# Rough approximation of the merge pattern:
 	# Equator (band ~100): 400 segments
 	# Poles (band 0, 199): 4 segments
-	const TOTAL_BANDS := 2002
-	const EQUATOR_SEGS := 4000
+	const TOTAL_BANDS := 200
+	const EQUATOR_SEGS := 400
 	const MIN_SEGS := 4
 
 	var dist_from_equator: int = abs(band - TOTAL_BANDS / 2)

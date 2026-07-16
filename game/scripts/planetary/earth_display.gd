@@ -5,7 +5,7 @@
 extends Node3D
 
 const EARTH_RADIUS_KM := 6371.0
-const BASE_CELL_KM := 10.0  # 10km production resolution
+const BASE_CELL_KM := 100.0  # 100km for stable rendering (tint + LOD pyramid)
 
 var _earth_body: MeshInstance3D
 var _grid_mesh: MeshInstance3D
@@ -44,10 +44,9 @@ func _ready() -> void:
 	print("EarthDisplay: tint done")
 	_create_lod_meshes()
 	print("EarthDisplay: LOD meshes done")
-	_create_rivers()
-	print("EarthDisplay: rivers done")
-	_create_edge_overlay()
-	print("EarthDisplay: edges done")
+	# Overlays disabled — focus on tints + LOD pyramid textures
+	# _create_rivers()
+	# _create_edge_overlay()
 	_fast_forward_timeline()
 	print("EarthDisplay: timeline done")
 	_connect_game_state()
@@ -130,7 +129,10 @@ func _assign_real_tile_colors() -> void:
 	var band_segs: Array = _band_structure["band_segs"]
 	var total_bands: int = _band_structure["total_bands"]
 
-	# Load 100km tile mapping (aggregated from 10km data)
+	# Load palette for direct RGB vertex colors
+	var palette_map: Dictionary = _load_palette_rgb()
+
+	# Load 100km tile mapping
 	var tile_mapping: Dictionary = _load_tile_mapping_100km()
 	var mapped_count: int = 0
 	var ocean_count: int = 0
@@ -150,16 +152,41 @@ func _assign_real_tile_colors() -> void:
 
 			if tile_mapping.has(tile_id):
 				var palette_idx: int = tile_mapping[tile_id]
-				_tile_colors[tile_id] = Color(palette_idx / 255.0, 0.0, 0.0, 1.0)
+				_tile_colors[tile_id] = palette_map.get(palette_idx, Color(0.5, 0.5, 0.5, 0.7))
 				mapped_count += 1
 			else:
-				# Ocean — index 0, transparent in shader
-				_tile_colors[tile_id] = Color(0.0, 0.0, 0.0, 1.0)
+				_tile_colors[tile_id] = Color.TRANSPARENT
 				ocean_count += 1
 
 	print("Tile colors: %d land (from mapping), %d ocean (total %d)" % [
 		mapped_count, ocean_count, _tile_colors.size(),
 	])
+
+
+## Load palette.json → Dictionary[int, Color] for direct vertex color encoding.
+func _load_palette_rgb() -> Dictionary:
+	var result: Dictionary = {}
+	var path: String = "res://../data/countries/palette.json"
+	if not FileAccess.file_exists(path):
+		path = "res://assets/data/countries/palette.json"
+	if not FileAccess.file_exists(path):
+		return result
+
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
+	if not file:
+		return result
+	var text: String = file.get_as_text()
+	file.close()
+
+	var json: JSON = JSON.new()
+	if json.parse(text) != OK:
+		return result
+
+	var data = json.get_data()
+	for entry in data.get("colors", []):
+		var idx: int = entry["index"]
+		result[idx] = Color(entry["r"], entry["g"], entry["b"], entry["a"])
+	return result
 
 
 func _load_tile_mapping_100km() -> Dictionary:
@@ -233,16 +260,12 @@ func _create_tint() -> void:
 		_tile_colors, band_segs_dict,
 	)
 	if _tint_mesh:
-		var shader_mat: ShaderMaterial = ShaderMaterial.new()
-		var shader := load("res://shaders/solid_tint.gdshader")
-		shader_mat.shader = shader
-		_tint_mesh.material_override = shader_mat
-
+		# Use StandardMaterial3D from generate_tint() — it has
+		# vertex_color_use_as_albedo=true, so palette RGB values
+		# baked into vertex colors render directly. No shader needed.
 		add_child(_tint_mesh)
-		call_deferred("_register_tint_material")
-
 		_tint_mesh.visible = true
-		print("Tint mesh created with real country palette (solid_tint shader)")
+		print("Tint mesh created with direct RGB vertex colors")
 
 
 func _register_tint_material() -> void:
@@ -299,12 +322,11 @@ func _create_lod_meshes() -> void:
 	if not _lod_pyramid:
 		return
 
-	# Set LOD 0 = existing tint mesh
-	if _lod_pyramid.has_method("_lod_meshes"):
-		pass  # Deferred registration handled by generate_all_lod_meshes
+	# Load palette for LOD textures
+	var palette_map: Dictionary = _load_palette_rgb()
 
 	if _lod_pyramid.has_method("generate_all_lod_meshes"):
-		_lod_pyramid.generate_all_lod_meshes(_territory_data, _palette_manager)
+		_lod_pyramid.generate_all_lod_meshes(_territory_data, _palette_manager, palette_map)
 
 	# Register LOD 0 (existing tint mesh) with the pyramid
 	if _tint_mesh and _lod_pyramid and _lod_pyramid.has_method("register_lod_zero"):

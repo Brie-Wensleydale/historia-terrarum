@@ -7,7 +7,7 @@ const PaletteTextureGen := preload("res://scripts/data/palette_texture_gen.gd")
 
 const NUM_LODS := 5
 const EARTH_RADIUS_KM := 6371.0
-const BASE_CELL_KM := 10.0  # Production: 10km; Test: 100km
+const BASE_CELL_KM := 100.0  # LOD 0 at 100km; textures up-sample from territory data
 
 # Distance thresholds for LOD switching (km from Earth center)
 # Earth surface = 6371 km. Orbit at ~8000 km = LOD 1.
@@ -26,6 +26,9 @@ var _lod_meshes: Array = []
 
 # Textured quad meshes per LOD (container Node3D with per-quad MeshInstance3D children)
 var _lod_textured: Array = []
+
+# Palette RGB colors for direct vertex color encoding (index → Color)
+var _palette_colors: Dictionary = {}
 
 # ShaderMaterial per LOD level
 var _lod_materials: Array = []
@@ -297,27 +300,27 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 			var v_tr: Vector3 = Vector3(r_top * cos(lon_s_next), y_top, r_top * sin(lon_s_next))
 
 			if classification == "textured":
-				textured_count += 1
-				# Build 2D array of sub-tile palette indices
-				var indices_2d: Array = _build_texture_indices(lod, b_idx, s, territory_data)
-				textured_quads.append({
-					"v_bl": v_bl, "v_br": v_br, "v_tl": v_tl, "v_tr": v_tr,
-					"indices": indices_2d,
-					"key": key,
-				})
+					textured_count += 1
+					# Build 2D array of RGB sub-tile colors
+					var rgb_2d: Array = _build_texture_rgb(lod, b_idx, s, territory_data)
+					textured_quads.append({
+						"v_bl": v_bl, "v_br": v_br, "v_tl": v_tl, "v_tr": v_tr,
+						"colors": rgb_2d,
+						"key": key,
+					})
 				continue
 
 			# Solid quad
-			var palette_idx: int = get_solid_owner(lod, b_idx, s, territory_data)
-			if palette_idx == 0:
-				ocean_count += 1
-				continue
+				var palette_idx: int = get_solid_owner(lod, b_idx, s, territory_data)
+				if palette_idx == 0:
+					ocean_count += 1
+					continue
 
-			solid_count += 1
-			var vc: Color = Color(palette_idx / 255.0, 0.0, 0.0, 1.0)
-			st_solid.set_color(vc)
-			st_solid.add_vertex(v_bl); st_solid.add_vertex(v_br); st_solid.add_vertex(v_tr)
-			st_solid.add_vertex(v_bl); st_solid.add_vertex(v_tr); st_solid.add_vertex(v_tl)
+				solid_count += 1
+				var rgb: Color = _palette_colors.get(palette_idx, Color(0.5, 0.5, 0.5, 0.7))
+				st_solid.set_color(rgb)
+				st_solid.add_vertex(v_bl); st_solid.add_vertex(v_br); st_solid.add_vertex(v_tr)
+				st_solid.add_vertex(v_bl); st_solid.add_vertex(v_tr); st_solid.add_vertex(v_tl)
 
 	# Build solid mesh
 	if solid_count > 0:
@@ -325,13 +328,18 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 		if solid_mesh:
 			var scaled := _scale_array_mesh(solid_mesh, 1.0 / 1000.0)
 			var mi: MeshInstance3D = MeshInstance3D.new()
-			mi.name = "LOD_%d_Solid" % lod
-			mi.mesh = scaled
-			mi.visible = false
-			var mat: ShaderMaterial = ShaderMaterial.new()
-			mat.shader = load("res://shaders/solid_tint.gdshader")
-			mi.material_override = mat
-			result["solid"] = mi
+				mi.name = "LOD_%d_Solid" % lod
+				mi.mesh = scaled
+				mi.visible = false
+				# Use StandardMaterial3D with vertex colors — RGB baked directly
+				var mat: StandardMaterial3D = StandardMaterial3D.new()
+				mat.vertex_color_use_as_albedo = true
+				mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+				mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+				mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+				mat.flags_unshaded = true
+				mi.material_override = mat
+				result["solid"] = mi
 
 	# Build textured mesh (one MeshInstance3D per quad for per-quad textures)
 	if textured_count > 0:
@@ -350,11 +358,11 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 	return result
 
 
-## Build a 2D array of palette indices for a textured quad.
+## Build a 2D array of RGB Colors for a textured quad.
 ## Each element corresponds to a Level 0 sub-tile within the quad.
-func _build_texture_indices(lod: int, qband: int, qseg: int, territory_data: Node) -> Array:
+func _build_texture_rgb(lod: int, qband: int, qseg: int, territory_data: Node) -> Array:
 	var span := 1 << lod
-	var indices: Array = []
+	var colors: Array = []
 	for db in range(span):
 		var row: Array = []
 		for ds in range(span):
@@ -362,41 +370,38 @@ func _build_texture_indices(lod: int, qband: int, qseg: int, territory_data: Nod
 			var seg0 := qseg * span + ds
 			var tile_id: String = "B%d_%d" % [band0, seg0]
 			var idx: int = territory_data.get_tile_owner_palette(tile_id)
-			row.append(idx)
-		indices.append(row)
-	return indices
+			row.append(_palette_colors.get(idx, Color.TRANSPARENT))
+		colors.append(row)
+	return colors
 
 
-## Create a single textured quad MeshInstance3D with its own R8 texture.
+## Create a single textured quad MeshInstance3D with RGB texture.
 func _build_textured_quad(qdata: Dictionary) -> MeshInstance3D:
 	var v_bl: Vector3 = qdata["v_bl"]
 	var v_br: Vector3 = qdata["v_br"]
 	var v_tl: Vector3 = qdata["v_tl"]
 	var v_tr: Vector3 = qdata["v_tr"]
-	var indices_2d: Array = qdata["indices"]
+	var colors_2d: Array = qdata["colors"]
 
-	# Generate R8 texture from indices
-	var img := PaletteTextureGen.create_from_indices(indices_2d)
+	# Generate RGB texture from color array
+	var span: int = colors_2d.size()
+	var img: Image = Image.create(span, span, false, Image.FORMAT_RGBA8)
+	for row in range(span):
+		for col in range(span):
+			var c: Color = colors_2d[row][col]
+			img.set_pixel(col, row, c)
 	var texture: ImageTexture = ImageTexture.create_from_image(img)
 
 	# Build quad mesh
 	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 
-	# Set UVs for texture sampling
-	st.set_uv(Vector2(0, 0))
-	st.add_vertex(v_bl)
-	st.set_uv(Vector2(1, 0))
-	st.add_vertex(v_br)
-	st.set_uv(Vector2(1, 1))
-	st.add_vertex(v_tr)
-
-	st.set_uv(Vector2(0, 0))
-	st.add_vertex(v_bl)
-	st.set_uv(Vector2(1, 1))
-	st.add_vertex(v_tr)
-	st.set_uv(Vector2(0, 1))
-	st.add_vertex(v_tl)
+	st.set_uv(Vector2(0, 0)); st.add_vertex(v_bl)
+	st.set_uv(Vector2(1, 0)); st.add_vertex(v_br)
+	st.set_uv(Vector2(1, 1)); st.add_vertex(v_tr)
+	st.set_uv(Vector2(0, 0)); st.add_vertex(v_bl)
+	st.set_uv(Vector2(1, 1)); st.add_vertex(v_tr)
+	st.set_uv(Vector2(0, 1)); st.add_vertex(v_tl)
 
 	var mesh: ArrayMesh = st.commit()
 	if not mesh:
@@ -408,9 +413,12 @@ func _build_textured_quad(qdata: Dictionary) -> MeshInstance3D:
 	mi.name = "TexQuad_%s" % qdata.get("key", "?")
 	mi.mesh = scaled
 
-	var mat: ShaderMaterial = ShaderMaterial.new()
-	mat.shader = load("res://shaders/territory_palette.gdshader")
-	mat.set_shader_parameter("cell_detail", texture)
+	var mat: StandardMaterial3D = StandardMaterial3D.new()
+	mat.albedo_texture = texture
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	mat.flags_unshaded = true
 	mi.material_override = mat
 
 	return mi
@@ -437,7 +445,8 @@ func _scale_array_mesh(mesh: ArrayMesh, factor: float) -> ArrayMesh:
 
 
 ## Generate meshes for all LOD levels and store them.
-func generate_all_lod_meshes(territory_data: Node, palette_manager: Node) -> void:
+func generate_all_lod_meshes(territory_data: Node, palette_manager: Node, palette_colors: Dictionary = {}) -> void:
+	_palette_colors = palette_colors
 	print("Generating LOD meshes...")
 	for lod in range(1, NUM_LODS):
 		var result: Dictionary = generate_lod_mesh(lod, territory_data)
@@ -447,19 +456,12 @@ func generate_all_lod_meshes(territory_data: Node, palette_manager: Node) -> voi
 		if solid_mi:
 			_lod_meshes[lod] = solid_mi
 			add_child(solid_mi)
-			if palette_manager and palette_manager.has_method("register_material"):
-				palette_manager.register_material(solid_mi.material_override)
 
 		# Store textured container
 		var textured_container: Node3D = result.get("textured")
 		if textured_container:
 			_lod_textured[lod] = textured_container
 			add_child(textured_container)
-			# Register each textured quad's material with palette manager
-			for child in textured_container.get_children():
-				if child is MeshInstance3D and child.material_override:
-					if palette_manager and palette_manager.has_method("register_material"):
-						palette_manager.register_material(child.material_override)
 
 	print("LOD mesh generation complete (%d levels)" % (_lod_meshes.size() - 1))
 
