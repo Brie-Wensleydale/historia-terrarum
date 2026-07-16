@@ -1,6 +1,6 @@
 # PROGRESS.md — Historia Terrarum
 
-> Last updated: 2026-07-15
+> Last updated: 2026-07-16 (session: type-annotation fixes, blank-screen fix, flags, time controls, P0-P4 optimization plan)
 
 ---
 
@@ -50,11 +50,11 @@
 
 - [x] `solid_tint.gdshader` — palette-index from vertex color R channel (solid quads)
 - [x] `territory_palette.gdshader` — palette-index texture lookup (mixed quads)
-- [x] `palette_manager.gd` — 256-color palette arrays, zero-cost display mode switching
+- [x] `palette_manager.gd` — 256-color palette arrays, display mode switching
 - [x] `palette_texture_gen.gd` — R8 palette-index texture generator utility
 - [x] `earth_display.gd` integration — ShaderMaterial replaces StandardMaterial3D for tint
 - [x] Highlight palette swap (bright/dim blend via highlight_mix uniform)
-- [ ] MultiMesh batching (deferred to Phase 5 LOD — batch with chunk system)
+- [ ] MultiMesh batching (deferred)
 
 ---
 
@@ -70,33 +70,36 @@
 - [x] **Result: 5,171 regions** from 1,852,412 land tiles
 - [x] 1,578 admin-2 regions with parent-linked hierarchy
 - [x] 41 mega-provinces auto-split (Sakha→29, Alaska→16, Xinjiang→11, etc.)
-- [x] Agglomerative clustering with adjacency guarantee (shapely.touches())
-- [x] Geometric BSP fallback for countries without admin-2 data
 
 ### Phase 4b: Country Registry & Palette Indices
 
 **Status:** ✅ Complete
 
 - [x] Build country registry from 5,171 regions → `data/countries/country_registry.yaml`
-- [x] Deterministic palette color assignment (continent/tier/hue) → `data/countries/palette.json`
+- [x] Deterministic palette color assignment → `data/countries/palette.json`
 - [x] 249 countries, 228 unique palette indices (major=7, regional=27, minor=91, micro=124)
 - [x] 100km tile mapping via majority-vote aggregation → `data/countries/tile_mapping_100km.json`
-- [x] Wire into PaletteManager — loads JSON at startup, shader uniforms per frame
-- [x] `territory_data.gd` — loads tile mapping, supports occupation/annexation
+- [x] Wire into PaletteManager — loads JSON at startup
+- [x] `territory_data.gd` — loads tile mapping (now `tile_mapping_100km.json` as primary)
 - [x] `earth_display.gd` — real country colors instead of test stripes
-- [x] Display mode switching — keys 1/2/3/4 (Political/Province/Terrain/Diplomatic)
+- [x] Display mode switching — keys 1/2/3/4
 
 ---
 
 ## Phase 5: LOD Pyramid
 
-**Status:** ⬜ Not started
+**Status:** 🟡 In Progress — code written, meshes generate, LOD 1-4 visible
 
-- [ ] `data/generate/lod_pyramid.py` — pre-compute LOD textures from Level 0
-- [ ] Generate LOD 1-4 tile registries
-- [ ] Solid/mixed classification per quad
-- [ ] Texture atlas generation per chunk per LOD
-- [ ] Lazy regeneration on territory change
+- [x] `lod_pyramid.gd` — LOD pyramid manager (classify, generate, crossfade)
+- [x] Quad classification — `classify_quad()` per-LOD (solid vs textured)
+- [x] Solid mesh generation — vertex-color palette indices + `solid_tint.gdshader`
+- [x] Textured mesh generation — per-quad R8 textures + `territory_palette.gdshader`
+- [x] LOD crossfade — smooth alpha transition with `transparency` property
+- [x] `generate_all_lod_meshes()` — LOD 1-4 from territory data
+- [x] `register_lod_zero()` — existing tint mesh as LOD 0
+- [x] `update_visibility()` — show/hide with crossfade on camera distance change
+- [ ] Static LOD pre-compute pipeline (Python — currently all in-engine at startup)
+- [ ] Dirty-tracking for lazy regeneration on territory change
 - [ ] Verify wireframe + tint rendering at all LOD levels
 
 ---
@@ -106,11 +109,12 @@
 **Status:** ✅ Complete
 
 - [x] Zoom rungs — 5 discrete levels (Tactical/Regional/Continental/Hemisphere/Global)
-- [x] Smooth LOD crossfade — modulate alpha transition (0.35s ease-in-out)
+- [x] Smooth LOD crossfade — alpha transition (0.35s ease-in-out)
 - [x] Orbit momentum — right-drag velocity decays on release
 - [x] Surface tracking — focus_on_surface() snaps to LOD 0
 - [x] Edge clamping — no underground orbits, phi bounds, min/max distance
 - [x] View reset — R key returns to Continental default
+- [x] **Fixed:** Camera far plane set to 200,000 (was default 4,000 — everything clipped)
 
 ---
 
@@ -143,21 +147,66 @@
 
 ## Phase 9: UI
 
-**Status:** ✅ Complete (basic selection + panels)
+**Status:** ✅ Complete (basic selection + panels + flags)
 
 - [x] Click detection — ray-sphere intersection, find tile + country
 - [x] Drag-vs-click discrimination — 5px threshold
 - [x] GameState node — player country, selected entity tracking
 - [x] Country highlight — brighten selected, dim others via PaletteManager
-- [x] Left panel — player country name, flag placeholder, tabs (Stats/Diplomacy/Military/Tech)
-- [x] Right panel — selected object name + type, info rows
+- [x] Left panel — player country name, flag, tabs (Stats/Diplomacy/Military/Tech)
+- [x] Right panel — selected object name + type, flag, info rows
 - [x] Hover tooltip — country name follows cursor
+- [x] Country flags — 464 flag PNGs from Stella Nostra, loaded from `res://assets/flags/`
+
+---
+
+## Phase 10: Time Controls
+
+**Status:** 🟡 In Progress — base system running, needs perf fix
+
+- [x] `time_manager.gd` — central time tracking, 7 speed rungs (15m/s → 1d/s)
+- [x] Pause/resume — all game processes query `TimeManager.get_game_delta()`
+- [x] `time_control.gd` — top-right UI bar with date, speed label, pause/play/speed buttons
+- [x] Universal time scale — any process plugs into TimeManager for synchronized speed
+- [ ] Time controls feel laggy due to P0 palette performance issue (see Issues)
+- [ ] Day/month display logic (currently placeholder month names)
+
+---
+
+## Phase 11: Optimization (P0-P4)
+
+**Status:** ⬜ Plan ready, not started
+
+| Id | Priority | Issue | Fix | Est. impact |
+|----|----------|-------|-----|-------------|
+| P0 | 🔴 Critical | `_update_all_materials()` runs every frame — ~6.3M `set_shader_parameter()` calls/frame | Dirty flag — only update on palette/highlight change | 6M calls → 0 |
+| P1 | 🟡 High | O(n²) border chaining in `_chain_segments()` | Skip chain simplification, render edges directly as line pairs | Faster init |
+| P2 | 🟡 High | Borders/overlays visible through Earth sphere | `no_depth_test = false` on all overlay materials | GPU cull |
+| P3 | 🟢 Medium | Borders offset 90° from Earth texture | Apply `uv1_offset` rotation to border vertex math | Visual fix |
+| P4 | 🟢 Low | Earth texture blurred on zoom | `texture_filter = TEXTURE_FILTER_NEAREST` | Sharp pixels |
 
 ---
 
 ## Issues / Blockers
 
-*None yet.*
+1. **P0 (CRITICAL): Palettes updated every frame** — `palette_manager._process()` calls `_update_all_materials()` unconditionally. 8,251 registered ShaderMaterials × 768 uniform sets = ~6.3M calls/frame. Makes game unplayable.
+2. **P1: Border chaining O(n²)** — greedy algorithm scans remaining array for every segment. Fine for ~10K edges but will hurt at scale.
+3. **Borders visible through planet** — `no_depth_test = true` bypasses depth buffer on all overlays.
+4. **Border offset** — Earth texture has 90° uv offset but borders computed with raw lat/lon.
+5. **Blurry Earth texture** — default trilinear filtering smooths the 4K texture on zoom.
+
+---
+
+## File Paths & Cross-Reference from Stella Nostra
+
+| Asset | Source | Destination |
+|-------|--------|-------------|
+| Flags (464 PNGs) | `stella-nostra-geo-data/data/flags/` | `game/assets/flags/` |
+| Earth 4K texture | Already committed | `game/assets/textures/planet/earth/earth_color_4k.png` |
+| 100km tile mapping | Generated by pipeline | `data/countries/tile_mapping_100km.json` (committed) |
+| 10km tile mapping | Generated by pipeline | `data/countries/tile_mapping.json` (gitignored, 26MB) |
+| Coastlines | Generated by pipeline | `data/output/coastlines.json` (committed) |
+| Rivers | Generated by pipeline | `data/output/grid_10km/rivers.json` (committed) |
 
 ---
 
@@ -169,3 +218,9 @@
 | 2026-07-07 | LOD pyramid derived from Level 0 | Single source of truth, dynamic updates |
 | 2026-07-07 | Palette-index shader for territory | Zero-cost display mode switching |
 | 2026-07-07 | Chunked rendering with geographic partitioning | Frustum + horizon culling for free |
+| 2026-07-15 | Camera zoom rungs with discrete LOD mapping | Scroll snaps between levels instead of continuous zoom |
+| 2026-07-15 | Smooth LOD crossfade via transparency | No material swaps mid-zoom, cheap GPU blend |
+| 2026-07-15 | Timeline events as JSON | Native Godot parsing, no YAML dependency |
+| 2026-07-16 | Time scale 1:900 through 1:86400 | Stella Nostra speeds, capped at 1 day/sec, no reverse |
+| 2026-07-16 | Flags committed to repo (84MB) | First-time clone gets everything, no manual copy step |
+| 2026-07-16 | Develop at 100km, pipeline at 10km | 62K tiles fast enough for iteration; 10km ready for production |
