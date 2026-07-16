@@ -239,10 +239,23 @@ func _create_tint() -> void:
 		shader_mat.shader = shader
 		_tint_mesh.material_override = shader_mat
 
+		add_child(_tint_mesh)
 		call_deferred("_register_tint_material")
 
 		_tint_mesh.visible = true
 		print("Tint mesh created with real country palette (solid_tint shader)")
+
+	# Diagnostic: bright red cube at origin to verify rendering works
+	var diag_cube := MeshInstance3D.new()
+	diag_cube.name = "DiagCube"
+	var box := BoxMesh.new()
+	box.size = Vector3(500, 500, 500)
+	diag_cube.mesh = box
+	var red_mat := StandardMaterial3D.new()
+	red_mat.albedo_color = Color.RED
+	red_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	diag_cube.material_override = red_mat
+	add_child(diag_cube)
 
 
 func _register_tint_material() -> void:
