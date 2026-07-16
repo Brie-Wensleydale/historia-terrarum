@@ -53,6 +53,9 @@ var _earth_center: Vector3 = Vector3.ZERO
 
 
 func _ready() -> void:
+	# Camera far plane must cover the full orbit range (up to 100,000 units)
+	near = 10.0
+	far = 200000.0
 	_snap_to_rung(_current_rung)
 	_distance = _target_distance
 	_update_camera_position()

@@ -23,7 +23,8 @@ var _game_state: Node
 var _hovered_tile: String = ""
 var _hovered_country: String = ""
 var _click_start_pos: Vector2 = Vector2.ZERO
-const CLICK_DRAG_THRESHOLD := 5.0  # pixels — beyond this it's a drag, not a click
+var _hover_frame_counter: int = 0
+const CLICK_DRAG_THRESHOLD := 5.0
 
 
 func _ready() -> void:
@@ -245,18 +246,6 @@ func _create_tint() -> void:
 		_tint_mesh.visible = true
 		print("Tint mesh created with real country palette (solid_tint shader)")
 
-	# Diagnostic: bright red cube at origin to verify rendering works
-	var diag_cube := MeshInstance3D.new()
-	diag_cube.name = "DiagCube"
-	var box := BoxMesh.new()
-	box.size = Vector3(500, 500, 500)
-	diag_cube.mesh = box
-	var red_mat := StandardMaterial3D.new()
-	red_mat.albedo_color = Color.RED
-	red_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	diag_cube.material_override = red_mat
-	add_child(diag_cube)
-
 
 func _register_tint_material() -> void:
 	if _tint_mesh and _tint_mesh.material_override and _palette_manager:
@@ -438,8 +427,12 @@ func _try_select_at(screen_pos: Vector2) -> void:
 	print("Selected: %s [%d] (tile %s)" % [country_name, idx, tile_id])
 
 
-## Update hover state — find country under mouse cursor.
+## Update hover state — find country under mouse cursor (throttled to every 10 frames).
 func _update_hover() -> void:
+	_hover_frame_counter += 1
+	if _hover_frame_counter % 10 != 0:
+		return
+
 	if not _camera:
 		return
 
