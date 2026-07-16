@@ -20,7 +20,25 @@ func _ready() -> void:
 ## Initialize with band structure from earth_display, then create mesh
 func initialize(band_structure: Dictionary) -> void:
 	_band_structure = band_structure
+
+	# River data is at 10km resolution. Game renders at configured BASE_CELL_KM.
+	# Detect resolution mismatch and skip if we don't know the scale.
+	# The river_gen.py outputs band indices for 10km (2,002 bands).
+	# We scale down proportionally.
+	var total_bands: int = _band_structure["total_bands"]
+	if total_bands <= 0:
+		print("River overlay: invalid band structure")
+		return
+
 	_load_and_create_mesh()
+
+
+## Scale river band from 10km grid (2,002 bands) to game resolution (200 bands for 100km).
+const RIVER_SOURCE_BANDS := 2002  # 10km grid
+
+func _scale_band(ten_km_band: int) -> int:
+	var game_bands: int = _band_structure["total_bands"]
+	return int(float(ten_km_band) * float(game_bands) / float(RIVER_SOURCE_BANDS))
 
 
 func _load_and_create_mesh() -> void:
@@ -60,21 +78,28 @@ func _load_and_create_mesh() -> void:
 		var first_segment: bool = true
 
 		for edge in edges:
-			var band: int = edge.get("band", 0)
+			var band_10km: int = edge.get("band", 0)
 			var seg: int = edge.get("seg", 0)
 			var direction: String = edge.get("dir", "E")
+
+			# Scale band from 10km resolution to game resolution
+			var band: int = _scale_band(band_10km)
+			var game_bands: int = _band_structure["total_bands"]
 
 			# Compute the two endpoints of this cell edge
 			var v1: Vector3 = _grid_vertex_position(band, seg, radius, total_bands, band_segs)
 			var v2: Vector3
 
 			if direction == "N":
-				# Edge goes north: from (band, seg) to (band+1, mapped_seg)
-				var next_seg: int = _map_segment(seg, band, band + 1, band_segs)
-				v2 = _grid_vertex_position(band + 1, next_seg, radius, total_bands, band_segs)
+				var next_band: int = _scale_band(band_10km + 1)
+				next_band = mini(next_band, game_bands - 2)
+				var next_seg: int = _map_segment(seg, band, next_band, band_segs)
+				v2 = _grid_vertex_position(next_band, next_seg, radius, total_bands, band_segs)
 			else:
-				# Edge goes east: from (band, seg) to (band, seg+1)
-				v2 = _grid_vertex_position(band, (seg + 1) % band_segs[band], radius, total_bands, band_segs)
+				var segs_at: int = band_segs[band] if band < band_segs.size() else 4
+				if segs_at <= 0:
+					segs_at = 4
+				v2 = _grid_vertex_position(band, (seg + 1) % segs_at, radius, total_bands, band_segs)
 
 			st.add_vertex(v1)
 			st.add_vertex(v2)
@@ -103,8 +128,9 @@ func _load_and_create_mesh() -> void:
 
 
 func _grid_vertex_position(band: int, seg: int, radius: float, total_bands: int, band_segs: Array) -> Vector3:
-	var lat: float = -PI * 0.5 + PI * float(band) / float(total_bands)
-	var segs_at_band: int = band_segs[band] if band < band_segs.size() else 4
+	var safe_band: int = mini(band, maxi(0, total_bands - 1))
+	var lat: float = -PI * 0.5 + PI * float(safe_band) / float(maxi(1, total_bands))
+	var segs_at_band: int = band_segs[safe_band] if safe_band < band_segs.size() else 4
 	if segs_at_band <= 0:
 		segs_at_band = 4
 	var lon: float = TAU * float(seg % segs_at_band) / float(segs_at_band)
