@@ -179,6 +179,7 @@ func _handle_input() -> void:
 func register_material(mat: ShaderMaterial) -> void:
 	if mat and mat not in _registered_materials:
 		_registered_materials.append(mat)
+		_palette_dirty = true  # Push uniforms to newly registered material next frame
 
 
 func unregister_material(mat: ShaderMaterial) -> void:
