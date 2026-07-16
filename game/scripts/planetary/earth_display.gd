@@ -10,9 +10,8 @@ const BASE_CELL_KM := 100.0  # 100km for fast testing
 var _earth_body: MeshInstance3D
 var _grid_mesh: MeshInstance3D
 var _tint_mesh: MeshInstance3D
-var _coastline_overlay: Node
+var _edge_overlay: Node
 var _river_overlay: Node
-var _border_overlay: Node
 var _palette_manager: Node
 var _territory_data: Node
 var _lod_pyramid: Node
@@ -45,12 +44,10 @@ func _ready() -> void:
 	print("EarthDisplay: tint done")
 	_create_lod_meshes()
 	print("EarthDisplay: LOD meshes done")
-	_create_coastlines()
-	print("EarthDisplay: coastlines done")
 	_create_rivers()
 	print("EarthDisplay: rivers done")
-	_create_borders()
-	print("EarthDisplay: borders done")
+	_create_edge_overlay()
+	print("EarthDisplay: edges done")
 	_fast_forward_timeline()
 	print("EarthDisplay: timeline done")
 	_connect_game_state()
@@ -268,12 +265,18 @@ func focus_on_lat_lon(lat_deg: float, lon_deg: float) -> Dictionary:
 	)
 
 
-func _create_coastlines() -> void:
-	var coastline_script := load("res://scripts/planetary/coastline_overlay.gd")
-	_coastline_overlay = Node3D.new()
-	_coastline_overlay.name = "CoastlineOverlay"
-	_coastline_overlay.set_script(coastline_script)
-	add_child(_coastline_overlay)
+func _create_edge_overlay() -> void:
+	var edge_script := load("res://scripts/planetary/edge_overlay.gd")
+	_edge_overlay = Node3D.new()
+	_edge_overlay.name = "EdgeOverlay"
+	_edge_overlay.set_script(edge_script)
+	add_child(_edge_overlay)
+	call_deferred("_init_edge_overlay")
+
+
+func _init_edge_overlay() -> void:
+	if _edge_overlay and _edge_overlay.has_method("initialize"):
+		_edge_overlay.initialize(_band_structure, _territory_data)
 
 
 func _create_rivers() -> void:
@@ -285,23 +288,9 @@ func _create_rivers() -> void:
 	call_deferred("_init_river_overlay")
 
 
-func _create_borders() -> void:
-	var border_script := load("res://scripts/planetary/border_overlay.gd")
-	_border_overlay = Node3D.new()
-	_border_overlay.name = "BorderOverlay"
-	_border_overlay.set_script(border_script)
-	add_child(_border_overlay)
-	call_deferred("_init_border_overlay")
-
-
 func _init_river_overlay() -> void:
 	if _river_overlay and _river_overlay.has_method("initialize"):
 		_river_overlay.initialize(_band_structure)
-
-
-func _init_border_overlay() -> void:
-	if _border_overlay and _border_overlay.has_method("initialize"):
-		_border_overlay.initialize(_band_structure, _territory_data)
 
 
 ## Generate LOD 1-4 meshes from the LOD pyramid manager.
