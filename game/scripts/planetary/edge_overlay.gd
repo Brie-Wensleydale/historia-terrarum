@@ -78,12 +78,12 @@ func _find_edges(coastline: bool) -> Array:
 			var owner: int = _get_owner(b_idx, s)
 
 			# East neighbor
-			var east_s := (s + 1) % sparser_segs
+			var east_s: int = (s + 1) % sparser_segs
 			if east_s != 0 or sparser_segs > 1:
 				var east_owner: int = _get_owner(b_idx, east_s)
 				if _match(coastline, owner, east_owner):
-					var v1 := _vertex(b_idx, s + 1, radius, total_bands, band_segs)
-					var v2 := _vertex(b_idx + 1, _map_seg(s + 1, b_idx, b_idx + 1, band_segs),
+					var v1: Vector3 = _vertex(b_idx, s + 1, radius, total_bands, band_segs)
+					var v2: Vector3 = _vertex(b_idx + 1, _map_seg(s + 1, b_idx, b_idx + 1, band_segs),
 						radius, total_bands, band_segs)
 					edges.append({"v1": v1, "v2": v2})
 
@@ -91,11 +91,11 @@ func _find_edges(coastline: bool) -> Array:
 			if b_idx + 1 < total_bands:
 				var north_segs: int = band_segs[b_idx + 1]
 				if north_segs > 0:
-					var north_seg := int(float(s) * float(north_segs) / float(sparser_segs))
+					var north_seg: int = int(float(s) * float(north_segs) / float(sparser_segs))
 					var north_owner: int = _get_owner(b_idx + 1, north_seg)
 					if _match(coastline, owner, north_owner):
-						var v1 := _vertex(b_idx + 1, s, radius, total_bands, band_segs)
-						var v2 := _vertex(b_idx + 1, s + 1, radius, total_bands, band_segs)
+						var v1: Vector3 = _vertex(b_idx + 1, s, radius, total_bands, band_segs)
+						var v2: Vector3 = _vertex(b_idx + 1, s + 1, radius, total_bands, band_segs)
 						edges.append({"v1": v1, "v2": v2})
 
 	return edges
@@ -203,7 +203,7 @@ func _chain_segments(edges: Array) -> Array:
 		var last: Vector3 = e["v2"]
 		while true:
 			var candidates: Array = pos_to_edges.get(_vkey(last), [])
-			var found := false
+			var found: bool = false
 			for ci in candidates:
 				if consumed[ci]: continue
 				var c: Dictionary = edges[ci]
@@ -231,11 +231,11 @@ func _add_to_hash(h: Dictionary, v: Vector3, idx: int) -> void:
 func _douglas_peucker(points: Array, tolerance: float) -> Array:
 	if points.size() <= 2:
 		return points.duplicate()
-	var max_d := 0.0; var max_i := 0
+	var max_d: float = 0.0; var max_i: int = 0
 	var s: Vector3 = points[0]; var e: Vector3 = points[-1]
 	var dir: Vector3 = (e - s).normalized()
 	for i in range(1, points.size() - 1):
-		var d := (points[i] - s).cross(dir).length()
+		var d: float = (points[i] - s).cross(dir).length()
 		if d > max_d: max_d = d; max_i = i
 	if max_d > tolerance:
 		var left: Array = _douglas_peucker(points.slice(0, max_i + 1), tolerance)
