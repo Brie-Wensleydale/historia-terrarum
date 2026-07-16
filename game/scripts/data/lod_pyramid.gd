@@ -255,9 +255,17 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 	if lod <= 0 or lod >= NUM_LODS:
 		return result
 
+	var span: int = 1 << lod
+
+	# LOD N band structure (for iteration bounds only)
 	var bs: Dictionary = _lod_structures[lod]
 	var band_segs: Array = bs["band_segs"]
 	var total_bands: int = bs["total_bands"]
+
+	# LOD 0 band structure (for vertex positions — ground truth)
+	var bs0: Dictionary = _lod_structures[0]
+	var band_segs0: Array = bs0["band_segs"]
+	var total_bands0: int = bs0["total_bands"]
 	var radius_m: float = EARTH_RADIUS_KM * 1000.0
 	var offset_factor: float = 1.003 + lod * 0.0005
 
@@ -278,25 +286,22 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 
 		var sparser_segs: int = mini(segs_a, segs_b)
 
-		var bot_lat: float = -PI * 0.5 + PI * float(b_idx) / float(total_bands)
-		var top_lat: float = -PI * 0.5 + PI * float(b_idx + 1) / float(total_bands)
-		var r_bot: float = radius_m * cos(bot_lat) * offset_factor
-		var r_top: float = radius_m * cos(top_lat) * offset_factor
-		var y_bot: float = radius_m * sin(bot_lat) * offset_factor
-		var y_top: float = radius_m * sin(top_lat) * offset_factor
-
 		for s in range(sparser_segs):
 			var classification: String = classify_quad(lod, b_idx, s, territory_data)
 			var key: String = "%d_%d_%d" % [lod, b_idx, s]
 			_quad_classifications[key] = classification
 
-			var lon_s: float = TAU * float(s) / float(sparser_segs)
-			var lon_s_next: float = TAU * float(s + 1) / float(sparser_segs)
+			# Quad corners from LOD 0 positions — ensures perfect alignment
+			# with territory data (which uses LOD 0 tile IDs)
+			var band0_bot: int = clampi(b_idx * span, 0, total_bands0 - 1)
+			var band0_top: int = clampi((b_idx + 1) * span, 0, total_bands0)
+			var seg0_left: int = s * span
+			var seg0_right: int = (s + 1) * span
 
-			var v_bl: Vector3 = Vector3(r_bot * cos(lon_s), y_bot, r_bot * sin(lon_s))
-			var v_br: Vector3 = Vector3(r_bot * cos(lon_s_next), y_bot, r_bot * sin(lon_s_next))
-			var v_tl: Vector3 = Vector3(r_top * cos(lon_s), y_top, r_top * sin(lon_s))
-			var v_tr: Vector3 = Vector3(r_top * cos(lon_s_next), y_top, r_top * sin(lon_s_next))
+			var v_bl: Vector3 = _lod0_vertex(band0_bot, seg0_left, offset_factor, bs0, total_bands0, band_segs0, radius_m)
+			var v_br: Vector3 = _lod0_vertex(band0_bot, seg0_right, offset_factor, bs0, total_bands0, band_segs0, radius_m)
+			var v_tl: Vector3 = _lod0_vertex(band0_top, seg0_left, offset_factor, bs0, total_bands0, band_segs0, radius_m)
+			var v_tr: Vector3 = _lod0_vertex(band0_top, seg0_right, offset_factor, bs0, total_bands0, band_segs0, radius_m)
 
 			if classification == "textured":
 				textured_count += 1
@@ -353,6 +358,19 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 
 	print("  LOD %d: %d solid, %d textured, %d ocean" % [lod, solid_count, textured_count, ocean_count])
 	return result
+
+
+## Compute 3D vertex position using LOD 0 band structure.
+static func _lod0_vertex(band: int, seg: int, offset_factor: float,
+		bs0: Dictionary, total_bands: int, band_segs: Array, radius_m: float) -> Vector3:
+	band = clampi(band, 0, total_bands - 1)
+	var segs_at_band: int = band_segs[band] if band < band_segs.size() else 4
+	if segs_at_band <= 0:
+		segs_at_band = 4
+	var lat: float = -PI * 0.5 + PI * float(band) / float(total_bands)
+	var lon: float = TAU * float(seg % segs_at_band) / float(segs_at_band)
+	var r: float = radius_m * cos(lat) * offset_factor
+	return Vector3(r * cos(lon), radius_m * sin(lat) * offset_factor, r * sin(lon))
 
 
 ## Build a 2D array of RGB Colors for a textured quad.
@@ -412,6 +430,7 @@ func _build_textured_quad(qdata: Dictionary) -> MeshInstance3D:
 
 	var mat: StandardMaterial3D = StandardMaterial3D.new()
 	mat.albedo_texture = texture
+	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
