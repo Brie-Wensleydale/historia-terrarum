@@ -66,7 +66,6 @@ func _setup_earth_body() -> void:
 	sphere_mesh.height = EARTH_RADIUS_KM * 2.0
 	sphere_mesh.radial_segments = 256
 	sphere_mesh.rings = 128
-	sphere_mesh.is_double_sided = false
 
 	_earth_body = MeshInstance3D.new()
 	_earth_body.name = "EarthBody"
