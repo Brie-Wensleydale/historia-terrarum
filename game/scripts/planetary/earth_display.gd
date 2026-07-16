@@ -480,9 +480,9 @@ func set_game_state(gs: Node) -> void:
 		# Default: United States
 		var us_idx := 4  # Palette index for USA
 		if _territory_data.has_method("get_country_name"):
-			var name := _territory_data.get_country_name(us_idx)
-			if name != "":
-				gs.set_player_country(us_idx, name)
+			var country_name: String = _territory_data.get_country_name(us_idx)
+			if country_name != "":
+				gs.set_player_country(us_idx, country_name)
 
 
 ## Select LOD based on camera distance and update visibility.
