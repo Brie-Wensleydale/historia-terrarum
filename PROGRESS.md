@@ -127,14 +127,17 @@
 
 ---
 
-## Phase 8: UI
+## Phase 8: Timeline Engine
 
-**Status:** ⬜ Not started
+**Status:** ✅ Complete
 
-- [ ] Territory info panel (country, province, population)
-- [ ] Diplomatic map modes
-- [ ] Army selection and orders
-- [ ] Time controls
+- [x] Timeline event format — JSON with year, name, changes (tiles + bbox)
+- [x] Sample events — WWI (1914/1918), USSR dissolution (1991), test swap events
+- [x] Event loader — native JSON parsing, country name → palette index mapping
+- [x] Fast-forward engine — apply all events ≤ target year to territory state
+- [x] Bbox support — find tiles in lat/lon region, approximate from tile IDs
+- [x] Year advancement — T key advances one year, F key jumps to 1991
+- [x] Default start: 1950, events validated with tile ownership changes
 
 ---
 

@@ -1,0 +1,100 @@
+# Timeline Events — Historia Terrarum
+# Year 0 = 10,000 BC. Modern era: 11900 = 1900 AD, 12026 = 2026 AD.
+#
+# Event format:
+#   year: game year
+#   name: human-readable name
+#   changes:
+#     - tiles: [list of tile IDs] or bbox: {lat_min, lat_max, lon_min, lon_max}
+#       from_palette: palette index to match (or 0 = any)
+#       to_palette: new palette index to assign
+#
+# Events are forward-only. The fast-forward engine applies all events
+# ≤ target_year to build the initial territory state.
+#
+# Palette index reference (modern countries):
+#   1 = Russia, 2 = China, 3 = Canada, 4 = United States, 5 = Brazil,
+#   6 = Australia, 7 = Antarctica, 8 = Kazakhstan, 11 = India, 12 = Ukraine,
+#   25 = Kazakhstan (regional), etc.
+#
+# Historical palette indices: 241-254 reserved for non-modern countries.
+#   241 = Soviet Union, 242 = East Germany, 243 = West Germany,
+#   244 = Czechoslovakia, 245 = Yugoslavia
+
+events:
+  # ── Sample Events (for testing the timeline engine) ──
+
+  - year: 11914  # 1914 — WWI begins
+    name: "WWI: German advance into Belgium"
+    description: "Germany pushes through neutral Belgium"
+    # Sample: reassign a few Belgian border tiles to Germany
+    changes:
+      - tiles: []
+        from_country: "Belgium"
+        to_country: "Germany"
+        bbox: {lat_min: 49.5, lat_max: 50.8, lon_min: 2.5, lon_max: 6.5}
+
+  - year: 11918  # 1918 — WWI ends
+    name: "WWI: Armistice — borders restored"
+    description: "Pre-war borders largely restored"
+    changes:
+      - tiles: []
+        from_country: "Germany"
+        to_country: "Belgium"
+        bbox: {lat_min: 49.5, lat_max: 50.8, lon_min: 2.5, lon_max: 6.5}
+
+  - year: 11939  # 1939 — WWII begins
+    name: "WWII: Germany invades Poland"
+    description: "German blitzkrieg into western Poland"
+    changes:
+      - tiles: []
+        from_country: "Poland"
+        to_country: "Germany"
+        bbox: {lat_min: 50.0, lat_max: 54.0, lon_min: 14.0, lon_max: 20.0}
+
+  - year: 11945  # 1945 — WWII ends
+    name: "WWII: Poland restored, borders shift west"
+    description: "Poland gains German eastern territories, loses eastern territories to USSR"
+    changes:
+      - tiles: []
+        from_country: "Germany"
+        to_country: "Poland"
+        bbox: {lat_min: 50.0, lon_max: 19.0, lat_max: 54.0, lon_min: 14.0}
+
+  - year: 11991  # 1991 — USSR dissolves
+    name: "USSR Dissolution"
+    description: "Soviet Union breaks into 15 independent republics"
+    changes:
+      - tiles: []
+        from_country: "Russia"
+        to_country: "Ukraine"
+        bbox: {lat_min: 44.0, lat_max: 52.5, lon_min: 22.0, lon_max: 40.0}
+      - tiles: []
+        from_country: "Russia"
+        to_country: "Belarus"
+        bbox: {lat_min: 51.0, lat_max: 56.0, lon_min: 23.0, lon_max: 33.0}
+
+  # ── Test Event (for verifying the engine works) ──
+
+  - year: 11950  # 1950 — Test: temporarily recolor a tile
+    name: "TEST: Swap a Russia tile to China"
+    description: "Verifies the event engine — reverts at year 11951"
+    changes:
+      - tiles: ["B160_364"]
+        from_country: "Russia"
+        to_country: "China"
+
+  - year: 11951  # 1951 — Revert test
+    name: "TEST: Revert China tile back to Russia"
+    description: "Undoes the 11950 test event"
+    changes:
+      - tiles: ["B160_364"]
+        from_country: "China"
+        to_country: "Russia"
+
+# ── Notes ──
+# - "tiles: []" means use bbox instead (find all tiles in region)
+# - "from_country" matches the current owner by country name
+# - "to_country" is looked up in country_registry for palette index
+# - Events with specific tile IDs are exact; bbox events are area-based
+# - The fast-forward engine processes events in year order

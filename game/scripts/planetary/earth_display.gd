@@ -33,6 +33,7 @@ func _ready() -> void:
 	_create_coastlines()
 	_create_rivers()
 	_create_borders()
+	_fast_forward_timeline()
 	print("Earth display ready. Grid: %d bands, %d tiles" % [
 		_band_structure.get("total_bands", 0),
 		SphericalGridGenerator.count_tiles(_band_structure),
@@ -302,6 +303,26 @@ func _create_lod_meshes() -> void:
 
 func _process(_delta: float) -> void:
 	_update_lod()
+	_handle_timeline_input()
+
+
+func _handle_timeline_input() -> void:
+	# T = advance one year (test key)
+	if Input.is_action_just_pressed("timeline_advance"):
+		if _territory_data and _territory_data.has_method("advance_year"):
+			_territory_data.advance_year()
+			var yr := _territory_data.get_current_year()
+			print("Timeline: advanced to year %d" % yr)
+	# F = fast-forward to 1991 (USSR dissolves)
+	if Input.is_action_just_pressed("timeline_ff_1991"):
+		if _territory_data and _territory_data.has_method("fast_forward_to"):
+			_territory_data.fast_forward_to(11991)
+			print("Timeline: fast-forwarded to 1991")
+
+
+func _fast_forward_timeline() -> void:
+	if _territory_data and _territory_data.has_method("fast_forward_to"):
+		_territory_data.fast_forward_to(11950)  # Default: 1950
 
 
 ## Select LOD based on camera distance and update visibility.

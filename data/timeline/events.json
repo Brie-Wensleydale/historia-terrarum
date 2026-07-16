@@ -1,0 +1,69 @@
+{
+  "events": [
+    {
+      "year": 11914,
+      "name": "WWI: German advance into Belgium",
+      "description": "Germany pushes through neutral Belgium",
+      "changes": [
+        {
+          "from_country": "Belgium",
+          "to_country": "Germany",
+          "bbox": {"lat_min": 49.5, "lat_max": 50.8, "lon_min": 2.5, "lon_max": 6.5}
+        }
+      ]
+    },
+    {
+      "year": 11918,
+      "name": "WWI: Armistice — borders restored",
+      "description": "Pre-war borders largely restored",
+      "changes": [
+        {
+          "from_country": "Germany",
+          "to_country": "Belgium",
+          "bbox": {"lat_min": 49.5, "lat_max": 50.8, "lon_min": 2.5, "lon_max": 6.5}
+        }
+      ]
+    },
+    {
+      "year": 11991,
+      "name": "USSR Dissolution",
+      "description": "Soviet Union breaks into independent republics",
+      "changes": [
+        {
+          "from_country": "Russia",
+          "to_country": "Ukraine",
+          "bbox": {"lat_min": 44.0, "lat_max": 52.5, "lon_min": 22.0, "lon_max": 40.0}
+        },
+        {
+          "from_country": "Russia",
+          "to_country": "Belarus",
+          "bbox": {"lat_min": 51.0, "lat_max": 56.0, "lon_min": 23.0, "lon_max": 33.0}
+        }
+      ]
+    },
+    {
+      "year": 11950,
+      "name": "TEST: Swap a Russia tile to China",
+      "description": "Verifies the event engine works",
+      "changes": [
+        {
+          "tiles": ["B160_364"],
+          "from_country": "Russia",
+          "to_country": "China"
+        }
+      ]
+    },
+    {
+      "year": 11951,
+      "name": "TEST: Revert tile back to Russia",
+      "description": "Undoes the 11950 test event",
+      "changes": [
+        {
+          "tiles": ["B160_364"],
+          "from_country": "China",
+          "to_country": "Russia"
+        }
+      ]
+    }
+  ]
+}

@@ -53,3 +53,11 @@ map_diplomatic={
 	"deadzone": 0.5,
 	"events": [Object(InputEventKey, "keycode": 52)]
 }
+timeline_advance={
+	"deadzone": 0.5,
+	"events": [Object(InputEventKey, "keycode": 84)]
+}
+timeline_ff_1991={
+	"deadzone": 0.5,
+	"events": [Object(InputEventKey, "keycode": 70)]
+}
