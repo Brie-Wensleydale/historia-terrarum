@@ -37,6 +37,13 @@ var _dirty_quads: Array = []
 # Current active LOD
 var _active_lod: int = 0
 
+# Smooth LOD transition
+var _transition_active: bool = false
+var _transition_from: int = 0
+var _transition_to: int = 0
+var _transition_time: float = 0.0
+const TRANSITION_DURATION := 0.35  # seconds
+
 
 func _ready() -> void:
 	_lod_structures = SphericalGridGenerator.compute_all_lod_structures(
@@ -46,6 +53,56 @@ func _ready() -> void:
 	_lod_textured.resize(NUM_LODS)
 	_lod_materials.resize(NUM_LODS)
 	_print_summary()
+
+
+func _process(delta: float) -> void:
+	_animate_transition(delta)
+
+
+func _animate_transition(delta: float) -> void:
+	if not _transition_active:
+		return
+
+	_transition_time += delta
+	var t := clampf(_transition_time / TRANSITION_DURATION, 0.0, 1.0)
+
+	# Ease in-out
+	var ease_t := t * t * (3.0 - 2.0 * t)
+
+	# Old LOD fades out
+	_set_lod_alpha(_transition_from, 1.0 - ease_t)
+	# New LOD fades in
+	_set_lod_alpha(_transition_to, ease_t)
+
+	if t >= 1.0:
+		# Transition complete — hide old, show new fully
+		_set_lod_alpha(_transition_from, 1.0)
+		_show_only_lod(_transition_to)
+		_transition_active = false
+		_active_lod = _transition_to
+
+
+func _set_lod_alpha(lod: int, alpha: float) -> void:
+	# Set modulate alpha on solid mesh
+	if lod < _lod_meshes.size() and _lod_meshes[lod]:
+		var c := _lod_meshes[lod].modulate
+		c.a = alpha
+		_lod_meshes[lod].modulate = c
+
+	# Set modulate alpha on textured container children
+	if lod < _lod_textured.size() and _lod_textured[lod]:
+		var c := _lod_textured[lod].modulate
+		c.a = alpha
+		_lod_textured[lod].modulate = c
+
+
+func _show_only_lod(lod: int) -> void:
+	for i in range(NUM_LODS):
+		var visible := (i == lod)
+		if i < _lod_meshes.size() and _lod_meshes[i]:
+			_lod_meshes[i].visible = visible
+		if i < _lod_textured.size() and _lod_textured[i]:
+			_lod_textured[i].visible = visible
 
 
 func _print_summary() -> void:
@@ -124,18 +181,31 @@ func select_lod(camera_distance_km: float) -> int:
 	return NUM_LODS - 1
 
 
-## Update visibility: show active LOD mesh, hide others.
+## Update visibility with smooth crossfade between old and new LOD.
 func update_visibility(active_lod: int) -> void:
-	if active_lod == _active_lod:
+	if active_lod == _active_lod and not _transition_active:
 		return
 
-	_active_lod = active_lod
-	for lod in range(NUM_LODS):
-		var visible := (lod == _active_lod)
-		if lod < _lod_meshes.size() and _lod_meshes[lod]:
-			_lod_meshes[lod].visible = visible
-		if lod < _lod_textured.size() and _lod_textured[lod]:
-			_lod_textured[lod].visible = visible
+	# If already transitioning to the same lod, skip
+	if _transition_active and _transition_to == active_lod:
+		return
+
+	# Start crossfade
+	_transition_from = _active_lod if not _transition_active else _transition_to
+	_transition_to = active_lod
+	_transition_time = 0.0
+	_transition_active = true
+
+	# Make both old and new visible for the crossfade
+	if _transition_from < _lod_meshes.size() and _lod_meshes[_transition_from]:
+		_lod_meshes[_transition_from].visible = true
+	if _transition_from < _lod_textured.size() and _lod_textured[_transition_from]:
+		_lod_textured[_transition_from].visible = true
+
+	if _transition_to < _lod_meshes.size() and _lod_meshes[_transition_to]:
+		_lod_meshes[_transition_to].visible = true
+	if _transition_to < _lod_textured.size() and _lod_textured[_transition_to]:
+		_lod_textured[_transition_to].visible = true
 
 
 ## Get classification stats for all quads at a LOD level.
