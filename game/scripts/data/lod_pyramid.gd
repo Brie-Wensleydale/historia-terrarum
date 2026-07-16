@@ -127,19 +127,21 @@ func _print_summary() -> void:
 
 ## Classify a quad at a given LOD level.
 ## A quad at LOD N covers (2^N)×(2^N) Level 0 tiles.
+## Uses sparser segment convention (matches tile_mapping keys).
 ## Returns "solid" if all sub-tiles have the same owner, "textured" otherwise.
 func classify_quad(lod: int, qband: int, qseg: int, territory_data: Node) -> String:
 	if lod == 0:
-		return "solid"  # LOD 0 = single tile, always solid
+		return "solid"
 
-	var span := 1 << lod  # 2^lod
+	var span: int = 1 << lod
 	var first_owner: int = -1
 
 	for db in range(span):
+		var band0: int = qband * span + db
 		for ds in range(span):
-			var band0 := qband * span + db
-			var seg0 := qseg * span + ds
-			var tile_id: String = "B%d_%d" % [band0, seg0]
+			var raw_seg: int = qseg * span + ds
+			var sparser_seg: int = _to_sparser_seg(band0, raw_seg)
+			var tile_id: String = "B%d_%d" % [band0, sparser_seg]
 			var owner: int = territory_data.get_tile_owner_palette(tile_id)
 			if first_owner == -1:
 				first_owner = owner
@@ -152,15 +154,36 @@ func classify_quad(lod: int, qband: int, qseg: int, territory_data: Node) -> Str
 ## Get the majority palette index for a solid quad (center tile's owner).
 func get_solid_owner(lod: int, qband: int, qseg: int, territory_data: Node) -> int:
 	if lod == 0:
-		var tile_id: String = "B%d_%d" % [qband, qseg]
+		var sparser_seg: int = _to_sparser_seg(qband, qseg)
+		var tile_id: String = "B%d_%d" % [qband, sparser_seg]
 		return territory_data.get_tile_owner_palette(tile_id)
 
-	var span := 1 << lod
-	# Sample center of the quad
-	var center_band := qband * span + (span / 2)
-	var center_seg := qseg * span + (span / 2)
-	var tile_id: String = "B%d_%d" % [center_band, center_seg]
+	var span: int = 1 << lod
+	var center_band: int = qband * span + (span / 2)
+	var center_raw: int = qseg * span + (span / 2)
+	var sparser_seg: int = _to_sparser_seg(center_band, center_raw)
+	var tile_id: String = "B%d_%d" % [center_band, sparser_seg]
 	return territory_data.get_tile_owner_palette(tile_id)
+
+
+## Convert a raw LOD 0 segment to sparser segment convention.
+## At merge boundaries (ratio > 1), raw seg is ratio × sparser seg.
+func _to_sparser_seg(band: int, raw_seg: int) -> int:
+	if _lod_structures.is_empty():
+		return raw_seg
+	var bs0: Dictionary = _lod_structures[0]
+	var band_segs: Array = bs0["band_segs"]
+	if band >= band_segs.size() or band < 0:
+		return raw_seg
+	var segs_at: int = band_segs[band]
+	if segs_at <= 0:
+		return raw_seg
+	var next_segs: int = band_segs[band + 1] if band + 1 < band_segs.size() else segs_at
+	var sparser_segs: int = mini(segs_at, next_segs)
+	if sparser_segs <= 0:
+		return raw_seg
+	var ratio: int = maxi(segs_at / sparser_segs, 1)
+	return raw_seg / ratio
 
 
 ## Mark a quad dirty for regeneration.
@@ -376,14 +399,15 @@ static func _lod0_vertex(band: int, seg: int, offset_factor: float,
 ## Build a 2D array of RGB Colors for a textured quad.
 ## Each element corresponds to a Level 0 sub-tile within the quad.
 func _build_texture_rgb(lod: int, qband: int, qseg: int, territory_data: Node) -> Array:
-	var span := 1 << lod
+	var span: int = 1 << lod
 	var colors: Array = []
 	for db in range(span):
+		var band0: int = qband * span + db
 		var row: Array = []
 		for ds in range(span):
-			var band0 := qband * span + db
-			var seg0 := qseg * span + ds
-			var tile_id: String = "B%d_%d" % [band0, seg0]
+			var raw_seg: int = qseg * span + ds
+			var sparser_seg: int = _to_sparser_seg(band0, raw_seg)
+			var tile_id: String = "B%d_%d" % [band0, sparser_seg]
 			var idx: int = territory_data.get_tile_owner_palette(tile_id)
 			row.append(_palette_colors.get(idx, Color.TRANSPARENT))
 		colors.append(row)
