@@ -129,7 +129,7 @@ func _grid_vertex(band: int, seg: int, radius: float, total_bands: int,
 	var lon: float = TAU * float(seg % segs_at_band) / float(segs_at_band)
 
 	return Vector3(
-		-radius * cos(lat) * cos(lon),
+		radius * cos(lat) * cos(lon),
 		radius * sin(lat),
 		radius * cos(lat) * sin(lon),
 	)
