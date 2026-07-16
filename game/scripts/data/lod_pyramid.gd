@@ -88,13 +88,17 @@ func _animate_transition(delta: float) -> void:
 
 func _set_lod_alpha(lod: int, alpha: float) -> void:
 	# Use transparency for crossfade (0 = opaque, 1 = fully transparent)
+	# Only MeshInstance3D / GeometryInstance3D has transparency; Node3D containers don't
 	var transp: float = 1.0 - alpha
 
 	if lod < _lod_meshes.size() and _lod_meshes[lod]:
 		_lod_meshes[lod].transparency = transp
 
 	if lod < _lod_textured.size() and _lod_textured[lod]:
-		_lod_textured[lod].transparency = transp
+		# Textured container is a Node3D — set transparency on each child MeshInstance3D
+		for child in _lod_textured[lod].get_children():
+			if child is MeshInstance3D:
+				child.transparency = transp
 
 
 func _show_only_lod(lod: int) -> void:
