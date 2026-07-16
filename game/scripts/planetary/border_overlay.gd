@@ -37,7 +37,7 @@ func _on_territory_changed() -> void:
 
 
 ## Regenerate all border meshes. Called on territory change.
-## P1: Skip O(n²) chaining — render edges directly as line pairs.
+## P1: O(n) spatial-hash chaining + Douglas-Peucker simplification.
 func regenerate_borders() -> void:
 	if _band_structure.is_empty():
 		return
@@ -46,8 +46,23 @@ func regenerate_borders() -> void:
 	var border_edges: Array = _find_border_edges()
 	print("Border overlay: %d border edges found" % border_edges.size())
 
-	# Build mesh directly from edges (skip expensive chaining + simplification)
-	_build_border_mesh(border_edges)
+	# Chain into polylines (O(n) via spatial hash)
+	var polylines: Array = _chain_segments(border_edges)
+	print("  Chained into %d polylines" % polylines.size())
+
+	# Simplify
+	var simplified: Array = []
+	for polyline in polylines:
+		var result: Array = _douglas_peucker(polyline, DP_TOLERANCE_KM)
+		if result.size() >= 2:
+			simplified.append(result)
+
+	print("  Simplified to %d polylines (%.1f km tolerance)" % [
+		simplified.size(), DP_TOLERANCE_KM,
+	])
+
+	# Build mesh
+	_build_border_mesh(simplified)
 
 
 ## Find all tile edges where adjacent tiles have different owners.
@@ -112,7 +127,6 @@ func _grid_vertex(band: int, seg: int, radius: float, total_bands: int,
 	if segs_at_band <= 0:
 		segs_at_band = 4
 	var lon: float = TAU * float(seg % segs_at_band) / float(segs_at_band)
-	lon += PI * 0.5  # P3: match uv1_offset.x = 0.25 on Earth texture
 
 	return Vector3(
 		radius * cos(lat) * cos(lon),
@@ -130,45 +144,77 @@ func _map_seg(seg: int, from_band: int, to_band: int, band_segs: Array) -> int:
 
 
 ## Chain unordered edge segments into continuous polylines.
-## Simple greedy algorithm: pick a segment, find next that connects, repeat.
+## Uses spatial hash for O(n) performance (vs old O(n²) greedy scan).
+## Vertex positions rounded to 0.5 km precision for hash key tolerance.
+const CHAIN_VERTEX_PRECISION := 0.5  # km rounding for spatial hash
+
 func _chain_segments(edges: Array) -> Array:
 	if edges.is_empty():
 		return []
 
-	var remaining: Array = edges.duplicate()
+	# Build spatial hash: rounded position key → list of edge indices
+	var pos_to_edges: Dictionary = {}
+	for i in range(edges.size()):
+		var edge: Dictionary = edges[i]
+		_add_to_spatial_hash(pos_to_edges, edge["v1"], i)
+		_add_to_spatial_hash(pos_to_edges, edge["v2"], i)
+
+	var consumed: Array = []  # bool array tracking consumed edges
+	consumed.resize(edges.size())
+	for i in range(edges.size()):
+		consumed[i] = false
+
 	var polylines: Array = []
 
-	while not remaining.is_empty():
-		# Start a new polyline
-		var current: Variant = remaining.pop_front()
-		var polyline: Array = [current["v1"], current["v2"]]
-		var last_v: Vector3 = current["v2"]
+	for start_idx in range(edges.size()):
+		if consumed[start_idx]:
+			continue
+
+		var edge: Dictionary = edges[start_idx]
+		consumed[start_idx] = true
+		var polyline: Array = [edge["v1"], edge["v2"]]
+		var last_v: Vector3 = edge["v2"]
 
 		# Extend forward
-		var extended: bool = true
-		while extended and not remaining.is_empty():
-			extended = false
-			for i in range(remaining.size() - 1, -1, -1):
-				var edge: Dictionary = remaining[i]
-				var dist_start: float = (last_v - edge["v1"]).length()
-				var dist_end: float = (last_v - edge["v2"]).length()
-
-				if dist_start < 1.0:  # Within 1 km tolerance
-					polyline.append(edge["v2"])
-					last_v = edge["v2"]
-					remaining.remove_at(i)
-					extended = true
+		while true:
+			var key: String = _vertex_key(last_v)
+			var candidates: Array = pos_to_edges.get(key, [])
+			var found: bool = false
+			for cand_idx in candidates:
+				if consumed[cand_idx]:
+					continue
+				var cand: Dictionary = edges[cand_idx]
+				var d1: float = (last_v - cand["v1"]).length()
+				var d2: float = (last_v - cand["v2"]).length()
+				if d1 < 1.0:
+					polyline.append(cand["v2"])
+					last_v = cand["v2"]
+					consumed[cand_idx] = true
+					found = true
 					break
-				elif dist_end < 1.0:
-					polyline.append(edge["v1"])
-					last_v = edge["v1"]
-					remaining.remove_at(i)
-					extended = true
+				elif d2 < 1.0:
+					polyline.append(cand["v1"])
+					last_v = cand["v1"]
+					consumed[cand_idx] = true
+					found = true
 					break
+			if not found:
+				break
 
 		polylines.append(polyline)
 
 	return polylines
+
+
+func _vertex_key(v: Vector3) -> String:
+	return "%.0f,%.0f,%.0f" % [v.x, v.y, v.z]
+
+
+func _add_to_spatial_hash(hash: Dictionary, v: Vector3, edge_idx: int) -> void:
+	var key: String = _vertex_key(v)
+	if not hash.has(key):
+		hash[key] = []
+	hash[key].append(edge_idx)
 
 
 ## Douglas-Peucker simplification.
@@ -207,9 +253,8 @@ func _point_line_distance(point: Vector3, line_origin: Vector3, line_dir: Vector
 	return (point - line_origin).cross(line_dir).length()
 
 
-## Build LineStrip mesh from border edges and add to scene.
-## P1: Takes raw edges directly (skips chaining + simplification).
-func _build_border_mesh(edges: Array) -> void:
+## Build LineStrip mesh from simplified polylines and add to scene.
+func _build_border_mesh(polylines: Array) -> void:
 	# Remove old mesh
 	if _international_mesh:
 		_international_mesh.queue_free()
@@ -218,10 +263,14 @@ func _build_border_mesh(edges: Array) -> void:
 	st.begin(Mesh.PRIMITIVE_LINES)
 	var vertex_count: int = 0
 
-	for edge in edges:
-		st.add_vertex(edge["v1"])
-		st.add_vertex(edge["v2"])
-		vertex_count += 2
+	for polyline in polylines:
+		if polyline.size() < 2:
+			continue
+
+		for i in range(polyline.size() - 1):
+			st.add_vertex(polyline[i])
+			st.add_vertex(polyline[i + 1])
+			vertex_count += 2
 
 	var mesh: ArrayMesh = st.commit()
 	if not mesh or vertex_count == 0:
