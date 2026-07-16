@@ -3,6 +3,8 @@
 # Each quad at LOD 1+ is classified solid (vertex color) or textured (R8 palette texture).
 extends Node
 
+const PaletteTextureGen := preload("res://scripts/data/palette_texture_gen.gd")
+
 const NUM_LODS := 5
 const EARTH_RADIUS_KM := 6371.0
 const BASE_CELL_KM := 100.0  # Test: 100km; Production: 10km
