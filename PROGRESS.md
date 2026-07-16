@@ -103,12 +103,14 @@
 
 ## Phase 6: Camera
 
-**Status:** ⬜ Not started
+**Status:** ✅ Complete
 
-- [ ] `earth_camera.gd` — camera controller for Earth
-- [ ] Zoom rungs (global, continental, regional, tactical)
-- [ ] Surface tracking
-- [ ] Smooth LOD transitions
+- [x] Zoom rungs — 5 discrete levels (Tactical/Regional/Continental/Hemisphere/Global)
+- [x] Smooth LOD crossfade — modulate alpha transition (0.35s ease-in-out)
+- [x] Orbit momentum — right-drag velocity decays on release
+- [x] Surface tracking — focus_on_surface() snaps to LOD 0
+- [x] Edge clamping — no underground orbits, phi bounds, min/max distance
+- [x] View reset — R key returns to Continental default
 
 ---
 
