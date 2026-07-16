@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://historia_terrarum_main"]
+[gd_scene load_steps=11 format=3 uid="uid://historia_terrarum_main"]
 
 [ext_resource type="Script" path="res://scripts/planetary/earth_display.gd" id="1_earth_display"]
 [ext_resource type="Script" path="res://scripts/camera/earth_camera.gd" id="2_earth_camera"]
@@ -6,6 +6,8 @@
 [ext_resource type="Script" path="res://scripts/ui/country_panel.gd" id="4_country_panel"]
 [ext_resource type="Script" path="res://scripts/ui/selection_panel.gd" id="5_selection_panel"]
 [ext_resource type="Script" path="res://scripts/ui/hover_tooltip.gd" id="6_tooltip"]
+[ext_resource type="Script" path="res://scripts/core/time_manager.gd" id="7_time_manager"]
+[ext_resource type="Script" path="res://scripts/ui/time_control.gd" id="8_time_control"]
 
 [node name="Main" type="Node3D"]
 
@@ -22,12 +24,16 @@ light_energy = 2.0
 shadow_enabled = false
 
 [node name="AmbientLight" type="WorldEnvironment" parent="."]
-environment/background_mode = 2
-environment/ambient_light_source = 3
-environment/ambient_light_color = Color(0.15, 0.15, 0.2, 1)
+environment/background_mode = 1
+environment/background_color = Color(0.02, 0.02, 0.08, 1)
+environment/ambient_light_source = 2
+environment/ambient_light_color = Color(0.25, 0.25, 0.35, 1)
 
 [node name="GameState" type="Node" parent="."]
 script = ExtResource("3_game_state")
+
+[node name="TimeManager" type="Node" parent="."]
+script = ExtResource("7_time_manager")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -39,16 +45,26 @@ offset_right = 320.0
 offset_bottom = 340.0
 script = ExtResource("4_country_panel")
 
-[node name="RightPanel" type="Control" parent="UI"]
+[node name="TimeControl" type="Control" parent="UI"]
 layout_mode = 0
 anchor_right = 1.0
 anchor_left = 1.0
 offset_left = -300.0
 offset_top = 0.0
 offset_right = 0.0
-offset_bottom = 220.0
+offset_bottom = 50.0
+script = ExtResource("8_time_control")
+
+[node name="RightPanel" type="Control" parent="UI"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_left = 1.0
+offset_left = -300.0
+offset_top = 52.0
+offset_right = 0.0
+offset_bottom = 260.0
 script = ExtResource("5_selection_panel")
 
 [node name="HoverTooltip" type="Label" parent="UI"]
 script = ExtResource("6_tooltip")
-mouse_filter = 2  # Ignore mouse (pass through)
+mouse_filter = 2

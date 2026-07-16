@@ -3,6 +3,7 @@
 extends Control
 
 var _game_state: Node
+var _flag_rect: TextureRect
 
 
 func _ready() -> void:
@@ -41,10 +42,19 @@ func _setup_ui() -> void:
 	type_lbl.name = "SelType"
 	type_lbl.text = ""
 	type_lbl.position = Vector2(16, 40)
-	type_lbl.size = Vector2(248, 18)
+	type_lbl.size = Vector2(160, 18)
 	type_lbl.add_theme_font_size_override("font_size", 12)
 	type_lbl.add_theme_color_override("font_color", Color(0.5, 0.5, 0.6))
 	add_child(type_lbl)
+
+	# Flag image (right side of title bar)
+	_flag_rect = TextureRect.new()
+	_flag_rect.name = "SelFlag"
+	_flag_rect.size = Vector2(48, 30)
+	_flag_rect.position = Vector2(230, 8)
+	_flag_rect.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	_flag_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	add_child(_flag_rect)
 
 	# Divider
 	var divider: ColorRect = ColorRect.new()
@@ -99,3 +109,33 @@ func _update_display() -> void:
 
 	title.text = sel_name
 	type_lbl.text = type_text
+
+	# Load flag for selected country
+	if sel_type == 1 and _game_state.has_method("get"):
+		var sel_idx: int = _game_state.get("selected_country_idx")
+		var sel_country: String = _game_state.get("selected_country_name")
+		_load_selection_flag(sel_country)
+	else:
+		if _flag_rect:
+			_flag_rect.texture = null
+
+
+func _load_selection_flag(country_name: String) -> void:
+	if not _flag_rect or country_name == "":
+		return
+
+	var flag_path: String = "res://assets/flags/%s.png" % country_name
+	if ResourceLoader.exists(flag_path):
+		_flag_rect.texture = load(flag_path)
+		return
+
+	var alt_paths := [
+		"res://assets/flags/%s.png" % country_name.replace(" ", "_"),
+		"res://assets/flags/%s.png" % country_name.to_lower(),
+	]
+	for p in alt_paths:
+		if ResourceLoader.exists(p):
+			_flag_rect.texture = load(p)
+			return
+
+	_flag_rect.texture = null

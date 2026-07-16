@@ -27,18 +27,31 @@ const CLICK_DRAG_THRESHOLD := 5.0  # pixels — beyond this it's a drag, not a c
 
 
 func _ready() -> void:
+	print("EarthDisplay: starting setup...")
 	_setup_earth_body()
+	print("EarthDisplay: earth body done")
 	_setup_palette_manager()
+	print("EarthDisplay: palette manager done")
 	_setup_territory_data()
+	print("EarthDisplay: territory data done")
 	_setup_lod_pyramid()
+	print("EarthDisplay: LOD pyramid done")
 	_assign_real_tile_colors()
+	print("EarthDisplay: tile colors done (%d tiles)" % _tile_colors.size())
 	_create_grid()
+	print("EarthDisplay: grid done")
 	_create_tint()
+	print("EarthDisplay: tint done")
 	_create_lod_meshes()
+	print("EarthDisplay: LOD meshes done")
 	_create_coastlines()
+	print("EarthDisplay: coastlines done")
 	_create_rivers()
+	print("EarthDisplay: rivers done")
 	_create_borders()
+	print("EarthDisplay: borders done")
 	_fast_forward_timeline()
+	print("EarthDisplay: timeline done")
 	_connect_game_state()
 	print("Earth display ready. Grid: %d bands, %d tiles" % [
 		_band_structure.get("total_bands", 0),

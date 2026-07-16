@@ -5,6 +5,7 @@ extends Control
 var _game_state: Node
 var _player_idx: int = 0
 var _player_name: String = ""
+var _flag_rect: TextureRect
 
 
 func _ready() -> void:
@@ -40,13 +41,14 @@ func _setup_ui() -> void:
 	title.add_theme_color_override("font_color", Color.WHITE)
 	add_child(title)
 
-	# Flag placeholder
-	var flag_bg: ColorRect = ColorRect.new()
-	flag_bg.name = "FlagBg"
-	flag_bg.color = Color(0.15, 0.15, 0.2)
-	flag_bg.size = Vector2(60, 36)
-	flag_bg.position = Vector2(16, 46)
-	add_child(flag_bg)
+	# Flag image
+	_flag_rect = TextureRect.new()
+	_flag_rect.name = "FlagImage"
+	_flag_rect.size = Vector2(60, 36)
+	_flag_rect.position = Vector2(16, 46)
+	_flag_rect.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	_flag_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	add_child(_flag_rect)
 
 	# Tabs
 	var tabs_y: float = 92.0
@@ -92,6 +94,33 @@ func _on_player_changed(idx: int, name: String) -> void:
 	_player_idx = idx
 	_player_name = name
 	_update_display()
+	_load_flag(idx, name)
+
+
+func _load_flag(palette_idx: int, country_name: String) -> void:
+	if not _flag_rect:
+		return
+
+	# Try to load flag from country name
+	# Flag files are named by country ID from registry (e.g., "United_States.png")
+	var flag_path: String = "res://assets/flags/%s.png" % country_name
+	if ResourceLoader.exists(flag_path):
+		var tex: Texture2D = load(flag_path)
+		_flag_rect.texture = tex
+		return
+
+	# Try common alternatives
+	var alt_paths := [
+		"res://assets/flags/%s.png" % country_name.replace(" ", "_"),
+		"res://assets/flags/%s.png" % country_name.to_lower(),
+	]
+	for p in alt_paths:
+		if ResourceLoader.exists(p):
+			_flag_rect.texture = load(p)
+			return
+
+	# No flag found — clear to show grey background
+	_flag_rect.texture = null
 
 
 func _update_display() -> void:
