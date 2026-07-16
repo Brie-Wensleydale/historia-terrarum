@@ -19,6 +19,11 @@ var _lod_pyramid: Node
 var _camera: Camera3D
 var _band_structure: Dictionary = {}
 var _tile_colors: Dictionary = {}  # tile_id → Color(palette_idx/255, 0, 0, 1)
+var _game_state: Node
+var _hovered_tile: String = ""
+var _hovered_country: String = ""
+var _click_start_pos: Vector2 = Vector2.ZERO
+const CLICK_DRAG_THRESHOLD := 5.0  # pixels — beyond this it's a drag, not a click
 
 
 func _ready() -> void:
@@ -34,6 +39,7 @@ func _ready() -> void:
 	_create_rivers()
 	_create_borders()
 	_fast_forward_timeline()
+	_connect_game_state()
 	print("Earth display ready. Grid: %d bands, %d tiles" % [
 		_band_structure.get("total_bands", 0),
 		SphericalGridGenerator.count_tiles(_band_structure),
@@ -304,6 +310,7 @@ func _create_lod_meshes() -> void:
 func _process(_delta: float) -> void:
 	_update_lod()
 	_handle_timeline_input()
+	_update_hover()
 
 
 func _handle_timeline_input() -> void:
@@ -323,6 +330,159 @@ func _handle_timeline_input() -> void:
 func _fast_forward_timeline() -> void:
 	if _territory_data and _territory_data.has_method("fast_forward_to"):
 		_territory_data.fast_forward_to(11950)  # Default: 1950
+
+
+## Handle mouse clicks on the Earth for country selection.
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				_click_start_pos = event.position
+			else:
+				# Released — check if it was a click (not a drag)
+				var dist := (event.position - _click_start_pos).length()
+				if dist < CLICK_DRAG_THRESHOLD:
+					_try_select_at(event.position)
+
+
+func _connect_game_state() -> void:
+	var root := get_tree().root
+	if root:
+		for child in root.get_children():
+			if child.name == "Main":
+				for sub in child.get_children():
+					if sub.name == "GameState":
+						set_game_state(sub)
+						return
+
+
+## Raycast from mouse position to Earth sphere, find tile and country.
+func _try_select_at(screen_pos: Vector2) -> void:
+	if not _camera:
+		_camera = get_viewport().get_camera_3d()
+	if not _camera:
+		return
+
+	# Ray from camera through screen position
+	var from := _camera.project_ray_origin(screen_pos)
+	var dir := _camera.project_ray_normal(screen_pos)
+
+	# Sphere intersection: Earth at origin, radius = EARTH_RADIUS_KM
+	var hit_point := _ray_sphere_intersect(from, dir, Vector3.ZERO, EARTH_RADIUS_KM)
+	if hit_point == Vector3.ZERO:
+		return  # Missed the sphere
+
+	# Convert hit point to tile ID
+	var band_segs: Array = _band_structure["band_segs"]
+	var total_bands: int = _band_structure["total_bands"]
+	var cell: Dictionary = SphericalGridGenerator.find_cell_at_point(
+		hit_point, EARTH_RADIUS_KM, total_bands, band_segs,
+	)
+	if cell.is_empty():
+		return
+
+	var tile_id := "B%d_%d" % [cell["transition"], cell["sparser_seg"]]
+
+	# Get the country
+	if not _territory_data or not _territory_data.has_method("get_tile_owner_palette"):
+		return
+
+	var idx := _territory_data.get_tile_owner_palette(tile_id)
+	if idx <= 0:
+		# Clicked ocean — clear selection
+		if _game_state and _game_state.has_method("clear_selection"):
+			_game_state.clear_selection()
+		if _palette_manager and _palette_manager.has_method("clear_highlight"):
+			_palette_manager.clear_highlight()
+		return
+
+	var name: String = ""
+	if _territory_data.has_method("get_country_name"):
+		name = _territory_data.get_country_name(idx)
+	if name == "":
+		name = "Country #%d" % idx
+
+	# Select the country
+	if _game_state and _game_state.has_method("select_country"):
+		_game_state.select_country(idx, name)
+
+	# Highlight it
+	if _palette_manager and _palette_manager.has_method("highlight_country"):
+		_palette_manager.highlight_country(idx)
+
+	print("Selected: %s [%d] (tile %s)" % [name, idx, tile_id])
+
+
+## Update hover state — find country under mouse cursor.
+func _update_hover() -> void:
+	if not _camera:
+		return
+
+	var mouse_pos := get_viewport().get_mouse_position()
+	var from := _camera.project_ray_origin(mouse_pos)
+	var dir := _camera.project_ray_normal(mouse_pos)
+	var hit_point := _ray_sphere_intersect(from, dir, Vector3.ZERO, EARTH_RADIUS_KM)
+
+	if hit_point == Vector3.ZERO:
+		_hovered_tile = ""
+		_hovered_country = ""
+		return
+
+	var band_segs: Array = _band_structure["band_segs"]
+	var total_bands: int = _band_structure["total_bands"]
+	var cell: Dictionary = SphericalGridGenerator.find_cell_at_point(
+		hit_point, EARTH_RADIUS_KM, total_bands, band_segs,
+	)
+	if cell.is_empty():
+		return
+
+	_hovered_tile = "B%d_%d" % [cell["transition"], cell["sparser_seg"]]
+	if _territory_data and _territory_data.has_method("get_tile_owner_palette"):
+		var idx := _territory_data.get_tile_owner_palette(_hovered_tile)
+		if idx > 0 and _territory_data.has_method("get_country_name"):
+			_hovered_country = _territory_data.get_country_name(idx)
+		else:
+			_hovered_country = ""
+	else:
+		_hovered_country = ""
+
+
+func get_hovered_country() -> String:
+	return _hovered_country
+
+
+## Ray-sphere intersection. Returns hit point or Vector3.ZERO if miss.
+func _ray_sphere_intersect(ray_origin: Vector3, ray_dir: Vector3,
+		sphere_center: Vector3, sphere_radius: float) -> Vector3:
+	var oc := ray_origin - sphere_center
+	var a := ray_dir.dot(ray_dir)
+	var b := 2.0 * oc.dot(ray_dir)
+	var c := oc.dot(oc) - sphere_radius * sphere_radius
+	var discriminant := b * b - 4.0 * a * c
+
+	if discriminant < 0.0:
+		return Vector3.ZERO
+
+	var t := (-b - sqrt(discriminant)) / (2.0 * a)
+	if t < 0.0:
+		t = (-b + sqrt(discriminant)) / (2.0 * a)
+	if t < 0.0:
+		return Vector3.ZERO
+
+	return ray_origin + ray_dir * t
+
+
+## Set game state reference (called after setup).
+func set_game_state(gs: Node) -> void:
+	_game_state = gs
+	# Auto-set player country from territory data
+	if _territory_data and gs and gs.has_method("set_player_country"):
+		# Default: United States
+		var us_idx := 4  # Palette index for USA
+		if _territory_data.has_method("get_country_name"):
+			var name := _territory_data.get_country_name(us_idx)
+			if name != "":
+				gs.set_player_country(us_idx, name)
 
 
 ## Select LOD based on camera distance and update visibility.

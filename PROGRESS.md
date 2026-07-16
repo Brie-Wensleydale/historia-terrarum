@@ -141,6 +141,20 @@
 
 ---
 
+## Phase 9: UI
+
+**Status:** ✅ Complete (basic selection + panels)
+
+- [x] Click detection — ray-sphere intersection, find tile + country
+- [x] Drag-vs-click discrimination — 5px threshold
+- [x] GameState node — player country, selected entity tracking
+- [x] Country highlight — brighten selected, dim others via PaletteManager
+- [x] Left panel — player country name, flag placeholder, tabs (Stats/Diplomacy/Military/Tech)
+- [x] Right panel — selected object name + type, info rows
+- [x] Hover tooltip — country name follows cursor
+
+---
+
 ## Issues / Blockers
 
 *None yet.*

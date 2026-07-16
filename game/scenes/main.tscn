@@ -1,11 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://historia_terrarum_main"]
+[gd_scene load_steps=9 format=3 uid="uid://historia_terrarum_main"]
 
 [ext_resource type="Script" path="res://scripts/planetary/earth_display.gd" id="1_earth_display"]
 [ext_resource type="Script" path="res://scripts/camera/earth_camera.gd" id="2_earth_camera"]
+[ext_resource type="Script" path="res://scripts/core/game_state.gd" id="3_game_state"]
+[ext_resource type="Script" path="res://scripts/ui/country_panel.gd" id="4_country_panel"]
+[ext_resource type="Script" path="res://scripts/ui/selection_panel.gd" id="5_selection_panel"]
+[ext_resource type="Script" path="res://scripts/ui/hover_tooltip.gd" id="6_tooltip"]
 
 [node name="Main" type="Node3D"]
 
-[node name="EarthSystem" type="Node3D" parent="."]
+[node name="EarthDisplay" type="Node3D" parent="."]
 script = ExtResource("1_earth_display")
 
 [node name="EarthCamera" type="Camera3D" parent="."]
@@ -18,6 +22,33 @@ light_energy = 2.0
 shadow_enabled = false
 
 [node name="AmbientLight" type="WorldEnvironment" parent="."]
-environment/background_mode = 2  # Sky
-environment/ambient_light_source = 3  # Color
+environment/background_mode = 2
+environment/ambient_light_source = 3
 environment/ambient_light_color = Color(0.15, 0.15, 0.2, 1)
+
+[node name="GameState" type="Node" parent="."]
+script = ExtResource("3_game_state")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="LeftPanel" type="Control" parent="UI"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 320.0
+offset_bottom = 340.0
+script = ExtResource("4_country_panel")
+
+[node name="RightPanel" type="Control" parent="UI"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_left = 1.0
+offset_left = -300.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 220.0
+script = ExtResource("5_selection_panel")
+
+[node name="HoverTooltip" type="Label" parent="UI"]
+script = ExtResource("6_tooltip")
+mouse_filter = 2  # Ignore mouse (pass through)
