@@ -41,11 +41,11 @@ func _ready() -> void:
 
 
 func _load_tile_mapping() -> void:
-	var path: String = "res://../data/countries/tile_mapping.json"
+	var path: String = "res://../data/countries/tile_mapping_100km.json"
 	if not FileAccess.file_exists(path):
-		path = "res://assets/data/countries/tile_mapping.json"
+		path = "res://../data/countries/tile_mapping.json"
 	if not FileAccess.file_exists(path):
-		push_warning("TerritoryData: tile_mapping.json not found")
+		push_warning("TerritoryData: tile mapping not found (tried tile_mapping_100km.json and tile_mapping.json)")
 		return
 
 	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
