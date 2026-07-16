@@ -318,7 +318,7 @@ func _handle_timeline_input() -> void:
 	if Input.is_action_just_pressed("timeline_advance"):
 		if _territory_data and _territory_data.has_method("advance_year"):
 			_territory_data.advance_year()
-			var yr := _territory_data.get_current_year()
+			var yr: int = _territory_data.get_current_year()
 			print("Timeline: advanced to year %d" % yr)
 	# F = fast-forward to 1991 (USSR dissolves)
 	if Input.is_action_just_pressed("timeline_ff_1991"):
@@ -340,7 +340,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				_click_start_pos = event.position
 			else:
 				# Released — check if it was a click (not a drag)
-				var dist := (event.position - _click_start_pos).length()
+				var dist: float = (event.position - _click_start_pos).length()
 				if dist < CLICK_DRAG_THRESHOLD:
 					_try_select_at(event.position)
 
@@ -387,7 +387,7 @@ func _try_select_at(screen_pos: Vector2) -> void:
 	if not _territory_data or not _territory_data.has_method("get_tile_owner_palette"):
 		return
 
-	var idx := _territory_data.get_tile_owner_palette(tile_id)
+	var idx: int = _territory_data.get_tile_owner_palette(tile_id)
 	if idx <= 0:
 		# Clicked ocean — clear selection
 		if _game_state and _game_state.has_method("clear_selection"):
@@ -396,21 +396,21 @@ func _try_select_at(screen_pos: Vector2) -> void:
 			_palette_manager.clear_highlight()
 		return
 
-	var name: String = ""
+	var country_name: String = ""
 	if _territory_data.has_method("get_country_name"):
-		name = _territory_data.get_country_name(idx)
-	if name == "":
-		name = "Country #%d" % idx
+		country_name = _territory_data.get_country_name(idx)
+	if country_name == "":
+		country_name = "Country #%d" % idx
 
 	# Select the country
 	if _game_state and _game_state.has_method("select_country"):
-		_game_state.select_country(idx, name)
+		_game_state.select_country(idx, country_name)
 
 	# Highlight it
 	if _palette_manager and _palette_manager.has_method("highlight_country"):
 		_palette_manager.highlight_country(idx)
 
-	print("Selected: %s [%d] (tile %s)" % [name, idx, tile_id])
+	print("Selected: %s [%d] (tile %s)" % [country_name, idx, tile_id])
 
 
 ## Update hover state — find country under mouse cursor.
@@ -438,7 +438,7 @@ func _update_hover() -> void:
 
 	_hovered_tile = "B%d_%d" % [cell["transition"], cell["sparser_seg"]]
 	if _territory_data and _territory_data.has_method("get_tile_owner_palette"):
-		var idx := _territory_data.get_tile_owner_palette(_hovered_tile)
+		var idx: int = _territory_data.get_tile_owner_palette(_hovered_tile)
 		if idx > 0 and _territory_data.has_method("get_country_name"):
 			_hovered_country = _territory_data.get_country_name(idx)
 		else:
