@@ -7,7 +7,7 @@ const PaletteTextureGen := preload("res://scripts/data/palette_texture_gen.gd")
 
 const NUM_LODS := 5
 const EARTH_RADIUS_KM := 6371.0
-const BASE_CELL_KM := 100.0  # Test: 100km; Production: 10km
+const BASE_CELL_KM := 10.0  # Production: 10km; Test: 100km
 
 # Distance thresholds for LOD switching (km from Earth center)
 # Earth surface = 6371 km. Orbit at ~8000 km = LOD 1.

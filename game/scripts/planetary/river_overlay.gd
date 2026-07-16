@@ -74,25 +74,20 @@ func _load_and_create_mesh() -> void:
 		if edges.is_empty():
 			continue
 
-		var prev_end: Vector3 = Vector3.ZERO
-		var first_segment: bool = true
-
 		for edge in edges:
-			var band_10km: int = edge.get("band", 0)
+			var band: int = edge.get("band", 0)  # Already at 10km — no scaling needed
 			var seg: int = edge.get("seg", 0)
 			var direction: String = edge.get("dir", "E")
 
-			# Scale band from 10km resolution to game resolution
-			var band: int = _scale_band(band_10km)
-			var game_bands: int = _band_structure["total_bands"]
+			# Clamp band to valid range
+			band = clampi(band, 0, total_bands - 2)
 
 			# Compute the two endpoints of this cell edge
 			var v1: Vector3 = _grid_vertex_position(band, seg, radius, total_bands, band_segs)
 			var v2: Vector3
 
 			if direction == "N":
-				var next_band: int = _scale_band(band_10km + 1)
-				next_band = mini(next_band, game_bands - 2)
+				var next_band: int = clampi(band + 1, 0, total_bands - 1)
 				var next_seg: int = _map_segment(seg, band, next_band, band_segs)
 				v2 = _grid_vertex_position(next_band, next_seg, radius, total_bands, band_segs)
 			else:
@@ -103,7 +98,6 @@ func _load_and_create_mesh() -> void:
 
 			st.add_vertex(v1)
 			st.add_vertex(v2)
-
 			vertex_count += 2
 
 	var mesh: ArrayMesh = st.commit()

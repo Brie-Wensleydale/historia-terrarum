@@ -5,7 +5,7 @@
 extends Node3D
 
 const EARTH_RADIUS_KM := 6371.0
-const BASE_CELL_KM := 100.0  # 100km for fast testing
+const BASE_CELL_KM := 10.0  # 10km production resolution
 
 var _earth_body: MeshInstance3D
 var _grid_mesh: MeshInstance3D

@@ -34,8 +34,10 @@ func _on_territory_changed() -> void:
 func regenerate_all() -> void:
 	if _band_structure.is_empty():
 		return
+	var t0: int = Time.get_ticks_msec()
 	regenerate_borders()
 	regenerate_coastlines()
+	print("EdgeOverlay: regeneration complete in %d ms" % (Time.get_ticks_msec() - t0))
 
 
 # ═══════════════════════════ BORDERS ═══════════════════════════
