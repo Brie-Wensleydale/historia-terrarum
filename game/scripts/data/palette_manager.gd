@@ -20,6 +20,7 @@ var _terrain_palette: Array = []
 enum DisplayMode { POLITICAL, PROVINCE, TERRAIN, DIPLOMATIC }
 var _display_mode: int = DisplayMode.POLITICAL
 var _highlighted_idx: int = -1
+var _palette_dirty: bool = true  # P0: only update shader uniforms on change
 
 # Shader materials to update each frame
 var _registered_materials: Array[ShaderMaterial] = []
@@ -151,21 +152,27 @@ func _add_fallback_palette() -> void:
 
 func _process(_delta: float) -> void:
 	_handle_input()
-	_update_all_materials()
+	if _palette_dirty:
+		_update_all_materials()
+		_palette_dirty = false
 
 
 func _handle_input() -> void:
 	if Input.is_action_just_pressed("map_political"):
 		_display_mode = DisplayMode.POLITICAL
+		_palette_dirty = true
 		print("Display mode: Political")
 	elif Input.is_action_just_pressed("map_province"):
 		_display_mode = DisplayMode.PROVINCE
+		_palette_dirty = true
 		print("Display mode: Province")
 	elif Input.is_action_just_pressed("map_terrain"):
 		_display_mode = DisplayMode.TERRAIN
+		_palette_dirty = true
 		print("Display mode: Terrain")
 	elif Input.is_action_just_pressed("map_diplomatic"):
 		_display_mode = DisplayMode.DIPLOMATIC
+		_palette_dirty = true
 		print("Display mode: Diplomatic")
 
 
@@ -180,10 +187,12 @@ func unregister_material(mat: ShaderMaterial) -> void:
 
 func highlight_country(idx: int) -> void:
 	_highlighted_idx = idx
+	_palette_dirty = true
 
 
 func clear_highlight() -> void:
 	_highlighted_idx = -1
+	_palette_dirty = true
 
 
 func get_active_palette() -> Array:

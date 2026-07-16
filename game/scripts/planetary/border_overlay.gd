@@ -37,6 +37,7 @@ func _on_territory_changed() -> void:
 
 
 ## Regenerate all border meshes. Called on territory change.
+## P1: Skip O(n²) chaining — render edges directly as line pairs.
 func regenerate_borders() -> void:
 	if _band_structure.is_empty():
 		return
@@ -45,23 +46,8 @@ func regenerate_borders() -> void:
 	var border_edges: Array = _find_border_edges()
 	print("Border overlay: %d border edges found" % border_edges.size())
 
-	# Chain into polylines
-	var polylines: Array = _chain_segments(border_edges)
-	print("  Chained into %d polylines" % polylines.size())
-
-	# Simplify
-	var simplified: Array = []
-	for polyline in polylines:
-		var result: Array = _douglas_peucker(polyline, DP_TOLERANCE_KM)
-		if result.size() >= 2:
-			simplified.append(result)
-
-	print("  Simplified to %d polylines (%.1f km tolerance)" % [
-		simplified.size(), DP_TOLERANCE_KM,
-	])
-
-	# Build mesh
-	_build_border_mesh(simplified)
+	# Build mesh directly from edges (skip expensive chaining + simplification)
+	_build_border_mesh(border_edges)
 
 
 ## Find all tile edges where adjacent tiles have different owners.
@@ -126,6 +112,7 @@ func _grid_vertex(band: int, seg: int, radius: float, total_bands: int,
 	if segs_at_band <= 0:
 		segs_at_band = 4
 	var lon: float = TAU * float(seg % segs_at_band) / float(segs_at_band)
+	lon += PI * 0.5  # P3: match uv1_offset.x = 0.25 on Earth texture
 
 	return Vector3(
 		radius * cos(lat) * cos(lon),
@@ -220,8 +207,9 @@ func _point_line_distance(point: Vector3, line_origin: Vector3, line_dir: Vector
 	return (point - line_origin).cross(line_dir).length()
 
 
-## Build LineStrip mesh from simplified polylines and add to scene.
-func _build_border_mesh(polylines: Array) -> void:
+## Build LineStrip mesh from border edges and add to scene.
+## P1: Takes raw edges directly (skips chaining + simplification).
+func _build_border_mesh(edges: Array) -> void:
 	# Remove old mesh
 	if _international_mesh:
 		_international_mesh.queue_free()
@@ -230,14 +218,10 @@ func _build_border_mesh(polylines: Array) -> void:
 	st.begin(Mesh.PRIMITIVE_LINES)
 	var vertex_count: int = 0
 
-	for polyline in polylines:
-		if polyline.size() < 2:
-			continue
-
-		for i in range(polyline.size() - 1):
-			st.add_vertex(polyline[i])
-			st.add_vertex(polyline[i + 1])
-			vertex_count += 2
+	for edge in edges:
+		st.add_vertex(edge["v1"])
+		st.add_vertex(edge["v2"])
+		vertex_count += 2
 
 	var mesh: ArrayMesh = st.commit()
 	if not mesh or vertex_count == 0:
@@ -251,7 +235,7 @@ func _build_border_mesh(polylines: Array) -> void:
 	mat.albedo_color = Color(0.15, 0.15, 0.15, 0.9)  # Dark border lines
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.flags_unshaded = true
-	mat.no_depth_test = true
+	mat.no_depth_test = false  # P2: let GPU depth cull far-side overlay geometry
 	mi.material_override = mat
 
 	_international_mesh = mi

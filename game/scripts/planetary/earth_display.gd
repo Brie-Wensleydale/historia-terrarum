@@ -87,6 +87,7 @@ func _setup_earth_body() -> void:
 
 	var mat: StandardMaterial3D = StandardMaterial3D.new()
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST  # P4: sharp pixels on zoom
 
 	var tex_path: String = "res://assets/textures/planet/earth/earth_color_4k.png"
 	if ResourceLoader.exists(tex_path):

@@ -75,13 +75,13 @@ func _create_line_mesh(rings: Array, lod_name: String) -> MeshInstance3D:
 	mat.albedo_color = Color(0.08, 0.15, 0.35)  # Dark navy coastline
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.flags_unshaded = true
-	mat.no_depth_test = true
+	mat.no_depth_test = false  # P2: let GPU depth cull far-side overlay geometry
 	mi.material_override = mat
 
 	return mi
 
 
-## Select LOD based on camera distance (in km from Earth center)
+## Select LOD
 func set_lod_by_distance(distance_km: float) -> void:
 	var new_lod: String
 	if distance_km < 10000.0:

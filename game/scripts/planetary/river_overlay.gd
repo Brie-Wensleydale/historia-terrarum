@@ -120,7 +120,7 @@ func _load_and_create_mesh() -> void:
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mat.flags_unshaded = true
-	mat.no_depth_test = true
+	mat.no_depth_test = false  # P2: let GPU depth cull far-side overlay geometry
 	mi.material_override = mat
 
 	add_child(mi)
