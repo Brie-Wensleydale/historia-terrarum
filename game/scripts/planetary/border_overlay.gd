@@ -52,7 +52,7 @@ func regenerate_borders() -> void:
 	# Simplify
 	var simplified: Array = []
 	for polyline in polylines:
-		var result := _douglas_peucker(polyline, DP_TOLERANCE_KM)
+		var result: Array = _douglas_peucker(polyline, DP_TOLERANCE_KM)
 		if result.size() >= 2:
 			simplified.append(result)
 
@@ -82,12 +82,12 @@ func _find_border_edges() -> Array:
 		var ratio: int = maxi(segs / sparser_segs, 1)
 
 		for s in range(sparser_segs):
-			var owner := _get_owner(b_idx, s, band_segs, total_bands)
+			var owner: int = _get_owner(b_idx, s, band_segs, total_bands)
 
 			# East neighbor (same band)
 			var east_s := (s + 1) % sparser_segs
 			if east_s != 0 or sparser_segs > 1:  # Avoid wrap-around at full circle
-				var east_owner := _get_owner(b_idx, east_s, band_segs, total_bands)
+				var east_owner: int = _get_owner(b_idx, east_s, band_segs, total_bands)
 				if owner > 0 and east_owner > 0 and owner != east_owner:
 					var v1 := _grid_vertex(b_idx, s + 1, radius, total_bands, band_segs, true)
 					var v2 := _grid_vertex(b_idx + 1, _map_seg(s + 1, b_idx, b_idx + 1, band_segs),
@@ -100,7 +100,7 @@ func _find_border_edges() -> Array:
 				var north_segs: int = band_segs[b_idx + 1]
 				if north_segs > 0:
 					var north_seg := int(float(s) * float(north_segs) / float(sparser_segs))
-					var north_owner := _get_owner(b_idx + 1, north_seg, band_segs, total_bands)
+					var north_owner: int = _get_owner(b_idx + 1, north_seg, band_segs, total_bands)
 					if owner > 0 and north_owner > 0 and owner != north_owner:
 						var v1 := _grid_vertex(b_idx + 1, s, radius, total_bands, band_segs, true)
 						var v2 := _grid_vertex(b_idx + 1, s + 1, radius, total_bands, band_segs, true)
@@ -113,7 +113,7 @@ func _find_border_edges() -> Array:
 ## Get the palette index for a tile at (band, seg).
 func _get_owner(band: int, seg: int, band_segs: Array, total_bands: int) -> int:
 	if _territory_data and _territory_data.has_method("get_tile_owner_palette"):
-		var tile_id := "B%d_%d" % [band, seg]
+		var tile_id: String = "B%d_%d" % [band, seg]
 		return _territory_data.get_tile_owner_palette(tile_id)
 	return 0
 
@@ -153,18 +153,18 @@ func _chain_segments(edges: Array) -> Array:
 
 	while not remaining.is_empty():
 		# Start a new polyline
-		var current := remaining.pop_front()
+		var current: Variant = remaining.pop_front()
 		var polyline: Array = [current["v1"], current["v2"]]
 		var last_v: Vector3 = current["v2"]
 
 		# Extend forward
-		var extended := true
+		var extended: bool = true
 		while extended and not remaining.is_empty():
 			extended = false
 			for i in range(remaining.size() - 1, -1, -1):
 				var edge: Dictionary = remaining[i]
-				var dist_start := (last_v - edge["v1"]).length()
-				var dist_end := (last_v - edge["v2"]).length()
+				var dist_start: float = (last_v - edge["v1"]).length()
+				var dist_end: float = (last_v - edge["v2"]).length()
 
 				if dist_start < 1.0:  # Within 1 km tolerance
 					polyline.append(edge["v2"])
@@ -204,8 +204,8 @@ func _douglas_peucker(points: Array, tolerance: float) -> Array:
 			max_idx = i
 
 	if max_dist > tolerance:
-		var left := _douglas_peucker(points.slice(0, max_idx + 1), tolerance)
-		var right := _douglas_peucker(points.slice(max_idx, points.size()), tolerance)
+		var left: Array = _douglas_peucker(points.slice(0, max_idx + 1), tolerance)
+		var right: Array = _douglas_peucker(points.slice(max_idx, points.size()), tolerance)
 		# Merge avoiding duplicate at split point
 		var result: Array = left.duplicate()
 		result.resize(result.size() - 1)
@@ -226,9 +226,9 @@ func _build_border_mesh(polylines: Array) -> void:
 	if _international_mesh:
 		_international_mesh.queue_free()
 
-	var st := SurfaceTool.new()
+	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_LINES)
-	var vertex_count := 0
+	var vertex_count: int = 0
 
 	for polyline in polylines:
 		if polyline.size() < 2:
@@ -243,11 +243,11 @@ func _build_border_mesh(polylines: Array) -> void:
 	if not mesh or vertex_count == 0:
 		return
 
-	var mi := MeshInstance3D.new()
+	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "InternationalBorders"
 	mi.mesh = mesh
 
-	var mat := StandardMaterial3D.new()
+	var mat: StandardMaterial3D = StandardMaterial3D.new()
 	mat.albedo_color = Color(0.15, 0.15, 0.15, 0.9)  # Dark border lines
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.flags_unshaded = true

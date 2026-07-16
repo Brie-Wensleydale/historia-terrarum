@@ -24,14 +24,14 @@ func _ready() -> void:
 
 func _setup_ui() -> void:
 	# Panel background
-	var bg := ColorRect.new()
+	var bg: ColorRect = ColorRect.new()
 	bg.color = Color(0.05, 0.05, 0.08, 0.85)
 	bg.size = Vector2(300, 320)
 	bg.position = Vector2(10, 10)
 	add_child(bg)
 
 	# Country name + flag placeholder
-	var title := Label.new()
+	var title: Label = Label.new()
 	title.name = "CountryTitle"
 	title.text = "United States of America"
 	title.position = Vector2(16, 12)
@@ -41,7 +41,7 @@ func _setup_ui() -> void:
 	add_child(title)
 
 	# Flag placeholder
-	var flag_bg := ColorRect.new()
+	var flag_bg: ColorRect = ColorRect.new()
 	flag_bg.name = "FlagBg"
 	flag_bg.color = Color(0.15, 0.15, 0.2)
 	flag_bg.size = Vector2(60, 36)
@@ -49,11 +49,11 @@ func _setup_ui() -> void:
 	add_child(flag_bg)
 
 	# Tabs
-	var tabs_y := 92.0
-	var tab_names := ["Stats", "Diplomacy", "Military", "Tech"]
-	var tab_width := 67.0
+	var tabs_y: float = 92.0
+	var tab_names: Array = ["Stats", "Diplomacy", "Military", "Tech"]
+	var tab_width: float = 67.0
 	for i in range(tab_names.size()):
-		var tab := Button.new()
+		var tab: Button = Button.new()
 		tab.text = tab_names[i]
 		tab.position = Vector2(16 + i * (tab_width + 4), tabs_y)
 		tab.size = Vector2(tab_width, 26)
@@ -71,7 +71,7 @@ func _setup_ui() -> void:
 		"Government: —",
 	]
 	for i in range(stats.size()):
-		var lbl := Label.new()
+		var lbl: Label = Label.new()
 		lbl.text = stats[i]
 		lbl.position = Vector2(20, stats_y + i * 22)
 		lbl.size = Vector2(260, 20)
@@ -81,7 +81,7 @@ func _setup_ui() -> void:
 		add_child(lbl)
 
 	# Divider
-	var divider := ColorRect.new()
+	var divider: ColorRect = ColorRect.new()
 	divider.color = Color(0.2, 0.2, 0.25)
 	divider.size = Vector2(268, 1)
 	divider.position = Vector2(16, 90)

@@ -32,11 +32,11 @@ func _load_and_create_mesh() -> void:
 		print("River data not found: %s" % DATA_PATH)
 		return
 
-	var file := FileAccess.open(DATA_PATH, FileAccess.READ)
+	var file: FileAccess = FileAccess.open(DATA_PATH, FileAccess.READ)
 	var json_text: String = file.get_as_text()
 	file.close()
 
-	var json := JSON.new()
+	var json: JSON = JSON.new()
 	if json.parse(json_text) != OK:
 		print("Failed to parse rivers JSON")
 		return
@@ -47,7 +47,7 @@ func _load_and_create_mesh() -> void:
 	var radius: float = EARTH_RADIUS_KM * RIVER_OFFSET_FACTOR
 	var vertex_count: int = 0
 
-	var st := SurfaceTool.new()
+	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_LINES)
 
 	for river_name in rivers_data:
@@ -86,11 +86,11 @@ func _load_and_create_mesh() -> void:
 		print("River mesh: no geometry generated")
 		return
 
-	var mi := MeshInstance3D.new()
+	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Rivers"
 	mi.mesh = mesh
 
-	var mat := StandardMaterial3D.new()
+	var mat: StandardMaterial3D = StandardMaterial3D.new()
 	mat.albedo_color = Color(0.15, 0.35, 0.65, 0.85)  # River blue, slightly transparent
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA

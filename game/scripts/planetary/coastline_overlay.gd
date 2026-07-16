@@ -19,11 +19,11 @@ func _load_and_create_meshes() -> void:
 		print("Coastline data not found: %s" % DATA_PATH)
 		return
 
-	var file := FileAccess.open(DATA_PATH, FileAccess.READ)
+	var file: FileAccess = FileAccess.open(DATA_PATH, FileAccess.READ)
 	var json_text: String = file.get_as_text()
 	file.close()
 
-	var json := JSON.new()
+	var json: JSON = JSON.new()
 	if json.parse(json_text) != OK:
 		print("Failed to parse coastline JSON")
 		return
@@ -39,7 +39,7 @@ func _load_and_create_meshes() -> void:
 
 
 func _create_line_mesh(rings: Array, lod_name: String) -> MeshInstance3D:
-	var st := SurfaceTool.new()
+	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_LINES)
 
 	for ring in rings:
@@ -51,15 +51,15 @@ func _create_line_mesh(rings: Array, lod_name: String) -> MeshInstance3D:
 		for i in range(count - 1):
 			var idx0 := i * 3
 			var idx1 := (i + 1) * 3
-			var v0 := Vector3(ring[idx0], ring[idx0 + 1], ring[idx0 + 2])
-			var v1 := Vector3(ring[idx1], ring[idx1 + 1], ring[idx1 + 2])
+			var v0: Vector3 = Vector3(ring[idx0], ring[idx0 + 1], ring[idx0 + 2])
+			var v1: Vector3 = Vector3(ring[idx1], ring[idx1 + 1], ring[idx1 + 2])
 			st.add_vertex(v0)
 			st.add_vertex(v1)
 
 		# Close the ring
 		var last_idx := (count - 1) * 3
-		var v_last := Vector3(ring[last_idx], ring[last_idx + 1], ring[last_idx + 2])
-		var v_first := Vector3(ring[0], ring[1], ring[2])
+		var v_last: Vector3 = Vector3(ring[last_idx], ring[last_idx + 1], ring[last_idx + 2])
+		var v_first: Vector3 = Vector3(ring[0], ring[1], ring[2])
 		st.add_vertex(v_last)
 		st.add_vertex(v_first)
 
@@ -67,11 +67,11 @@ func _create_line_mesh(rings: Array, lod_name: String) -> MeshInstance3D:
 	if not mesh:
 		return MeshInstance3D.new()
 
-	var mi := MeshInstance3D.new()
+	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Coastline_" + lod_name.to_upper()
 	mi.mesh = mesh
 
-	var mat := StandardMaterial3D.new()
+	var mat: StandardMaterial3D = StandardMaterial3D.new()
 	mat.albedo_color = Color(0.08, 0.15, 0.35)  # Dark navy coastline
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.flags_unshaded = true

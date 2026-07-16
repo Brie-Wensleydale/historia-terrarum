@@ -41,20 +41,20 @@ func _ready() -> void:
 
 
 func _load_tile_mapping() -> void:
-	var path := "res://../data/countries/tile_mapping.json"
+	var path: String = "res://../data/countries/tile_mapping.json"
 	if not FileAccess.file_exists(path):
 		path = "res://assets/data/countries/tile_mapping.json"
 	if not FileAccess.file_exists(path):
 		push_warning("TerritoryData: tile_mapping.json not found")
 		return
 
-	var file := FileAccess.open(path, FileAccess.READ)
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
 	if not file:
 		return
 	var text := file.get_as_text()
 	file.close()
 
-	var json := JSON.new()
+	var json: JSON = JSON.new()
 	if json.parse(text) != OK:
 		push_error("TerritoryData: failed to parse tile_mapping.json")
 		return
@@ -62,19 +62,19 @@ func _load_tile_mapping() -> void:
 
 
 func _load_country_name_map() -> void:
-	var path := "res://../data/countries/country_registry.json"
+	var path: String = "res://../data/countries/country_registry.json"
 	if not FileAccess.file_exists(path):
 		path = "res://assets/data/countries/country_registry.json"
 	if not FileAccess.file_exists(path):
 		return
 
-	var file := FileAccess.open(path, FileAccess.READ)
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
 	if not file:
 		return
 	var text := file.get_as_text()
 	file.close()
 
-	var json := JSON.new()
+	var json: JSON = JSON.new()
 	if json.parse(text) != OK:
 		return
 
@@ -88,18 +88,18 @@ func _load_country_name_map() -> void:
 
 
 func _load_timeline() -> void:
-	var path := "res://../data/timeline/events.json"
+	var path: String = "res://../data/timeline/events.json"
 	if not FileAccess.file_exists(path):
 		push_warning("TerritoryData: events.json not found — no timeline loaded")
 		return
 
-	var file := FileAccess.open(path, FileAccess.READ)
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
 	if not file:
 		return
 	var text := file.get_as_text()
 	file.close()
 
-	var json := JSON.new()
+	var json: JSON = JSON.new()
 	if json.parse(text) != OK:
 		push_error("TerritoryData: failed to parse events.json")
 		return
@@ -205,14 +205,14 @@ func _apply_event(event: Dictionary) -> void:
 		# Exact tile list
 		if not tile_list.is_empty():
 			for tid in tile_list:
-				var current_idx := get_tile_owner_palette(tid)
+				var current_idx: int = get_tile_owner_palette(tid)
 				if from_idx < 0 or current_idx == from_idx:
 					set_tile_owner(tid, to_idx)
 			continue
 
 		# Bbox — find all tiles within geographic region
 		if not bbox.is_empty():
-			var matching := _find_tiles_in_bbox(bbox, from_idx)
+			var matching: Array = _find_tiles_in_bbox(bbox, from_idx)
 			for tid in matching:
 				set_tile_owner(tid, to_idx)
 
@@ -234,7 +234,7 @@ func _find_tiles_in_bbox(bbox: Dictionary, from_idx: int) -> Array:
 		var lon: float = latlon["lon"]
 
 		if lat >= lat_min and lat <= lat_max and lon >= lon_min and lon <= lon_max:
-			var idx := get_tile_owner_palette(tid)
+			var idx: int = get_tile_owner_palette(tid)
 			if from_idx < 0 or idx == from_idx:
 				result.append(tid)
 
@@ -244,12 +244,12 @@ func _find_tiles_in_bbox(bbox: Dictionary, from_idx: int) -> Array:
 ## Convert a tile ID like "B50_30" to approximate lat/lon.
 ## Uses 100km band structure: 200 bands, 400 equator segments.
 func _tile_id_to_latlon(tid: String) -> Dictionary:
-	var parts := tid.split("_")
+	var parts: PackedStringArray = tid.split("_")
 	if parts.size() != 2 or not parts[0].begins_with("B"):
 		return {}
 
-	var band := parts[0].substr(1).to_int()
-	var seg := parts[1].to_int()
+	var band: int = parts[0].substr(1).to_int()
+	var seg: int = parts[1].to_int()
 
 	const TOTAL_BANDS := 200
 	const EQUATOR_SEGS := 400
@@ -274,9 +274,9 @@ func _approx_segs_at_band(band: int) -> int:
 	const EQUATOR_SEGS := 400
 	const MIN_SEGS := 4
 
-	var dist_from_equator := abs(band - TOTAL_BANDS / 2)
-	var frac := float(dist_from_equator) / float(TOTAL_BANDS / 2)
-	var segs := int(EQUATOR_SEGS * (1.0 - frac))
+	var dist_from_equator: int = abs(band - TOTAL_BANDS / 2)
+	var frac: float = float(dist_from_equator) / float(TOTAL_BANDS / 2)
+	var segs: int = int(EQUATOR_SEGS * (1.0 - frac))
 	return maxi(segs, MIN_SEGS)
 
 

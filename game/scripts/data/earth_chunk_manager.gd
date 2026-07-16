@@ -28,7 +28,7 @@ func _ready() -> void:
 func _create_chunks() -> void:
 	for lat_idx in range(CHUNKS_LAT):
 		for lon_idx in range(CHUNKS_LON):
-			var chunk := _create_chunk(lat_idx, lon_idx)
+			var chunk: Node3D = _create_chunk(lat_idx, lon_idx)
 			_chunks.append(chunk)
 			add_child(chunk)
 
@@ -36,7 +36,7 @@ func _create_chunks() -> void:
 
 
 func _create_chunk(lat_idx: int, lon_idx: int) -> Node3D:
-	var chunk := Node3D.new()
+	var chunk: Node3D = Node3D.new()
 	chunk.name = "Chunk_%d_%d" % [lat_idx, lon_idx]
 
 	# Bounding box for culling

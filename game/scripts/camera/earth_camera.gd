@@ -166,7 +166,7 @@ func _zoom_rung(direction: int) -> void:
 		return
 	_scroll_cooldown = SCROLL_COOLDOWN_SEC
 
-	var new_rung := clampi(_current_rung + direction, 0, ZOOM_RUNGS.size() - 1)
+	var new_rung: int = clampi(_current_rung + direction, 0, ZOOM_RUNGS.size() - 1)
 	if new_rung != _current_rung:
 		_current_rung = new_rung
 		_snap_to_rung(_current_rung)

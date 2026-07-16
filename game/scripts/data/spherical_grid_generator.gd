@@ -127,7 +127,7 @@ static func generate(body_name: String, radius_km: float, body_color: Color, bas
 	var total_bands: int = band_struct["total_bands"]
 	var band_segs: Array = band_struct["band_segs"]
 
-	var st := SurfaceTool.new()
+	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_LINES)
 
 	for b in range(total_bands):
@@ -187,7 +187,7 @@ static func generate(body_name: String, radius_km: float, body_color: Color, bas
 		var a2: float = TAU * float(i + 1) / float(s_segs)
 		st.add_vertex(Vector3(s_r * cos(a1), s_y, s_r * sin(a1)))
 		st.add_vertex(Vector3(s_r * cos(a2), s_y, s_r * sin(a2)))
-	var sp := Vector3(0, -radius_m, 0)
+	var sp: Vector3 = Vector3(0, -radius_m, 0)
 	for i in range(s_segs):
 		var a: float = TAU * float(i) / float(s_segs)
 		st.add_vertex(Vector3(s_r * cos(a), s_y, s_r * sin(a)))
@@ -203,7 +203,7 @@ static func generate(body_name: String, radius_km: float, body_color: Color, bas
 		var a2: float = TAU * float(i + 1) / float(n_segs)
 		st.add_vertex(Vector3(n_r * cos(a1), n_y, n_r * sin(a1)))
 		st.add_vertex(Vector3(n_r * cos(a2), n_y, n_r * sin(a2)))
-	var np := Vector3(0, radius_m, 0)
+	var np: Vector3 = Vector3(0, radius_m, 0)
 	for i in range(n_segs):
 		var a: float = TAU * float(i) / float(n_segs)
 		st.add_vertex(Vector3(n_r * cos(a), n_y, n_r * sin(a)))
@@ -216,7 +216,7 @@ static func generate(body_name: String, radius_km: float, body_color: Color, bas
 	var scaled_mesh: ArrayMesh = _scale_mesh(mesh, 1.0 / 1000.0)
 	var offset_mesh: ArrayMesh = _scale_mesh(scaled_mesh, 1.005)
 
-	var mi := MeshInstance3D.new()
+	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Grid_" + body_name
 	mi.mesh = offset_mesh
 	mi.visible = false
@@ -224,7 +224,7 @@ static func generate(body_name: String, radius_km: float, body_color: Color, bas
 	mi.set_meta("grid_band_segs", band_segs)
 	mi.set_meta("grid_radius_km", radius_km)
 
-	var mat := StandardMaterial3D.new()
+	var mat: StandardMaterial3D = StandardMaterial3D.new()
 	mat.albedo_color = Color(body_color.r, body_color.g, body_color.b, OPACITY_IDLE)
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
@@ -320,7 +320,7 @@ static func generate_tint(body_name: String, radius_km: float, base_cell_km: flo
 	var total_bands: int = band_struct["total_bands"]
 	var full_band_segs: Array = band_struct["band_segs"]
 
-	var st := SurfaceTool.new()
+	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 
 	var colored_cells: int = 0
@@ -358,10 +358,10 @@ static func generate_tint(body_name: String, radius_km: float, base_cell_km: flo
 			var lon_s: float = TAU * float(s) / float(grid_segs)
 			var lon_s_next: float = TAU * float(s + 1) / float(grid_segs)
 
-			var v_bl := Vector3(r_bot * cos(lon_s), y_bot, r_bot * sin(lon_s))
-			var v_br := Vector3(r_bot * cos(lon_s_next), y_bot, r_bot * sin(lon_s_next))
-			var v_tl := Vector3(r_top * cos(lon_s), y_top, r_top * sin(lon_s))
-			var v_tr := Vector3(r_top * cos(lon_s_next), y_top, r_top * sin(lon_s_next))
+			var v_bl: Vector3 = Vector3(r_bot * cos(lon_s), y_bot, r_bot * sin(lon_s))
+			var v_br: Vector3 = Vector3(r_bot * cos(lon_s_next), y_bot, r_bot * sin(lon_s_next))
+			var v_tl: Vector3 = Vector3(r_top * cos(lon_s), y_top, r_top * sin(lon_s))
+			var v_tr: Vector3 = Vector3(r_top * cos(lon_s_next), y_top, r_top * sin(lon_s_next))
 
 			st.add_vertex(v_bl); st.add_vertex(v_br); st.add_vertex(v_tr)
 			st.add_vertex(v_bl); st.add_vertex(v_tr); st.add_vertex(v_tl)
@@ -375,12 +375,12 @@ static func generate_tint(body_name: String, radius_km: float, base_cell_km: flo
 	var scaled_mesh: ArrayMesh = _scale_mesh(mesh, 1.0 / 1000.0)
 	var offset_mesh: ArrayMesh = _scale_mesh(scaled_mesh, 1.003)
 
-	var mi := MeshInstance3D.new()
+	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Tint_" + body_name
 	mi.mesh = offset_mesh
 	mi.visible = false
 
-	var mat := StandardMaterial3D.new()
+	var mat: StandardMaterial3D = StandardMaterial3D.new()
 	mat.vertex_color_use_as_albedo = true
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
@@ -393,7 +393,7 @@ static func generate_tint(body_name: String, radius_km: float, base_cell_km: flo
 
 
 static func _scale_mesh(mesh: ArrayMesh, factor: float) -> ArrayMesh:
-	var scaled := ArrayMesh.new()
+	var scaled: ArrayMesh = ArrayMesh.new()
 	for surface_idx in range(mesh.get_surface_count()):
 		var arrays: Array = mesh.surface_get_arrays(surface_idx)
 		if arrays.is_empty():

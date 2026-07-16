@@ -53,7 +53,7 @@ func _print_lod_summary() -> void:
 	)
 	print("LOD Pyramid (base %.0f km):" % BASE_CELL_KM)
 	for lod in range(lod_structures.size()):
-		var count := SphericalGridGenerator.get_lod_tile_count(lod, lod_structures)
+		var count: int = SphericalGridGenerator.get_lod_tile_count(lod, lod_structures)
 		var bs: Dictionary = SphericalGridGenerator.get_lod_structure(lod, lod_structures)
 		print("  LOD %d: %s tiles (%d bands, %d equator segs)" % [
 			lod, count, bs.get("total_bands", 0), bs.get("equator_segs", 0),
@@ -61,7 +61,7 @@ func _print_lod_summary() -> void:
 
 
 func _setup_earth_body() -> void:
-	var sphere_mesh := SphereMesh.new()
+	var sphere_mesh: SphereMesh = SphereMesh.new()
 	sphere_mesh.radius = EARTH_RADIUS_KM
 	sphere_mesh.height = EARTH_RADIUS_KM * 2.0
 	sphere_mesh.radial_segments = 256
@@ -71,10 +71,10 @@ func _setup_earth_body() -> void:
 	_earth_body.name = "EarthBody"
 	_earth_body.mesh = sphere_mesh
 
-	var mat := StandardMaterial3D.new()
+	var mat: StandardMaterial3D = StandardMaterial3D.new()
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 
-	var tex_path := "res://assets/textures/planet/earth/earth_color_4k.png"
+	var tex_path: String = "res://assets/textures/planet/earth/earth_color_4k.png"
 	if ResourceLoader.exists(tex_path):
 		var tex: Texture2D = load(tex_path)
 		mat.albedo_texture = tex
@@ -151,21 +151,21 @@ func _assign_real_tile_colors() -> void:
 
 
 func _load_tile_mapping_100km() -> Dictionary:
-	var path := "res://../data/countries/tile_mapping_100km.json"
+	var path: String = "res://../data/countries/tile_mapping_100km.json"
 	if not FileAccess.file_exists(path):
 		path = "res://assets/data/countries/tile_mapping_100km.json"
 	if not FileAccess.file_exists(path):
 		push_warning("earth_display: tile_mapping_100km.json not found, using test stripes")
 		return _fallback_stripe_mapping()
 
-	var file := FileAccess.open(path, FileAccess.READ)
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
 	if not file:
 		return {}
 
 	var text := file.get_as_text()
 	file.close()
 
-	var json := JSON.new()
+	var json: JSON = JSON.new()
 	var err := json.parse(text)
 	if err != OK:
 		push_error("earth_display: failed to parse tile_mapping_100km.json")
@@ -176,11 +176,11 @@ func _load_tile_mapping_100km() -> Dictionary:
 
 func _fallback_stripe_mapping() -> Dictionary:
 	# Longitude-based stripes with real palette indices as fallback
-	var result := {}
+	var result: Dictionary = {}
 	_band_structure = SphericalGridGenerator.compute_band_structure(EARTH_RADIUS_KM, BASE_CELL_KM)
 	var band_segs: Array = _band_structure["band_segs"]
 	var total_bands: int = _band_structure["total_bands"]
-	var num_stripes := 6
+	var num_stripes: int = 6
 
 	for b_idx in range(total_bands):
 		var grid_segs: int = band_segs[b_idx]
@@ -221,7 +221,7 @@ func _create_tint() -> void:
 		_tile_colors, band_segs_dict,
 	)
 	if _tint_mesh:
-		var shader_mat := ShaderMaterial.new()
+		var shader_mat: ShaderMaterial = ShaderMaterial.new()
 		var shader := load("res://shaders/solid_tint.gdshader")
 		shader_mat.shader = shader
 		_tint_mesh.material_override = shader_mat
@@ -238,9 +238,9 @@ func _register_tint_material() -> void:
 
 
 func focus_on_lat_lon(lat_deg: float, lon_deg: float) -> Dictionary:
-	var lat := deg_to_rad(lat_deg)
-	var lon := deg_to_rad(lon_deg + 180.0)
-	var point := Vector3(
+	var lat: float = deg_to_rad(lat_deg)
+	var lon: float = deg_to_rad(lon_deg + 180.0)
+	var point: Vector3 = Vector3(
 		-EARTH_RADIUS_KM * cos(lat) * cos(lon),
 		EARTH_RADIUS_KM * sin(lat),
 		EARTH_RADIUS_KM * cos(lat) * sin(lon),
@@ -363,8 +363,8 @@ func _try_select_at(screen_pos: Vector2) -> void:
 		return
 
 	# Ray from camera through screen position
-	var from := _camera.project_ray_origin(screen_pos)
-	var dir := _camera.project_ray_normal(screen_pos)
+	var from: Vector3 = _camera.project_ray_origin(screen_pos)
+	var dir: Vector3 = _camera.project_ray_normal(screen_pos)
 
 	# Sphere intersection: Earth at origin, radius = EARTH_RADIUS_KM
 	var hit_point := _ray_sphere_intersect(from, dir, Vector3.ZERO, EARTH_RADIUS_KM)
@@ -380,7 +380,7 @@ func _try_select_at(screen_pos: Vector2) -> void:
 	if cell.is_empty():
 		return
 
-	var tile_id := "B%d_%d" % [cell["transition"], cell["sparser_seg"]]
+	var tile_id: String = "B%d_%d" % [cell["transition"], cell["sparser_seg"]]
 
 	# Get the country
 	if not _territory_data or not _territory_data.has_method("get_tile_owner_palette"):
@@ -418,8 +418,8 @@ func _update_hover() -> void:
 		return
 
 	var mouse_pos := get_viewport().get_mouse_position()
-	var from := _camera.project_ray_origin(mouse_pos)
-	var dir := _camera.project_ray_normal(mouse_pos)
+	var from: Vector3 = _camera.project_ray_origin(mouse_pos)
+	var dir: Vector3 = _camera.project_ray_normal(mouse_pos)
 	var hit_point := _ray_sphere_intersect(from, dir, Vector3.ZERO, EARTH_RADIUS_KM)
 
 	if hit_point == Vector3.ZERO:
@@ -454,8 +454,8 @@ func get_hovered_country() -> String:
 func _ray_sphere_intersect(ray_origin: Vector3, ray_dir: Vector3,
 		sphere_center: Vector3, sphere_radius: float) -> Vector3:
 	var oc := ray_origin - sphere_center
-	var a := ray_dir.dot(ray_dir)
-	var b := 2.0 * oc.dot(ray_dir)
+	var a: float = ray_dir.dot(ray_dir)
+	var b: float = 2.0 * oc.dot(ray_dir)
 	var c := oc.dot(oc) - sphere_radius * sphere_radius
 	var discriminant := b * b - 4.0 * a * c
 
@@ -477,7 +477,7 @@ func set_game_state(gs: Node) -> void:
 	# Auto-set player country from territory data
 	if _territory_data and gs and gs.has_method("set_player_country"):
 		# Default: United States
-		var us_idx := 4  # Palette index for USA
+		var us_idx: int = 4  # Palette index for USA
 		if _territory_data.has_method("get_country_name"):
 			var country_name: String = _territory_data.get_country_name(us_idx)
 			if country_name != "":
@@ -496,7 +496,7 @@ func _update_lod() -> void:
 	if not _camera:
 		return
 
-	var camera_distance := _camera.global_position.length()
+	var camera_distance: float = _camera.global_position.length()
 
 	if _lod_pyramid.has_method("select_lod"):
 		var active_lod: int = _lod_pyramid.select_lod(camera_distance)

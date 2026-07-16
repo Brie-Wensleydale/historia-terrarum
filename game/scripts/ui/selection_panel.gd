@@ -20,14 +20,14 @@ func _ready() -> void:
 
 
 func _setup_ui() -> void:
-	var bg := ColorRect.new()
+	var bg: ColorRect = ColorRect.new()
 	bg.color = Color(0.05, 0.05, 0.08, 0.85)
 	bg.size = Vector2(280, 200)
 	bg.position = Vector2(10, 10)
 	add_child(bg)
 
 	# Title
-	var title := Label.new()
+	var title: Label = Label.new()
 	title.name = "SelTitle"
 	title.text = "Nothing selected"
 	title.position = Vector2(16, 12)
@@ -37,7 +37,7 @@ func _setup_ui() -> void:
 	add_child(title)
 
 	# Type label
-	var type_lbl := Label.new()
+	var type_lbl: Label = Label.new()
 	type_lbl.name = "SelType"
 	type_lbl.text = ""
 	type_lbl.position = Vector2(16, 40)
@@ -47,7 +47,7 @@ func _setup_ui() -> void:
 	add_child(type_lbl)
 
 	# Divider
-	var divider := ColorRect.new()
+	var divider: ColorRect = ColorRect.new()
 	divider.color = Color(0.2, 0.2, 0.25)
 	divider.size = Vector2(248, 1)
 	divider.position = Vector2(16, 64)
@@ -59,7 +59,7 @@ func _setup_ui() -> void:
 		"Military power: —", "Diplomatic status: Neutral",
 	]
 	for i in range(info_labels.size()):
-		var lbl := Label.new()
+		var lbl: Label = Label.new()
 		lbl.text = info_labels[i]
 		lbl.position = Vector2(16, 74 + i * 22)
 		lbl.size = Vector2(248, 20)

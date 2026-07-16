@@ -7,7 +7,7 @@ func _ready() -> void:
 	add_theme_color_override("font_color", Color.WHITE)
 	visible = false
 	# Semi-transparent background
-	var bg := ColorRect.new()
+	var bg: ColorRect = ColorRect.new()
 	bg.name = "TooltipBg"
 	bg.color = Color(0.0, 0.0, 0.0, 0.75)
 	bg.size = Vector2(200, 22)
@@ -16,7 +16,7 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	var earth := _find_earth_display()
+	var earth: Node = _find_earth_display()
 	if not earth:
 		visible = false
 		return

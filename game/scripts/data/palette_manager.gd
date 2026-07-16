@@ -58,7 +58,7 @@ func _load_data() -> void:
 		var idx: int = entry["index"]
 		if idx < 1 or idx >= PALETTE_SIZE:
 			continue
-		var c := Color(entry["r"], entry["g"], entry["b"], entry["a"])
+		var c: Color = Color(entry["r"], entry["g"], entry["b"], entry["a"])
 		_political_palette[idx] = c
 
 		# Province palette: slightly lighter variant
@@ -84,21 +84,21 @@ func _load_data() -> void:
 
 
 func _load_palette_json() -> Array:
-	var path := "res://../data/countries/palette.json"
+	var path: String = "res://../data/countries/palette.json"
 	if not FileAccess.file_exists(path):
 		# Try alternate path (for editor vs runtime)
 		path = "res://assets/data/countries/palette.json"
 	if not FileAccess.file_exists(path):
 		return []
 
-	var file := FileAccess.open(path, FileAccess.READ)
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
 	if not file:
 		return []
 
 	var text := file.get_as_text()
 	file.close()
 
-	var json := JSON.new()
+	var json: JSON = JSON.new()
 	var err := json.parse(text)
 	if err != OK:
 		push_error("PaletteManager: failed to parse palette.json: %s" % json.get_error_message())
@@ -109,20 +109,20 @@ func _load_palette_json() -> Array:
 
 
 func _load_country_registry() -> void:
-	var path := "res://../data/countries/country_registry.json"
+	var path: String = "res://../data/countries/country_registry.json"
 	if not FileAccess.file_exists(path):
 		path = "res://assets/data/countries/country_registry.json"
 	if not FileAccess.file_exists(path):
 		return
 
-	var file := FileAccess.open(path, FileAccess.READ)
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
 	if not file:
 		return
 
 	var text := file.get_as_text()
 	file.close()
 
-	var json := JSON.new()
+	var json: JSON = JSON.new()
 	var err := json.parse(text)
 	if err != OK:
 		return

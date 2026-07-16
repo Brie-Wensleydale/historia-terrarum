@@ -85,13 +85,13 @@ func _animate_transition(delta: float) -> void:
 func _set_lod_alpha(lod: int, alpha: float) -> void:
 	# Set modulate alpha on solid mesh
 	if lod < _lod_meshes.size() and _lod_meshes[lod]:
-		var c := _lod_meshes[lod].modulate
+		var c: Color = _lod_meshes[lod].modulate
 		c.a = alpha
 		_lod_meshes[lod].modulate = c
 
 	# Set modulate alpha on textured container children
 	if lod < _lod_textured.size() and _lod_textured[lod]:
-		var c := _lod_textured[lod].modulate
+		var c: Color = _lod_textured[lod].modulate
 		c.a = alpha
 		_lod_textured[lod].modulate = c
 
@@ -108,7 +108,7 @@ func _show_only_lod(lod: int) -> void:
 func _print_summary() -> void:
 	print("LOD Pyramid Manager initialized:")
 	for lod in range(NUM_LODS):
-		var count := SphericalGridGenerator.get_lod_tile_count(lod, _lod_structures)
+		var count: int = SphericalGridGenerator.get_lod_tile_count(lod, _lod_structures)
 		var bs: Dictionary = SphericalGridGenerator.get_lod_structure(lod, _lod_structures)
 		print("  LOD %d: %s tiles (%d bands, %d eq segs)" % [
 			lod, count,
@@ -125,14 +125,14 @@ func classify_quad(lod: int, qband: int, qseg: int, territory_data: Node) -> Str
 		return "solid"  # LOD 0 = single tile, always solid
 
 	var span := 1 << lod  # 2^lod
-	var first_owner := -1
+	var first_owner: int = -1
 
 	for db in range(span):
 		for ds in range(span):
 			var band0 := qband * span + db
 			var seg0 := qseg * span + ds
-			var tile_id := "B%d_%d" % [band0, seg0]
-			var owner := territory_data.get_tile_owner_palette(tile_id)
+			var tile_id: String = "B%d_%d" % [band0, seg0]
+			var owner: int = territory_data.get_tile_owner_palette(tile_id)
 			if first_owner == -1:
 				first_owner = owner
 			elif owner != first_owner:
@@ -144,14 +144,14 @@ func classify_quad(lod: int, qband: int, qseg: int, territory_data: Node) -> Str
 ## Get the majority palette index for a solid quad (center tile's owner).
 func get_solid_owner(lod: int, qband: int, qseg: int, territory_data: Node) -> int:
 	if lod == 0:
-		var tile_id := "B%d_%d" % [qband, qseg]
+		var tile_id: String = "B%d_%d" % [qband, qseg]
 		return territory_data.get_tile_owner_palette(tile_id)
 
 	var span := 1 << lod
 	# Sample center of the quad
 	var center_band := qband * span + (span / 2)
 	var center_seg := qseg * span + (span / 2)
-	var tile_id := "B%d_%d" % [center_band, center_seg]
+	var tile_id: String = "B%d_%d" % [center_band, center_seg]
 	return territory_data.get_tile_owner_palette(tile_id)
 
 
@@ -216,8 +216,8 @@ func get_classification_stats(lod: int, territory_data: Node) -> Dictionary:
 	var bs: Dictionary = _lod_structures[lod]
 	var band_segs: Array = bs["band_segs"]
 	var total_bands: int = bs["total_bands"]
-	var solid := 0
-	var textured := 0
+	var solid: int = 0
+	var textured: int = 0
 
 	for b_idx in range(total_bands - 1):
 		var segs_a: int = band_segs[b_idx]
@@ -226,8 +226,8 @@ func get_classification_stats(lod: int, territory_data: Node) -> Dictionary:
 			continue
 		var sparser_segs: int = mini(segs_a, segs_b)
 		for s in range(sparser_segs):
-			var cls := classify_quad(lod, b_idx, s, territory_data)
-			var key := "%d_%d_%d" % [lod, b_idx, s]
+			var cls: String = classify_quad(lod, b_idx, s, territory_data)
+			var key: String = "%d_%d_%d" % [lod, b_idx, s]
 			_quad_classifications[key] = cls
 			if cls == "solid":
 				solid += 1
@@ -242,7 +242,7 @@ func get_classification_stats(lod: int, territory_data: Node) -> Dictionary:
 ## Solid quads use vertex colors + solid_tint shader.
 ## Textured quads use per-quad R8 textures + territory_palette shader.
 func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
-	var result := {"solid": null, "textured": null}
+	var result: Dictionary = {"solid": null, "textured": null}
 
 	if lod <= 0 or lod >= NUM_LODS:
 		return result
@@ -253,12 +253,12 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 	var radius_m: float = EARTH_RADIUS_KM * 1000.0
 	var offset_factor := 1.003 + lod * 0.0005
 
-	var st_solid := SurfaceTool.new()
+	var st_solid: SurfaceTool = SurfaceTool.new()
 	st_solid.begin(Mesh.PRIMITIVE_TRIANGLES)
 
-	var solid_count := 0
-	var textured_count := 0
-	var ocean_count := 0
+	var solid_count: int = 0
+	var textured_count: int = 0
+	var ocean_count: int = 0
 
 	# Collect textured quad data for separate mesh generation
 	var textured_quads: Array = []  # [{qband, qseg, indices_2d}]
@@ -279,22 +279,22 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 		var y_top: float = radius_m * sin(top_lat) * offset_factor
 
 		for s in range(sparser_segs):
-			var classification := classify_quad(lod, b_idx, s, territory_data)
-			var key := "%d_%d_%d" % [lod, b_idx, s]
+			var classification: String = classify_quad(lod, b_idx, s, territory_data)
+			var key: String = "%d_%d_%d" % [lod, b_idx, s]
 			_quad_classifications[key] = classification
 
 			var lon_s: float = TAU * float(s) / float(sparser_segs)
 			var lon_s_next: float = TAU * float(s + 1) / float(sparser_segs)
 
-			var v_bl := Vector3(r_bot * cos(lon_s), y_bot, r_bot * sin(lon_s))
-			var v_br := Vector3(r_bot * cos(lon_s_next), y_bot, r_bot * sin(lon_s_next))
-			var v_tl := Vector3(r_top * cos(lon_s), y_top, r_top * sin(lon_s))
-			var v_tr := Vector3(r_top * cos(lon_s_next), y_top, r_top * sin(lon_s_next))
+			var v_bl: Vector3 = Vector3(r_bot * cos(lon_s), y_bot, r_bot * sin(lon_s))
+			var v_br: Vector3 = Vector3(r_bot * cos(lon_s_next), y_bot, r_bot * sin(lon_s_next))
+			var v_tl: Vector3 = Vector3(r_top * cos(lon_s), y_top, r_top * sin(lon_s))
+			var v_tr: Vector3 = Vector3(r_top * cos(lon_s_next), y_top, r_top * sin(lon_s_next))
 
 			if classification == "textured":
 				textured_count += 1
 				# Build 2D array of sub-tile palette indices
-				var indices_2d := _build_texture_indices(lod, b_idx, s, territory_data)
+				var indices_2d: Array = _build_texture_indices(lod, b_idx, s, territory_data)
 				textured_quads.append({
 					"v_bl": v_bl, "v_br": v_br, "v_tl": v_tl, "v_tr": v_tr,
 					"indices": indices_2d,
@@ -303,13 +303,13 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 				continue
 
 			# Solid quad
-			var palette_idx := get_solid_owner(lod, b_idx, s, territory_data)
+			var palette_idx: int = get_solid_owner(lod, b_idx, s, territory_data)
 			if palette_idx == 0:
 				ocean_count += 1
 				continue
 
 			solid_count += 1
-			var vc := Color(palette_idx / 255.0, 0.0, 0.0, 1.0)
+			var vc: Color = Color(palette_idx / 255.0, 0.0, 0.0, 1.0)
 			st_solid.set_color(vc)
 			st_solid.add_vertex(v_bl); st_solid.add_vertex(v_br); st_solid.add_vertex(v_tr)
 			st_solid.add_vertex(v_bl); st_solid.add_vertex(v_tr); st_solid.add_vertex(v_tl)
@@ -319,18 +319,18 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 		var solid_mesh: ArrayMesh = st_solid.commit()
 		if solid_mesh:
 			var scaled := _scale_array_mesh(solid_mesh, 1.0 / 1000.0)
-			var mi := MeshInstance3D.new()
+			var mi: MeshInstance3D = MeshInstance3D.new()
 			mi.name = "LOD_%d_Solid" % lod
 			mi.mesh = scaled
 			mi.visible = false
-			var mat := ShaderMaterial.new()
+			var mat: ShaderMaterial = ShaderMaterial.new()
 			mat.shader = load("res://shaders/solid_tint.gdshader")
 			mi.material_override = mat
 			result["solid"] = mi
 
 	# Build textured mesh (one MeshInstance3D per quad for per-quad textures)
 	if textured_count > 0:
-		var container := Node3D.new()
+		var container: Node3D = Node3D.new()
 		container.name = "LOD_%d_Textured" % lod
 		container.visible = false
 
@@ -355,8 +355,8 @@ func _build_texture_indices(lod: int, qband: int, qseg: int, territory_data: Nod
 		for ds in range(span):
 			var band0 := qband * span + db
 			var seg0 := qseg * span + ds
-			var tile_id := "B%d_%d" % [band0, seg0]
-			var idx := territory_data.get_tile_owner_palette(tile_id)
+			var tile_id: String = "B%d_%d" % [band0, seg0]
+			var idx: int = territory_data.get_tile_owner_palette(tile_id)
 			row.append(idx)
 		indices.append(row)
 	return indices
@@ -372,10 +372,10 @@ func _build_textured_quad(qdata: Dictionary) -> MeshInstance3D:
 
 	# Generate R8 texture from indices
 	var img := PaletteTextureGen.create_from_indices(indices_2d)
-	var texture := ImageTexture.create_from_image(img)
+	var texture: ImageTexture = ImageTexture.create_from_image(img)
 
 	# Build quad mesh
-	var st := SurfaceTool.new()
+	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 
 	# Set UVs for texture sampling
@@ -399,11 +399,11 @@ func _build_textured_quad(qdata: Dictionary) -> MeshInstance3D:
 
 	var scaled := _scale_array_mesh(mesh, 1.0 / 1000.0)
 
-	var mi := MeshInstance3D.new()
+	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "TexQuad_%s" % qdata.get("key", "?")
 	mi.mesh = scaled
 
-	var mat := ShaderMaterial.new()
+	var mat: ShaderMaterial = ShaderMaterial.new()
 	mat.shader = load("res://shaders/territory_palette.gdshader")
 	mat.set_shader_parameter("cell_detail", texture)
 	mi.material_override = mat
@@ -413,7 +413,7 @@ func _build_textured_quad(qdata: Dictionary) -> MeshInstance3D:
 
 ## Scale an ArrayMesh by a factor (meters → kilometers).
 func _scale_array_mesh(mesh: ArrayMesh, factor: float) -> ArrayMesh:
-	var scaled := ArrayMesh.new()
+	var scaled: ArrayMesh = ArrayMesh.new()
 	for surface_idx in range(mesh.get_surface_count()):
 		var arrays: Array = mesh.surface_get_arrays(surface_idx)
 		if arrays.is_empty():
