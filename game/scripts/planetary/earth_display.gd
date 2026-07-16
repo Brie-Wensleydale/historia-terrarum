@@ -254,7 +254,7 @@ func focus_on_lat_lon(lat_deg: float, lon_deg: float) -> Dictionary:
 
 func _create_coastlines() -> void:
 	var coastline_script := load("res://scripts/planetary/coastline_overlay.gd")
-	_coastline_overlay = Node.new()
+	_coastline_overlay = Node3D.new()
 	_coastline_overlay.name = "CoastlineOverlay"
 	_coastline_overlay.set_script(coastline_script)
 	add_child(_coastline_overlay)
@@ -262,7 +262,7 @@ func _create_coastlines() -> void:
 
 func _create_rivers() -> void:
 	var river_script := load("res://scripts/planetary/river_overlay.gd")
-	_river_overlay = Node.new()
+	_river_overlay = Node3D.new()
 	_river_overlay.name = "RiverOverlay"
 	_river_overlay.set_script(river_script)
 	add_child(_river_overlay)
@@ -271,7 +271,7 @@ func _create_rivers() -> void:
 
 func _create_borders() -> void:
 	var border_script := load("res://scripts/planetary/border_overlay.gd")
-	_border_overlay = Node.new()
+	_border_overlay = Node3D.new()
 	_border_overlay.name = "BorderOverlay"
 	_border_overlay.set_script(border_script)
 	add_child(_border_overlay)
