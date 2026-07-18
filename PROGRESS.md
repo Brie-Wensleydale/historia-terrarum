@@ -1,6 +1,6 @@
 # PROGRESS.md — Historia Terrarum
 
-> Last updated: 2026-07-16 (session: type-annotation fixes, blank-screen fix, flags, time controls, P0-P4 optimization plan)
+> Last updated: 2026-07-16 (session: P0-P4 execution, direct RGB tints, LOD alignment, sparser_seg fix)
 
 ---
 
@@ -175,25 +175,27 @@
 
 ## Phase 11: Optimization (P0-P4)
 
-**Status:** ⬜ Plan ready, not started
+**Status:** 🟡 Mostly done — tints + LOD working; overlay alignment deferred
 
-| Id | Priority | Issue | Fix | Est. impact |
-|----|----------|-------|-----|-------------|
-| P0 | 🔴 Critical | `_update_all_materials()` runs every frame — ~6.3M `set_shader_parameter()` calls/frame | Dirty flag — only update on palette/highlight change | 6M calls → 0 |
-| P1 | 🟡 High | O(n²) border chaining in `_chain_segments()` | Skip chain simplification, render edges directly as line pairs | Faster init |
-| P2 | 🟡 High | Borders/overlays visible through Earth sphere | `no_depth_test = false` on all overlay materials | GPU cull |
-| P3 | 🟢 Medium | Borders offset 90° from Earth texture | Apply `uv1_offset` rotation to border vertex math | Visual fix |
-| P4 | 🟢 Low | Earth texture blurred on zoom | `texture_filter = TEXTURE_FILTER_NEAREST` | Sharp pixels |
+| Id | Priority | Issue | Fix | Status |
+|----|----------|-------|-----|--------|
+| P0 | 🔴 Critical | `_update_all_materials()` every frame ~6.3M calls | Dirty flag on palette/highlight change | ✅ Done — game playable |
+| P1 | 🟡 High | O(n²) border chaining | O(n) spatial hash + Douglas-Peucker | ✅ Done |
+| P2 | 🟡 High | Overlays visible through Earth | `no_depth_test = false` | ✅ Done |
+| P3 | 🟢 Medium | Borders offset 90° | REVERTED — uv1_offset is UV, not 3D | ❌ Misdiagnosis |
+| P4 | 🟢 Low | Earth texture blurred | `texture_filter = NEAREST` | ✅ Done |
 
----
+### Additional work this session
+- **Direct RGB vertex colors**: `_assign_real_tile_colors()` loads palette.json and bakes RGB into vertex colors. StandardMaterial3D with `vertex_color_use_as_albedo=true`. Removed ShaderMaterial pipeline entirely — no more palette uniform timing issues.
+- **Unified grid edge overlay** (`edge_overlay.gd`): Borders + coastlines from same 100km grid. Replaced Natural Earth coastline vectors. Currently **disabled** — focus on tints + LOD.
+- **10km attempt**: Changed `BASE_CELL_KM=10.0` (6.25M tiles). Game crashes silently. Reverted to 100km. 10km data should be loaded as textures on 100km LOD quads, not as full grid.
+- **LOD pyramid alignment**: `generate_lod_mesh()` now derives quad corners from LOD 0 vertex positions (`_lod0_vertex()`). This fixed spatial offset between quad geometry and territory data.
+- **sparser segment conversion**: `classify_quad()`, `get_solid_owner()`, `_build_texture_rgb()` now use `_to_sparser_seg()` — territory queries use sparser segment convention matching tile_mapping keys. Fixed gaps at merge boundaries.
 
-## Issues / Blockers
-
-1. **P0 (CRITICAL): Palettes updated every frame** — `palette_manager._process()` calls `_update_all_materials()` unconditionally. 8,251 registered ShaderMaterials × 768 uniform sets = ~6.3M calls/frame. Makes game unplayable.
-2. **P1: Border chaining O(n²)** — greedy algorithm scans remaining array for every segment. Fine for ~10K edges but will hurt at scale.
-3. **Borders visible through planet** — `no_depth_test = true` bypasses depth buffer on all overlays.
-4. **Border offset** — Earth texture has 90° uv offset but borders computed with raw lat/lon.
-5. **Blurry Earth texture** — default trilinear filtering smooths the 4K texture on zoom.
+### Known issues (deferred)
+- LOD quad alignment at merge boundaries still has artifacts (vertical gap, sheared cells)
+- Borders/coastlines/rivers disabled pending tint + LOD stabilization
+- 10km data not yet integrated into LOD textures
 
 ---
 
