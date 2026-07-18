@@ -1,73 +1,80 @@
-# earth_display.gd — Earth body with grid wireframe and territory tint.
-# Creates the Earth sphere, generates grid mesh, loads territory data,
-# and manages the visual layer stack.
-# Phase 4b: Real country colors from palette, display mode switching.
+# earth_display.gd — HT2: single-level land mesh with viewport culling
+# Creates the Earth sphere, loads land mask, and renders visible land cells
+# based on the camera's sub-point on the sphere.
 extends Node3D
 
 const EARTH_RADIUS_KM := 6371.0
-const BASE_CELL_KM := 100.0  # 100km for stable rendering (tint + LOD pyramid)
+const CELL_KM := 10.0
+const VISIBLE_RADIUS_KM := 500.0   # render cells within this radius of camera sub-point
+const REBUILD_FRAME_INTERVAL := 3   # throttle mesh rebuild
+const LAND_COLOR := Color(0.2, 0.7, 0.3, 1.0)  # green land
 
 var _earth_body: MeshInstance3D
-var _grid_mesh: MeshInstance3D
-var _tint_mesh: MeshInstance3D
-var _edge_overlay: Node
-var _river_overlay: Node
-var _palette_manager: Node
-var _territory_data: Node
-var _lod_pyramid: Node
+var _land_mesh: MeshInstance3D
 var _camera: Camera3D
 var _band_structure: Dictionary = {}
-var _tile_colors: Dictionary = {}  # tile_id → Color(palette_idx/255, 0, 0, 1)
-var _game_state: Node
-var _hovered_tile: String = ""
-var _hovered_country: String = ""
-var _click_start_pos: Vector2 = Vector2.ZERO
-var _hover_frame_counter: int = 0
-const CLICK_DRAG_THRESHOLD := 5.0
+var _land_loader: RefCounted = null  # LandMaskLoader instance
+var _frame_counter: int = 0
+var _last_sub_point: Vector3 = Vector3.ZERO
+var _mesh_dirty: bool = true
 
 
 func _ready() -> void:
-	print("EarthDisplay: starting setup...")
+	print("HT2 EarthDisplay: starting setup...")
+
+	# 1. Create the textured Earth sphere (visual reference)
 	_setup_earth_body()
-	print("EarthDisplay: earth body done")
-	_setup_palette_manager()
-	print("EarthDisplay: palette manager done")
-	_setup_territory_data()
-	print("EarthDisplay: territory data done")
-	_setup_lod_pyramid()
-	print("EarthDisplay: LOD pyramid done")
-	_assign_real_tile_colors()
-	print("EarthDisplay: tile colors done (%d tiles)" % _tile_colors.size())
-	_create_grid()
-	print("EarthDisplay: grid done")
-	_create_tint()
-	print("EarthDisplay: tint done")
-	_create_lod_meshes()
-	print("EarthDisplay: LOD meshes done")
-	# Overlays disabled — focus on tints + LOD pyramid textures
-	# _create_rivers()
-	# _create_edge_overlay()
-	_fast_forward_timeline()
-	print("EarthDisplay: timeline done")
-	_connect_game_state()
-	print("Earth display ready. Grid: %d bands, %d tiles" % [
-		_band_structure.get("total_bands", 0),
-		SphericalGridGenerator.count_tiles(_band_structure),
+	print("  Earth body done")
+
+	# 2. Load band structure
+	_band_structure = SphericalGridGenerator.compute_band_structure(EARTH_RADIUS_KM, CELL_KM)
+	print("  Band structure: %d bands, %d equator segs, merge chain: %s" % [
+		_band_structure["total_bands"],
+		_band_structure["equator_segs"],
+		sorted(Array(_band_structure["band_segs"]).reduce(func(acc, v): if not v in acc: acc.append(v); return acc, []),
 	])
-	_print_lod_summary()
+
+	# 3. Load land mask
+	var ll_script := load("res://scripts/data/land_mask_loader.gd")
+	_land_loader = ll_script.new()
+	if not _land_loader.load():
+		push_error("HT2: failed to load land mask — check data/output/grid_10km_ht2/")
+		return
+	print("  Land mask: %d land / %d total (%.1f%%)" % [
+		_land_loader.land_count(), _land_loader.total_tiles(),
+		float(_land_loader.land_count()) / float(_land_loader.total_tiles()) * 100.0,
+	])
+
+	# 4. Find camera (sibling node)
+	_camera = _find_camera()
+	if not _camera:
+		push_error("HT2: no Camera3D found in scene!")
+		return
+	print("  Camera found: %s" % _camera.name)
+
+	print("HT2 EarthDisplay ready.")
 
 
-func _print_lod_summary() -> void:
-	var lod_structures := SphericalGridGenerator.compute_all_lod_structures(
-		EARTH_RADIUS_KM, BASE_CELL_KM
-	)
-	print("LOD Pyramid (base %.0f km):" % BASE_CELL_KM)
-	for lod in range(lod_structures.size()):
-		var count: int = SphericalGridGenerator.get_lod_tile_count(lod, lod_structures)
-		var bs: Dictionary = SphericalGridGenerator.get_lod_structure(lod, lod_structures)
-		print("  LOD %d: %s tiles (%d bands, %d equator segs)" % [
-			lod, count, bs.get("total_bands", 0), bs.get("equator_segs", 0),
-		])
+func _process(_delta: float) -> void:
+	if not _land_loader or not _camera:
+		return
+
+	_frame_counter += 1
+	if _frame_counter % REBUILD_FRAME_INTERVAL != 0:
+		return
+
+	# Compute camera sub-point on Earth surface
+	var sub_point: Vector3 = _camera_to_sub_point()
+	if sub_point.length() < 0.001:
+		return
+
+	# Skip rebuild if camera hasn't moved significantly
+	if not _mesh_dirty and sub_point.distance_squared_to(_last_sub_point) < 100.0 * 100.0:
+		return
+
+	_last_sub_point = sub_point
+	_mesh_dirty = false
+	_rebuild_visible_land_mesh(sub_point)
 
 
 func _setup_earth_body() -> void:
@@ -83,7 +90,7 @@ func _setup_earth_body() -> void:
 
 	var mat: StandardMaterial3D = StandardMaterial3D.new()
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST  # P4: sharp pixels on zoom
+	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
 
 	var tex_path: String = "res://assets/textures/planet/earth/earth_color_4k.png"
 	if ResourceLoader.exists(tex_path):
@@ -91,448 +98,117 @@ func _setup_earth_body() -> void:
 		mat.albedo_texture = tex
 		mat.albedo_color = Color.WHITE
 		mat.uv1_offset.x = 0.25
-		print("Earth texture loaded: %s" % tex_path)
+		print("  Earth texture loaded: %s" % tex_path)
 	else:
 		mat.albedo_color = Color(0.15, 0.25, 0.55)
-		print("Earth texture not found — using blue placeholder")
+		print("  Earth texture not found — using blue placeholder")
 
 	_earth_body.material_override = mat
 	add_child(_earth_body)
 
 
-func _setup_palette_manager() -> void:
-	var pm_script := load("res://scripts/data/palette_manager.gd")
-	_palette_manager = Node.new()
-	_palette_manager.name = "PaletteManager"
-	_palette_manager.set_script(pm_script)
-	add_child(_palette_manager)
-
-
-func _setup_territory_data() -> void:
-	var td_script := load("res://scripts/data/territory_data.gd")
-	_territory_data = Node.new()
-	_territory_data.name = "TerritoryData"
-	_territory_data.set_script(td_script)
-	add_child(_territory_data)
-
-
-func _setup_lod_pyramid() -> void:
-	var lp_script := load("res://scripts/data/lod_pyramid.gd")
-	_lod_pyramid = Node.new()
-	_lod_pyramid.name = "LODPyramid"
-	_lod_pyramid.set_script(lp_script)
-	add_child(_lod_pyramid)
-
-
-func _assign_real_tile_colors() -> void:
-	_band_structure = SphericalGridGenerator.compute_band_structure(EARTH_RADIUS_KM, BASE_CELL_KM)
-	var band_segs: Array = _band_structure["band_segs"]
-	var total_bands: int = _band_structure["total_bands"]
-
-	# Load palette for direct RGB vertex colors
-	var palette_map: Dictionary = _load_palette_rgb()
-
-	# Load 100km tile mapping
-	var tile_mapping: Dictionary = _load_tile_mapping_100km()
-	var mapped_count: int = 0
-	var ocean_count: int = 0
-
-	for b_idx in range(total_bands):
-		var grid_segs: int = band_segs[b_idx]
-		if grid_segs <= 0:
-			continue
-		var next_segs: int = band_segs[b_idx + 1] if b_idx + 1 < band_segs.size() else grid_segs
-		# Use denser frame (cell_segs) — matches generate_tint()'s iteration
-		# and tile_mapping_100km.json. At southern-hemisphere merge bands
-		# (segs_top > segs_bot), grid_segs alone would miss half the entries.
-		var cell_segs: int = maxi(grid_segs, next_segs)
-
-		for s in range(cell_segs):
-			# Denser-frame tile ID — matches tile_mapping_100km.json convention
-			# (build_tile_mapping_100km.py uses denser_100 = max(segs_a, segs_a+1))
-			# and generate_tint()'s cell_segs = maxi(segs_bot, segs_top).
-			var tile_id: String = "B%d_%d" % [b_idx, s]
-
-			if tile_mapping.has(tile_id):
-				var palette_idx: int = tile_mapping[tile_id]
-				_tile_colors[tile_id] = palette_map.get(palette_idx, Color(0.5, 0.5, 0.5, 0.7))
-				mapped_count += 1
-			else:
-				_tile_colors[tile_id] = Color.TRANSPARENT
-				ocean_count += 1
-
-	print("Tile colors: %d land (from mapping), %d ocean (total %d)" % [
-		mapped_count, ocean_count, _tile_colors.size(),
-	])
-
-
-## Load palette.json → Dictionary[int, Color] for direct vertex color encoding.
-func _load_palette_rgb() -> Dictionary:
-	var result: Dictionary = {}
-	var path: String = "res://../data/countries/palette.json"
-	if not FileAccess.file_exists(path):
-		path = "res://assets/data/countries/palette.json"
-	if not FileAccess.file_exists(path):
-		return result
-
-	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
-	if not file:
-		return result
-	var text: String = file.get_as_text()
-	file.close()
-
-	var json: JSON = JSON.new()
-	if json.parse(text) != OK:
-		return result
-
-	var data = json.get_data()
-	for entry in data.get("colors", []):
-		var idx: int = entry["index"]
-		result[idx] = Color(entry["r"], entry["g"], entry["b"], entry["a"])
-	return result
-
-
-func _load_tile_mapping_100km() -> Dictionary:
-	var path: String = "res://../data/countries/tile_mapping_100km.json"
-	if not FileAccess.file_exists(path):
-		path = "res://assets/data/countries/tile_mapping_100km.json"
-	if not FileAccess.file_exists(path):
-		push_warning("earth_display: tile_mapping_100km.json not found, using test stripes")
-		return _fallback_stripe_mapping()
-
-	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
-	if not file:
-		return {}
-
-	var text := file.get_as_text()
-	file.close()
-
-	var json: JSON = JSON.new()
-	var err := json.parse(text)
-	if err != OK:
-		push_error("earth_display: failed to parse tile_mapping_100km.json")
-		return {}
-
-	return json.get_data()
-
-
-func _fallback_stripe_mapping() -> Dictionary:
-	# Longitude-based stripes with real palette indices as fallback
-	var result: Dictionary = {}
-	_band_structure = SphericalGridGenerator.compute_band_structure(EARTH_RADIUS_KM, BASE_CELL_KM)
-	var band_segs: Array = _band_structure["band_segs"]
-	var total_bands: int = _band_structure["total_bands"]
-	var num_stripes: int = 6
-
-	for b_idx in range(total_bands):
-		var grid_segs: int = band_segs[b_idx]
-		if grid_segs <= 0:
-			continue
-		var next_segs: int = band_segs[b_idx + 1] if b_idx + 1 < band_segs.size() else grid_segs
-		var sparser_segs: int = mini(grid_segs, next_segs)
-		var ratio: int = maxi(grid_segs / sparser_segs, 1)
-
-		for s in range(grid_segs):
-			var sparser_s: int = s / ratio
-			var tile_id: String = "B%d_%d" % [b_idx, sparser_s]
-			var lon_frac: float = float(s) / float(grid_segs)
-			var idx: int = int(lon_frac * num_stripes) % num_stripes + 1
-			result[tile_id] = idx
-
-	return result
-
-
-func _create_grid() -> void:
-	_grid_mesh = SphericalGridGenerator.generate(
-		"Earth", EARTH_RADIUS_KM, Color.WHITE, BASE_CELL_KM,
-	)
-	if _grid_mesh:
-		_grid_mesh.visible = true
-		add_child(_grid_mesh)
-		print("Grid wireframe created")
-
-
-func _create_tint() -> void:
-	var band_segs_dict: Dictionary = {}
-	var band_segs: Array = _band_structure["band_segs"]
-	for i in range(band_segs.size()):
-		band_segs_dict[str(i)] = band_segs[i]
-
-	_tint_mesh = SphericalGridGenerator.generate_tint(
-		"Earth", EARTH_RADIUS_KM, BASE_CELL_KM,
-		_tile_colors, band_segs_dict,
-	)
-	if _tint_mesh:
-		# Use StandardMaterial3D from generate_tint() — it has
-		# vertex_color_use_as_albedo=true, so palette RGB values
-		# baked into vertex colors render directly. No shader needed.
-		add_child(_tint_mesh)
-		_tint_mesh.visible = true
-		print("Tint mesh created with direct RGB vertex colors")
-
-
-func _register_tint_material() -> void:
-	if _tint_mesh and _tint_mesh.material_override and _palette_manager:
-		_palette_manager.register_material(_tint_mesh.material_override)
-
-
-func focus_on_lat_lon(lat_deg: float, lon_deg: float) -> Dictionary:
-	var lat: float = deg_to_rad(lat_deg)
-	var lon: float = deg_to_rad(lon_deg + 180.0)
-	var point: Vector3 = Vector3(
-		-EARTH_RADIUS_KM * cos(lat) * cos(lon),
-		EARTH_RADIUS_KM * sin(lat),
-		EARTH_RADIUS_KM * cos(lat) * sin(lon),
-	)
-	var band_segs: Array = _band_structure["band_segs"]
-	var total_bands: int = _band_structure["total_bands"]
-	return SphericalGridGenerator.find_cell_at_point(
-		point, EARTH_RADIUS_KM, total_bands, band_segs,
-	)
-
-
-func _create_edge_overlay() -> void:
-	var edge_script := load("res://scripts/planetary/edge_overlay.gd")
-	_edge_overlay = Node3D.new()
-	_edge_overlay.name = "EdgeOverlay"
-	_edge_overlay.set_script(edge_script)
-	add_child(_edge_overlay)
-	call_deferred("_init_edge_overlay")
-
-
-func _init_edge_overlay() -> void:
-	if _edge_overlay and _edge_overlay.has_method("initialize"):
-		_edge_overlay.initialize(_band_structure, _territory_data)
-
-
-func _create_rivers() -> void:
-	var river_script := load("res://scripts/planetary/river_overlay.gd")
-	_river_overlay = Node3D.new()
-	_river_overlay.name = "RiverOverlay"
-	_river_overlay.set_script(river_script)
-	add_child(_river_overlay)
-	call_deferred("_init_river_overlay")
-
-
-func _init_river_overlay() -> void:
-	if _river_overlay and _river_overlay.has_method("initialize"):
-		_river_overlay.initialize(_band_structure)
-
-
-## Generate LOD 1-4 meshes from the LOD pyramid manager.
-## LOD 0 is the existing tint mesh (already created by _create_tint).
-func _create_lod_meshes() -> void:
-	if not _lod_pyramid:
-		return
-
-	# Load palette for LOD textures
-	var palette_map: Dictionary = _load_palette_rgb()
-
-	if _lod_pyramid.has_method("generate_all_lod_meshes"):
-		_lod_pyramid.generate_all_lod_meshes(_territory_data, _palette_manager, palette_map)
-
-	# Register LOD 0 (existing tint mesh) with the pyramid
-	if _tint_mesh and _lod_pyramid and _lod_pyramid.has_method("register_lod_zero"):
-		_lod_pyramid.register_lod_zero(_tint_mesh)
-
-
-func _process(_delta: float) -> void:
-	_update_lod()
-	_handle_timeline_input()
-	_update_hover()
-
-
-func _handle_timeline_input() -> void:
-	# T = advance one year (test key)
-	if Input.is_action_just_pressed("timeline_advance"):
-		if _territory_data and _territory_data.has_method("advance_year"):
-			_territory_data.advance_year()
-			var yr: int = _territory_data.get_current_year()
-			print("Timeline: advanced to year %d" % yr)
-	# F = fast-forward to 1991 (USSR dissolves)
-	if Input.is_action_just_pressed("timeline_ff_1991"):
-		if _territory_data and _territory_data.has_method("fast_forward_to"):
-			_territory_data.fast_forward_to(11991)
-			print("Timeline: fast-forwarded to 1991")
-
-
-func _fast_forward_timeline() -> void:
-	if _territory_data and _territory_data.has_method("fast_forward_to"):
-		_territory_data.fast_forward_to(11950)  # Default: 1950
-
-
-## Handle mouse clicks on the Earth for country selection.
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			if event.pressed:
-				_click_start_pos = event.position
-			else:
-				# Released — check if it was a click (not a drag)
-				var dist: float = (event.position - _click_start_pos).length()
-				if dist < CLICK_DRAG_THRESHOLD:
-					_try_select_at(event.position)
-
-
-func _connect_game_state() -> void:
-	var root := get_tree().root
-	if root:
-		for child in root.get_children():
-			if child.name == "Main":
-				for sub in child.get_children():
-					if sub.name == "GameState":
-						set_game_state(sub)
-						return
-
-
-## Raycast from mouse position to Earth sphere, find tile and country.
-func _try_select_at(screen_pos: Vector2) -> void:
-	if not _camera:
-		_camera = get_viewport().get_camera_3d()
-	if not _camera:
-		return
-
-	# Ray from camera through screen position
-	var from: Vector3 = _camera.project_ray_origin(screen_pos)
-	var dir: Vector3 = _camera.project_ray_normal(screen_pos)
-
-	# Sphere intersection: Earth at origin, radius = EARTH_RADIUS_KM
-	var hit_point := _ray_sphere_intersect(from, dir, Vector3.ZERO, EARTH_RADIUS_KM)
-	if hit_point == Vector3.ZERO:
-		return  # Missed the sphere
-
-	# Convert hit point to tile ID
-	var band_segs: Array = _band_structure["band_segs"]
-	var total_bands: int = _band_structure["total_bands"]
-	var cell: Dictionary = SphericalGridGenerator.find_cell_at_point(
-		hit_point, EARTH_RADIUS_KM, total_bands, band_segs,
-	)
-	if cell.is_empty():
-		return
-
-	var tile_id: String = "B%d_%d" % [cell["transition"], cell["sparser_seg"]]
-
-	# Get the country
-	if not _territory_data or not _territory_data.has_method("get_tile_owner_palette"):
-		return
-
-	var idx: int = _territory_data.get_tile_owner_palette(tile_id)
-	if idx <= 0:
-		# Clicked ocean — clear selection
-		if _game_state and _game_state.has_method("clear_selection"):
-			_game_state.clear_selection()
-		if _palette_manager and _palette_manager.has_method("clear_highlight"):
-			_palette_manager.clear_highlight()
-		return
-
-	var country_name: String = ""
-	if _territory_data.has_method("get_country_name"):
-		country_name = _territory_data.get_country_name(idx)
-	if country_name == "":
-		country_name = "Country #%d" % idx
-
-	# Select the country
-	if _game_state and _game_state.has_method("select_country"):
-		_game_state.select_country(idx, country_name)
-
-	# Highlight it
-	if _palette_manager and _palette_manager.has_method("highlight_country"):
-		_palette_manager.highlight_country(idx)
-
-	print("Selected: %s [%d] (tile %s)" % [country_name, idx, tile_id])
-
-
-## Update hover state — find country under mouse cursor (throttled to every 10 frames).
-func _update_hover() -> void:
-	_hover_frame_counter += 1
-	if _hover_frame_counter % 10 != 0:
-		return
-
-	if not _camera:
-		return
-
-	var mouse_pos := get_viewport().get_mouse_position()
-	var from: Vector3 = _camera.project_ray_origin(mouse_pos)
-	var dir: Vector3 = _camera.project_ray_normal(mouse_pos)
-	var hit_point := _ray_sphere_intersect(from, dir, Vector3.ZERO, EARTH_RADIUS_KM)
-
-	if hit_point == Vector3.ZERO:
-		_hovered_tile = ""
-		_hovered_country = ""
-		return
-
-	var band_segs: Array = _band_structure["band_segs"]
-	var total_bands: int = _band_structure["total_bands"]
-	var cell: Dictionary = SphericalGridGenerator.find_cell_at_point(
-		hit_point, EARTH_RADIUS_KM, total_bands, band_segs,
-	)
-	if cell.is_empty():
-		return
-
-	_hovered_tile = "B%d_%d" % [cell["transition"], cell["sparser_seg"]]
-	if _territory_data and _territory_data.has_method("get_tile_owner_palette"):
-		var idx: int = _territory_data.get_tile_owner_palette(_hovered_tile)
-		if idx > 0 and _territory_data.has_method("get_country_name"):
-			_hovered_country = _territory_data.get_country_name(idx)
-		else:
-			_hovered_country = ""
-	else:
-		_hovered_country = ""
-
-
-func get_hovered_country() -> String:
-	return _hovered_country
-
-
-## Ray-sphere intersection. Returns hit point or Vector3.ZERO if miss.
-func _ray_sphere_intersect(ray_origin: Vector3, ray_dir: Vector3,
-		sphere_center: Vector3, sphere_radius: float) -> Vector3:
-	var oc := ray_origin - sphere_center
-	var a: float = ray_dir.dot(ray_dir)
-	var b: float = 2.0 * oc.dot(ray_dir)
-	var c := oc.dot(oc) - sphere_radius * sphere_radius
-	var discriminant := b * b - 4.0 * a * c
-
-	if discriminant < 0.0:
+func _find_camera() -> Camera3D:
+	# Search siblings for a Camera3D (earth_camera.gd is attached to it)
+	var parent_node: Node = get_parent()
+	if parent_node:
+		for child in parent_node.get_children():
+			if child is Camera3D:
+				return child
+	return null
+
+
+## Compute the point on the Earth's surface directly beneath the camera.
+## Uses ray-sphere intersection from camera position toward Earth center.
+func _camera_to_sub_point() -> Vector3:
+	var cam_pos: Vector3 = _camera.global_position
+	var earth_center: Vector3 = Vector3.ZERO
+	var dir: Vector3 = (earth_center - cam_pos).normalized()
+
+	# Ray-sphere intersection: |cam_pos + t*dir| = EARTH_RADIUS_KM
+	# In display units (km), Earth is at 1:1 scale
+	var a: float = dir.dot(dir)  # = 1
+	var b: float = 2.0 * cam_pos.dot(dir)
+	var c: float = cam_pos.dot(cam_pos) - EARTH_RADIUS_KM * EARTH_RADIUS_KM
+	var disc: float = b * b - 4.0 * a * c
+	if disc < 0.0:
 		return Vector3.ZERO
 
-	var t := (-b - sqrt(discriminant)) / (2.0 * a)
+	var t: float = (-b - sqrt(disc)) / (2.0 * a)
 	if t < 0.0:
-		t = (-b + sqrt(discriminant)) / (2.0 * a)
+		t = (-b + sqrt(disc)) / (2.0 * a)
 	if t < 0.0:
 		return Vector3.ZERO
 
-	return ray_origin + ray_dir * t
+	return cam_pos + dir * t
 
 
-## Set game state reference (called after setup).
-func set_game_state(gs: Node) -> void:
-	_game_state = gs
-	# Auto-set player country from territory data
-	if _territory_data and gs and gs.has_method("set_player_country"):
-		# Default: United States
-		var us_idx: int = 4  # Palette index for USA
-		if _territory_data.has_method("get_country_name"):
-			var country_name: String = _territory_data.get_country_name(us_idx)
-			if country_name != "":
-				gs.set_player_country(us_idx, country_name)
+## Rebuild the land mesh for cells within VISIBLE_RADIUS_KM of sub_point.
+func _rebuild_visible_land_mesh(sub_point: Vector3) -> void:
+	# Convert sub_point to lat/lon
+	var lat: float = asin(clampf(sub_point.y / EARTH_RADIUS_KM, -1.0, 1.0))
+	var lon: float = atan2(sub_point.z, sub_point.x)
+	if lon < 0.0:
+		lon += TAU
+	var lat_deg: float = rad_to_deg(lat)
+	var lon_deg: float = rad_to_deg(lon) - 180.0  # to -180..180
 
+	# Convert visible radius to angular spread (degrees)
+	var angular_radius_deg: float = rad_to_deg(VISIBLE_RADIUS_KM / EARTH_RADIUS_KM)
 
-## Select LOD based on camera distance and update visibility.
-func _update_lod() -> void:
-	if not _lod_pyramid:
+	# Compute band range
+	var total_bands: int = _band_structure["total_bands"]
+	var band_segs: Array = _band_structure["band_segs"]
+	var bands_per_deg: float = float(total_bands) / 180.0
+
+	var center_band: int = clampi(int((lat + PI * 0.5) / PI * float(total_bands)), 0, total_bands - 1)
+	var band_range: int = maxi(int(angular_radius_deg * bands_per_deg) + 1, 1)
+	var band_start: int = maxi(center_band - band_range, 0)
+	var band_end: int = mini(center_band + band_range, total_bands - 1)
+
+	# Build tile_colors dict for visible land cells
+	var tile_colors: Dictionary = {}
+	var visible_land: int = 0
+
+	for b_idx in range(band_start, band_end + 1):
+		var segs_bot: int = band_segs[b_idx]
+		var segs_top: int = band_segs[b_idx + 1] if b_idx + 1 < band_segs.size() else segs_bot
+		var cell_segs: int = maxi(segs_bot, segs_top)
+		if cell_segs <= 0:
+			continue
+
+		# Center longitude segment
+		var center_seg: int = int((lon_deg + 180.0) / 360.0 * float(cell_segs)) % cell_segs
+		# Segment range: wider near equator, narrower near poles
+		var seg_range: int = maxi(int(angular_radius_deg / 360.0 * float(cell_segs)) + 1, 1)
+		# Account for longitude narrowing at higher latitudes
+		var cos_lat: float = cos(lat)
+		if cos_lat > 0.01:
+			seg_range = maxi(int(seg_range / cos_lat), 1)
+
+		for s in range(center_seg - seg_range, center_seg + seg_range + 1):
+			var wrapped_seg: int = ((s % cell_segs) + cell_segs) % cell_segs
+			if _land_loader.is_land(b_idx, wrapped_seg):
+				tile_colors["B%d_%d" % [b_idx, wrapped_seg]] = LAND_COLOR
+				visible_land += 1
+
+	# Remove old land mesh
+	if _land_mesh and is_instance_valid(_land_mesh):
+		_land_mesh.queue_free()
+
+	# Build new mesh
+	if tile_colors.is_empty():
 		return
 
-	# Find camera if not cached
-	if not _camera:
-		_camera = get_viewport().get_camera_3d()
+	_land_mesh = SphericalGridGenerator.generate_tint(
+		EARTH_RADIUS_KM,
+		_band_structure,
+		tile_colors,
+	)
+	if _land_mesh:
+		add_child(_land_mesh)
+		print_verbose("  Visible land mesh: %d cells in bands %d-%d" % [visible_land, band_start, band_end])
 
-	if not _camera:
-		return
 
-	var camera_distance: float = _camera.global_position.length()
-
-	if _lod_pyramid.has_method("select_lod"):
-		var active_lod: int = _lod_pyramid.select_lod(camera_distance)
-		if _lod_pyramid.has_method("update_visibility"):
-			_lod_pyramid.update_visibility(active_lod)
+## Force mesh rebuild on next process frame.
+func mark_dirty() -> void:
+	_mesh_dirty = true
