@@ -381,7 +381,8 @@ static func generate_tint(body_name: String, radius_km: float, base_cell_km: flo
 		var top_pole: bool = ring_is_pole[b_idx + 1]
 
 		for t in range(cell_segs):
-			var tile_id: String = "B%d_%d" % [b_idx, t]
+			var seg_mirror: int = cell_segs - 1 - t
+			var tile_id: String = "B%d_%d" % [b_idx, seg_mirror]
 			var color: Color = tile_colors.get(tile_id, Color.TRANSPARENT)
 			if color.a < 0.01:
 				skipped_cells += 1
