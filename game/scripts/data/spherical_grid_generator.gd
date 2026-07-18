@@ -250,7 +250,10 @@ static func ease_opacity(mi: MeshInstance3D, target: float, delta: float) -> voi
 
 
 ## Find which grid cell contains a surface point.
-## Returns Dictionary {transition: int, sparser_seg: int} or {} if not found.
+## Returns Dictionary {transition: int, sparser_seg: int, cell_seg: int} or {} if not found.
+## sparser_seg: sparser-frame segment (highlight shapes via get_cell_corners).
+## cell_seg: denser-frame segment — matches the tile_mapping_100km.json tile ID
+## convention used by generate_tint(); use this for tile lookups.
 static func find_cell_at_point(point: Vector3, radius_km: float, total_bands: int, band_segs: Array) -> Dictionary:
 	if point.length() < 0.001:
 		return {}
@@ -266,8 +269,10 @@ static func find_cell_at_point(point: Vector3, radius_km: float, total_bands: in
 	var segs_upper: int = band_segs[trans_band + 1] if trans_band + 1 < band_segs.size() else segs_lower
 	var sparser_segs: int = segs_lower if segs_lower <= segs_upper else segs_upper
 	var sparser_seg: int = int(lon / TAU * float(sparser_segs)) % sparser_segs
+	var cell_segs: int = maxi(segs_lower, segs_upper)
+	var cell_seg: int = int(lon / TAU * float(cell_segs)) % cell_segs
 
-	return {"transition": trans_band, "sparser_seg": sparser_seg}
+	return {"transition": trans_band, "sparser_seg": sparser_seg, "cell_seg": cell_seg}
 
 
 ## Get the 3D corners of a grid cell for highlight rendering.
@@ -315,6 +320,13 @@ static func get_cell_corners(cell: Dictionary, radius_km: float, total_bands: in
 ## Generate filled tint mesh with per-cell colors.
 ## tile_colors: Dictionary[String, Color] — tile ID "B{band}_{seg}" → Color.
 ##
+## Segment convention: seg uses the DENSER frame at each band —
+## seg in [0, max(segs_bot, segs_top)) — matching tile_mapping_100km.json
+## (see build_tile_mapping_100km.py). Iterating the denser grid gives every
+## mesh segment its own data slot: one color per segment, no stretching at
+## merge bands. At non-merge bands denser == sparser, so behavior is
+## identical to the old sparser iteration there.
+##
 ## All strips share canonical ring vertices (lon = TAU * seg / band_segs[ring]),
 ## precomputed once per ring, so adjacent bands are watertight at merge
 ## boundaries (no T-junction cracks). Pole rings collapse to a single vertex
@@ -359,13 +371,16 @@ static func generate_tint(body_name: String, radius_km: float, base_cell_km: flo
 		var segs_top: int = full_band_segs[b_idx + 1]
 		if segs_bot <= 0 or segs_top <= 0:
 			continue
-		var sparser_segs: int = mini(segs_bot, segs_top)
+		# Denser frame: one quad per denser-grid segment. On the sparser
+		# side of a merge the proportional ranges collapse to shared
+		# canonical vertices, keeping the mesh watertight.
+		var cell_segs: int = maxi(segs_bot, segs_top)
 		var bot_verts: PackedVector3Array = ring_verts[b_idx]
 		var top_verts: PackedVector3Array = ring_verts[b_idx + 1]
 		var bot_pole: bool = ring_is_pole[b_idx]
 		var top_pole: bool = ring_is_pole[b_idx + 1]
 
-		for t in range(sparser_segs):
+		for t in range(cell_segs):
 			var tile_id: String = "B%d_%d" % [b_idx, t]
 			var color: Color = tile_colors.get(tile_id, Color.TRANSPARENT)
 			if color.a < 0.01:
@@ -376,23 +391,29 @@ static func generate_tint(body_name: String, radius_km: float, base_cell_km: flo
 			st.set_color(color)
 
 			# Build the cell polygon: bottom edge ascending in longitude, then
-			# top edge descending. Proportional dense-index ranges partition
-			# each ring exactly, even when denser % sparser != 0.
-			var poly: Array[Vector3] = []
-			if bot_pole:
-				poly.append(bot_verts[0])
-			else:
-				var db0: int = t * segs_bot / sparser_segs
-				var db1: int = (t + 1) * segs_bot / sparser_segs
-				for k in range(db0, db1 + 1):
-					poly.append(bot_verts[k % segs_bot])
-			if top_pole:
-				poly.append(top_verts[0])
-			else:
-				var dt0: int = t * segs_top / sparser_segs
-				var dt1: int = (t + 1) * segs_top / sparser_segs
-				for k in range(dt1, dt0 - 1, -1):
-					poly.append(top_verts[k % segs_top])
+				# top edge descending. Proportional dense-index ranges partition
+				# each ring exactly, even when one ring is sparser than cell_segs.
+				var poly: Array[Vector3] = []
+				if bot_pole:
+					poly.append(bot_verts[0])
+				else:
+					var db0: int = t * segs_bot / cell_segs
+					var db1: int = (t + 1) * segs_bot / cell_segs
+					if db0 == db1:
+						poly.append(bot_verts[db0 % segs_bot])
+					else:
+						for k in range(db0, db1 + 1):
+							poly.append(bot_verts[k % segs_bot])
+				if top_pole:
+					poly.append(top_verts[0])
+				else:
+					var dt0: int = t * segs_top / cell_segs
+					var dt1: int = (t + 1) * segs_top / cell_segs
+					if dt0 == dt1:
+						poly.append(top_verts[dt0 % segs_top])
+					else:
+						for k in range(dt1, dt0 - 1, -1):
+							poly.append(top_verts[k % segs_top])
 
 			# Fan-triangulate the convex cell polygon: always watertight.
 			var poly_count: int = poly.size()
