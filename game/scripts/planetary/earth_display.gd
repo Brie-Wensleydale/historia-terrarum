@@ -35,7 +35,7 @@ func _ready() -> void:
 	])
 
 	# 3. Load land mask
-	var ll_script := load("res://scripts/data/land_mask_loader.gd")
+	var ll_script: Script = load("res://scripts/data/land_mask_loader.gd")
 	_land_loader = ll_script.new()
 	if not _land_loader.load():
 		push_error("HT2: failed to load land mask — check data/output/grid_10km_ht2/")

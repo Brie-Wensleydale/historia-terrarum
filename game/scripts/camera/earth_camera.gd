@@ -69,8 +69,8 @@ func _process(delta: float) -> void:
 		_update_camera_position()
 
 	# Smooth rotation toward target angles
-	var theta_diff := _target_theta - _theta
-	var phi_diff := _target_phi - _phi
+	var theta_diff: float = _target_theta - _theta
+	var phi_diff: float = _target_phi - _phi
 	if abs(theta_diff) > 0.0001 or abs(phi_diff) > 0.0001:
 		_theta += theta_diff * min(delta * ROTATION_SPEED, 1.0)
 		_phi += phi_diff * min(delta * ROTATION_SPEED, 1.0)
@@ -142,8 +142,8 @@ func _process_drag(event: InputEventMouseMotion) -> void:
 
 	if _drag_button == MOUSE_BUTTON_RIGHT:
 		# Orbit — accumulate velocity for momentum
-		var theta_delta := -delta_pos.x * ORBIT_SENSITIVITY
-		var phi_delta := -delta_pos.y * ORBIT_SENSITIVITY
+		var theta_delta: float = -delta_pos.x * ORBIT_SENSITIVITY
+		var phi_delta: float = -delta_pos.y * ORBIT_SENSITIVITY
 		_target_theta += theta_delta
 		_target_phi += phi_delta
 		_orbit_velocity.x += theta_delta  # Accumulate for momentum
@@ -152,8 +152,8 @@ func _process_drag(event: InputEventMouseMotion) -> void:
 
 	elif _drag_button == MOUSE_BUTTON_LEFT and _object_mode:
 		# Pan in surface mode
-		var theta_delta := -delta_pos.x * ORBIT_SENSITIVITY * 0.5
-		var phi_delta := -delta_pos.y * ORBIT_SENSITIVITY * 0.5
+		var theta_delta: float = -delta_pos.x * ORBIT_SENSITIVITY * 0.5
+		var phi_delta: float = -delta_pos.y * ORBIT_SENSITIVITY * 0.5
 		_target_theta += theta_delta
 		_target_phi += phi_delta
 		_clamp_target_angles()
