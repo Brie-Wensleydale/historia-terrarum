@@ -250,9 +250,10 @@ func get_classification_stats(lod: int, territory_data: Node) -> Dictionary:
 	var solid: int = 0
 	var textured: int = 0
 
-	for b_idx in range(total_bands - 1):
+	# Cover all LOD 0 bands — range(total_bands) ensures the polar caps are included.
+	for b_idx in range(total_bands):
 		var segs_a: int = band_segs[b_idx]
-		var segs_b: int = band_segs[b_idx + 1]
+		var segs_b: int = band_segs[b_idx + 1] if b_idx + 1 < band_segs.size() else segs_a
 		if segs_a <= 0 or segs_b <= 0:
 			continue
 		var sparser_segs: int = mini(segs_a, segs_b)
@@ -270,8 +271,9 @@ func get_classification_stats(lod: int, territory_data: Node) -> Dictionary:
 
 ## Generate meshes for a given LOD level.
 ## Returns Dictionary with "solid" (MeshInstance3D) and "textured" (Node3D container).
-## Solid quads use vertex colors + solid_tint shader.
-## Textured quads use per-quad R8 textures + territory_palette shader.
+## Solid quads use direct RGB vertex colors; textured quads use RGBA8 textures.
+## Geometry is a centroid-fan per quad with union-grid boundary edges, so
+## adjacent strips share bit-identical vertices across merge boundaries.
 func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 	var result: Dictionary = {"solid": null, "textured": null}
 
@@ -285,9 +287,8 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 	var band_segs: Array = bs["band_segs"]
 	var total_bands: int = bs["total_bands"]
 
-	# LOD 0 band structure (for vertex positions — ground truth)
+	# LOD 0 band structure (for ring latitudes — ground truth)
 	var bs0: Dictionary = _lod_structures[0]
-	var band_segs0: Array = bs0["band_segs"]
 	var total_bands0: int = bs0["total_bands"]
 	var radius_m: float = EARTH_RADIUS_KM * 1000.0
 	var offset_factor: float = 1.003 + lod * 0.0005
@@ -301,36 +302,73 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 
 	var textured_quads: Array = []
 
-	for b_idx in range(total_bands - 1):
+	# Cover all LOD 0 bands — range(total_bands) ensures the polar caps are
+	# included. The last quad's band0_top clamps to the pole ring (band == total_bands0).
+	for b_idx in range(total_bands):
 		var segs_a: int = band_segs[b_idx]
-		var segs_b: int = band_segs[b_idx + 1]
+		var segs_b: int = band_segs[b_idx + 1] if b_idx + 1 < band_segs.size() else segs_a
 		if segs_a <= 0 or segs_b <= 0:
 			continue
 
 		var sparser_segs: int = mini(segs_a, segs_b)
+
+		# Neighbor strip grids. The ring shared with an adjacent strip must be
+		# tessellated at the UNION of both strips' grids: if the neighbor is
+		# denser, our edge must carry its intermediate vertices — otherwise our
+		# single chord cuts inside the neighbor's polyline (sliver gap).
+		var grid_below: int = sparser_segs
+		if b_idx > 0:
+			grid_below = mini(band_segs[b_idx - 1], band_segs[b_idx])
+		var grid_above: int = sparser_segs
+		if b_idx + 2 < band_segs.size():
+			grid_above = mini(band_segs[b_idx + 1], band_segs[b_idx + 2])
+		var bottom_sub: int = maxi(grid_below / sparser_segs, 1)
+		var top_sub: int = maxi(grid_above / sparser_segs, 1)
 
 		for s in range(sparser_segs):
 			var classification: String = classify_quad(lod, b_idx, s, territory_data)
 			var key: String = "%d_%d_%d" % [lod, b_idx, s]
 			_quad_classifications[key] = classification
 
-			# Quad corners from LOD 0 positions — ensures perfect alignment
-			# with territory data (which uses LOD 0 tile IDs)
-			var band0_bot: int = clampi(b_idx * span, 0, total_bands0 - 1)
+			# Corners pinned to LOD 0 rings (latitude = ground truth).
+			# Longitude is analytic: TAU * seg / segs of THIS grid. Never
+			# seg % segs_at_band — the modulo wraps at merge boundaries and
+			# shears quad corners across the sphere.
+			var band0_bot: int = clampi(b_idx * span, 0, total_bands0)
 			var band0_top: int = clampi((b_idx + 1) * span, 0, total_bands0)
-			var seg0_left: int = s * span
-			var seg0_right: int = (s + 1) * span
 
-			var v_bl: Vector3 = _lod0_vertex(band0_bot, seg0_left, offset_factor, bs0, total_bands0, band_segs0, radius_m)
-			var v_br: Vector3 = _lod0_vertex(band0_bot, seg0_right, offset_factor, bs0, total_bands0, band_segs0, radius_m)
-			var v_tl: Vector3 = _lod0_vertex(band0_top, seg0_left, offset_factor, bs0, total_bands0, band_segs0, radius_m)
-			var v_tr: Vector3 = _lod0_vertex(band0_top, seg0_right, offset_factor, bs0, total_bands0, band_segs0, radius_m)
+			# Boundary vertices on the union grid. Both strips adjacent to a
+			# shared ring emit bit-identical vertices (same formula, same
+			# inputs), so boundary chords are shared — no gaps, no banding.
+			var bottom_verts: Array[Vector3] = []
+			for k in range(bottom_sub + 1):
+				var lon_b: float = TAU * float(s * bottom_sub + k) / float(sparser_segs * bottom_sub)
+				bottom_verts.append(_lod0_vertex(band0_bot, lon_b, offset_factor, total_bands0, radius_m))
+			var top_verts: Array[Vector3] = []
+			for k in range(top_sub + 1):
+				var lon_t: float = TAU * float(s * top_sub + k) / float(sparser_segs * top_sub)
+				top_verts.append(_lod0_vertex(band0_top, lon_t, offset_factor, total_bands0, radius_m))
+
+			var v_bl: Vector3 = bottom_verts[0]
+			var v_br: Vector3 = bottom_verts[bottom_sub]
+			var v_tl: Vector3 = top_verts[0]
+			var v_tr: Vector3 = top_verts[top_sub]
+
+			# Centroid fan pivot on the sphere. Lets any boundary edge carry
+			# extra vertices (merge stitching) without T-junctions.
+			var centroid: Vector3 = v_bl + v_br + v_tl + v_tr
+			if centroid.length() < 0.001:
+				centroid = v_bl
+			else:
+				centroid = centroid.normalized() * radius_m * offset_factor
 
 			if classification == "textured":
 				textured_count += 1
 				var rgb_2d: Array = _build_texture_rgb(lod, b_idx, s, territory_data)
 				textured_quads.append({
-					"v_bl": v_bl, "v_br": v_br, "v_tl": v_tl, "v_tr": v_tr,
+					"bottom_verts": bottom_verts,
+					"top_verts": top_verts,
+					"centroid": centroid,
 					"colors": rgb_2d,
 					"key": key,
 				})
@@ -345,8 +383,12 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 			solid_count += 1
 			var rgb: Color = _palette_colors.get(palette_idx, Color(0.5, 0.5, 0.5, 0.7))
 			st_solid.set_color(rgb)
-			st_solid.add_vertex(v_bl); st_solid.add_vertex(v_br); st_solid.add_vertex(v_tr)
-			st_solid.add_vertex(v_bl); st_solid.add_vertex(v_tr); st_solid.add_vertex(v_tl)
+			for k in range(bottom_sub):
+				st_solid.add_vertex(bottom_verts[k]); st_solid.add_vertex(bottom_verts[k + 1]); st_solid.add_vertex(centroid)
+			st_solid.add_vertex(v_br); st_solid.add_vertex(v_tr); st_solid.add_vertex(centroid)
+			for k in range(top_sub):
+				st_solid.add_vertex(top_verts[k + 1]); st_solid.add_vertex(top_verts[k]); st_solid.add_vertex(centroid)
+			st_solid.add_vertex(v_tl); st_solid.add_vertex(v_bl); st_solid.add_vertex(centroid)
 
 	# Build solid mesh
 	if solid_count > 0:
@@ -383,15 +425,15 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 	return result
 
 
-## Compute 3D vertex position using LOD 0 band structure.
-static func _lod0_vertex(band: int, seg: int, offset_factor: float,
-		bs0: Dictionary, total_bands: int, band_segs: Array, radius_m: float) -> Vector3:
-	band = clampi(band, 0, total_bands - 1)
-	var segs_at_band: int = band_segs[band] if band < band_segs.size() else 4
-	if segs_at_band <= 0:
-		segs_at_band = 4
-	var lat: float = -PI * 0.5 + PI * float(band) / float(total_bands)
-	var lon: float = TAU * float(seg % segs_at_band) / float(segs_at_band)
+## Compute 3D vertex position on a LOD 0 ring at an explicit longitude.
+## Longitude MUST be analytic (TAU * seg / segs of the emitting grid).
+## The old seg % segs_at_band mapping wrapped at merge boundaries and
+## produced sheared quad corners; band clamps to [0, total_bands] so the
+## pole ring (band == total_bands) is reachable.
+static func _lod0_vertex(band: int, lon: float, offset_factor: float,
+		total_bands: int, radius_m: float) -> Vector3:
+	var ring: int = clampi(band, 0, total_bands)
+	var lat: float = -PI * 0.5 + PI * float(ring) / float(total_bands)
 	var r: float = radius_m * cos(lat) * offset_factor
 	return Vector3(r * cos(lon), radius_m * sin(lat) * offset_factor, r * sin(lon))
 
@@ -415,12 +457,16 @@ func _build_texture_rgb(lod: int, qband: int, qseg: int, territory_data: Node) -
 
 
 ## Create a single textured quad MeshInstance3D with RGB texture.
+## Uses the same centroid-fan stitching as the solid mesh, so textured quads
+## stay watertight with their neighbors across merge boundaries. UVs are
+## interpolated along subdivided boundary edges; centroid samples texel center.
 func _build_textured_quad(qdata: Dictionary) -> MeshInstance3D:
-	var v_bl: Vector3 = qdata["v_bl"]
-	var v_br: Vector3 = qdata["v_br"]
-	var v_tl: Vector3 = qdata["v_tl"]
-	var v_tr: Vector3 = qdata["v_tr"]
+	var bottom_verts: Array = qdata["bottom_verts"]
+	var top_verts: Array = qdata["top_verts"]
+	var centroid: Vector3 = qdata["centroid"]
 	var colors_2d: Array = qdata["colors"]
+	var bottom_sub: int = bottom_verts.size() - 1
+	var top_sub: int = top_verts.size() - 1
 
 	# Generate RGB texture from color array
 	var span: int = colors_2d.size()
@@ -431,22 +477,37 @@ func _build_textured_quad(qdata: Dictionary) -> MeshInstance3D:
 			img.set_pixel(col, row, c)
 	var texture: ImageTexture = ImageTexture.create_from_image(img)
 
-	# Build quad mesh
+	# Build quad mesh (centroid fan, UVs interpolated along boundary edges)
 	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 
-	st.set_uv(Vector2(0, 0)); st.add_vertex(v_bl)
-	st.set_uv(Vector2(1, 0)); st.add_vertex(v_br)
-	st.set_uv(Vector2(1, 1)); st.add_vertex(v_tr)
-	st.set_uv(Vector2(0, 0)); st.add_vertex(v_bl)
-	st.set_uv(Vector2(1, 1)); st.add_vertex(v_tr)
-	st.set_uv(Vector2(0, 1)); st.add_vertex(v_tl)
+	for k in range(bottom_sub):
+		var u0: float = float(k) / float(bottom_sub)
+		var u1: float = float(k + 1) / float(bottom_sub)
+		st.set_uv(Vector2(u0, 0.0)); st.add_vertex(bottom_verts[k])
+		st.set_uv(Vector2(u1, 0.0)); st.add_vertex(bottom_verts[k + 1])
+		st.set_uv(Vector2(0.5, 0.5)); st.add_vertex(centroid)
+
+	st.set_uv(Vector2(1.0, 0.0)); st.add_vertex(bottom_verts[bottom_sub])
+	st.set_uv(Vector2(1.0, 1.0)); st.add_vertex(top_verts[top_sub])
+	st.set_uv(Vector2(0.5, 0.5)); st.add_vertex(centroid)
+
+	for k in range(top_sub):
+		var u0: float = float(k) / float(top_sub)
+		var u1: float = float(k + 1) / float(top_sub)
+		st.set_uv(Vector2(u1, 1.0)); st.add_vertex(top_verts[k + 1])
+		st.set_uv(Vector2(u0, 1.0)); st.add_vertex(top_verts[k])
+		st.set_uv(Vector2(0.5, 0.5)); st.add_vertex(centroid)
+
+	st.set_uv(Vector2(0.0, 1.0)); st.add_vertex(top_verts[0])
+	st.set_uv(Vector2(0.0, 0.0)); st.add_vertex(bottom_verts[0])
+	st.set_uv(Vector2(0.5, 0.5)); st.add_vertex(centroid)
 
 	var mesh: ArrayMesh = st.commit()
 	if not mesh:
 		return null
 
-	var scaled := _scale_array_mesh(mesh, 1.0 / 1000.0)
+	var scaled: ArrayMesh = _scale_array_mesh(mesh, 1.0 / 1000.0)
 
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "TexQuad_%s" % qdata.get("key", "?")

@@ -314,11 +314,39 @@ static func get_cell_corners(cell: Dictionary, radius_km: float, total_bands: in
 
 ## Generate filled tint mesh with per-cell colors.
 ## tile_colors: Dictionary[String, Color] — tile ID "B{band}_{seg}" → Color.
+##
+## All strips share canonical ring vertices (lon = TAU * seg / band_segs[ring]),
+## precomputed once per ring, so adjacent bands are watertight at merge
+## boundaries (no T-junction cracks). Pole rings collapse to a single vertex
+## to avoid degenerate slivers. Cell polygons are fan-triangulated, which is
+## watertight for any merge ratio, including non-integer ones.
 static func generate_tint(body_name: String, radius_km: float, base_cell_km: float, tile_colors: Dictionary, band_segs: Dictionary) -> MeshInstance3D:
 	var band_struct: Dictionary = compute_band_structure(radius_km, base_cell_km)
 	var radius_m: float = radius_km * 1000.0
 	var total_bands: int = band_struct["total_bands"]
 	var full_band_segs: Array = band_struct["band_segs"]
+
+	# Precompute canonical vertex rings. Adjacent strips index the same arrays,
+	# guaranteeing bitwise-identical shared vertices along every ring.
+	var ring_verts: Array = []
+	var ring_is_pole: Array = []
+	for ring_idx in range(total_bands + 1):
+		var ring_segs: int = full_band_segs[ring_idx]
+		var ring_lat: float = -PI * 0.5 + PI * float(ring_idx) / float(total_bands)
+		var ring_r: float = radius_m * cos(ring_lat)
+		var ring_y: float = radius_m * sin(ring_lat)
+		var verts: PackedVector3Array = PackedVector3Array()
+		if absf(ring_r) < 1.0:
+			# Pole ring: every longitude coincides — collapse to one vertex.
+			verts.append(Vector3(0.0, ring_y, 0.0))
+			ring_is_pole.append(true)
+		else:
+			verts.resize(ring_segs)
+			for k in range(ring_segs):
+				var ring_lon: float = TAU * float(k) / float(ring_segs)
+				verts[k] = Vector3(ring_r * cos(ring_lon), ring_y, ring_r * sin(ring_lon))
+			ring_is_pole.append(false)
+		ring_verts.append(verts)
 
 	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -327,26 +355,18 @@ static func generate_tint(body_name: String, radius_km: float, base_cell_km: flo
 	var skipped_cells: int = 0
 
 	for b_idx in range(total_bands):
-		var grid_segs: int = full_band_segs[b_idx]
-		if grid_segs <= 0:
+		var segs_bot: int = full_band_segs[b_idx]
+		var segs_top: int = full_band_segs[b_idx + 1]
+		if segs_bot <= 0 or segs_top <= 0:
 			continue
+		var sparser_segs: int = mini(segs_bot, segs_top)
+		var bot_verts: PackedVector3Array = ring_verts[b_idx]
+		var top_verts: PackedVector3Array = ring_verts[b_idx + 1]
+		var bot_pole: bool = ring_is_pole[b_idx]
+		var top_pole: bool = ring_is_pole[b_idx + 1]
 
-		var next_segs: int = full_band_segs[b_idx + 1] if b_idx + 1 < full_band_segs.size() else grid_segs
-		var sparser_segs: int = mini(grid_segs, next_segs)
-		var ratio: int = maxi(grid_segs / sparser_segs, 1)
-
-		var lat_center: float = -PI * 0.5 + PI * float(b_idx) / float(total_bands)
-		var bot_lat: float = lat_center
-		var top_lat: float = -PI * 0.5 + PI * float(b_idx + 1) / float(total_bands)
-
-		var r_bot: float = radius_m * cos(bot_lat)
-		var r_top: float = radius_m * cos(top_lat)
-		var y_bot: float = radius_m * sin(bot_lat)
-		var y_top: float = radius_m * sin(top_lat)
-
-		for s in range(grid_segs):
-			var sparser_s: int = s / ratio
-			var tile_id: String = "B%d_%d" % [b_idx, sparser_s]
+		for t in range(sparser_segs):
+			var tile_id: String = "B%d_%d" % [b_idx, t]
 			var color: Color = tile_colors.get(tile_id, Color.TRANSPARENT)
 			if color.a < 0.01:
 				skipped_cells += 1
@@ -355,16 +375,31 @@ static func generate_tint(body_name: String, radius_km: float, base_cell_km: flo
 			colored_cells += 1
 			st.set_color(color)
 
-			var lon_s: float = TAU * float(s) / float(grid_segs)
-			var lon_s_next: float = TAU * float(s + 1) / float(grid_segs)
+			# Build the cell polygon: bottom edge ascending in longitude, then
+			# top edge descending. Proportional dense-index ranges partition
+			# each ring exactly, even when denser % sparser != 0.
+			var poly: Array[Vector3] = []
+			if bot_pole:
+				poly.append(bot_verts[0])
+			else:
+				var db0: int = t * segs_bot / sparser_segs
+				var db1: int = (t + 1) * segs_bot / sparser_segs
+				for k in range(db0, db1 + 1):
+					poly.append(bot_verts[k % segs_bot])
+			if top_pole:
+				poly.append(top_verts[0])
+			else:
+				var dt0: int = t * segs_top / sparser_segs
+				var dt1: int = (t + 1) * segs_top / sparser_segs
+				for k in range(dt1, dt0 - 1, -1):
+					poly.append(top_verts[k % segs_top])
 
-			var v_bl: Vector3 = Vector3(r_bot * cos(lon_s), y_bot, r_bot * sin(lon_s))
-			var v_br: Vector3 = Vector3(r_bot * cos(lon_s_next), y_bot, r_bot * sin(lon_s_next))
-			var v_tl: Vector3 = Vector3(r_top * cos(lon_s), y_top, r_top * sin(lon_s))
-			var v_tr: Vector3 = Vector3(r_top * cos(lon_s_next), y_top, r_top * sin(lon_s_next))
-
-			st.add_vertex(v_bl); st.add_vertex(v_br); st.add_vertex(v_tr)
-			st.add_vertex(v_bl); st.add_vertex(v_tr); st.add_vertex(v_tl)
+			# Fan-triangulate the convex cell polygon: always watertight.
+			var poly_count: int = poly.size()
+			for i in range(1, poly_count - 1):
+				st.add_vertex(poly[0])
+				st.add_vertex(poly[i])
+				st.add_vertex(poly[i + 1])
 
 	print_verbose("Tint mesh: %d colored cells, %d skipped (ocean)" % [colored_cells, skipped_cells])
 
