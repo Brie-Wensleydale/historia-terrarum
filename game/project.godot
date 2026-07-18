@@ -61,3 +61,7 @@ timeline_ff_1991={
 	"deadzone": 0.5,
 	"events": [Object(InputEventKey, "keycode": 70)]
 }
+
+[autoload]
+
+

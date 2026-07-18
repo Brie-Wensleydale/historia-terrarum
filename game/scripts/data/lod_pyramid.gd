@@ -148,7 +148,7 @@ func _clamp_band0(band0: int) -> int:
 
 ## Classify a quad at a given LOD level.
 ## A quad at LOD N covers (2^N)×(2^N) Level 0 tiles.
-## Uses sparser segment convention (matches tile_mapping keys).
+## Uses denser segment convention (matches tile_mapping_100km.json keys).
 ## Returns "solid" if all sub-tiles have the same owner, "textured" otherwise.
 func classify_quad(lod: int, qband: int, qseg: int, territory_data: Node) -> String:
 	if lod == 0:
@@ -161,8 +161,8 @@ func classify_quad(lod: int, qband: int, qseg: int, territory_data: Node) -> Str
 		var band0: int = _clamp_band0(qband * span + db)
 		for ds in range(span):
 			var raw_seg: int = qseg * span + ds
-			var sparser_seg: int = _to_sparser_seg(band0, raw_seg)
-			var tile_id: String = "B%d_%d" % [band0, sparser_seg]
+			var cell_seg: int = _to_denser_seg(band0, raw_seg)
+			var tile_id: String = "B%d_%d" % [band0, cell_seg]
 			var owner: int = territory_data.get_tile_owner_palette(tile_id)
 			if first_owner == -1:
 				first_owner = owner
