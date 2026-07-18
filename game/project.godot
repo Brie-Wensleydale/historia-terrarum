@@ -1,4 +1,4 @@
-; Historia Terrarum — Grand Strategy Game
+; Historia Terrarum 2 — HT2 Rebuild
 ; Godot 4.6.3
 
 config_version=5
@@ -6,9 +6,9 @@ config_version=5
 [application]
 
 run/main_scene="res://scenes/main.tscn"
-config/name="Historia Terrarum"
-config/description="Grand strategy game — control a nation throughout history on a 10km Earth grid."
-config/version="0.1.0"
+config/name="Historia Terrarum 2"
+config/description="Grand strategy game — 10km Earth grid, binary land/water, viewport culling."
+config/version="0.2.0"
 
 [rendering]
 renderer/rendering_method="forward_plus"
@@ -33,35 +33,5 @@ orbit={
 	"deadzone": 0.5,
 	"events": [Object(InputEventMouseButton, "button_index": 2)]
 }
-pan={
-	"deadzone": 0.5,
-	"events": [Object(InputEventMouseButton, "button_index": 1)]
-}
-map_political={
-	"deadzone": 0.5,
-	"events": [Object(InputEventKey, "keycode": 49)]
-}
-map_province={
-	"deadzone": 0.5,
-	"events": [Object(InputEventKey, "keycode": 50)]
-}
-map_terrain={
-	"deadzone": 0.5,
-	"events": [Object(InputEventKey, "keycode": 51)]
-}
-map_diplomatic={
-	"deadzone": 0.5,
-	"events": [Object(InputEventKey, "keycode": 52)]
-}
-timeline_advance={
-	"deadzone": 0.5,
-	"events": [Object(InputEventKey, "keycode": 84)]
-}
-timeline_ff_1991={
-	"deadzone": 0.5,
-	"events": [Object(InputEventKey, "keycode": 70)]
-}
 
 [autoload]
-
-
