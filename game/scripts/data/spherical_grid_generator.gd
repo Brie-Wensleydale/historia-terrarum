@@ -391,29 +391,29 @@ static func generate_tint(body_name: String, radius_km: float, base_cell_km: flo
 			st.set_color(color)
 
 			# Build the cell polygon: bottom edge ascending in longitude, then
-				# top edge descending. Proportional dense-index ranges partition
-				# each ring exactly, even when one ring is sparser than cell_segs.
-				var poly: Array[Vector3] = []
-				if bot_pole:
-					poly.append(bot_verts[0])
+			# top edge descending. Proportional dense-index ranges partition
+			# each ring exactly, even when one ring is sparser than cell_segs.
+			var poly: Array[Vector3] = []
+			if bot_pole:
+				poly.append(bot_verts[0])
+			else:
+				var db0: int = t * segs_bot / cell_segs
+				var db1: int = (t + 1) * segs_bot / cell_segs
+				if db0 == db1:
+					poly.append(bot_verts[db0 % segs_bot])
 				else:
-					var db0: int = t * segs_bot / cell_segs
-					var db1: int = (t + 1) * segs_bot / cell_segs
-					if db0 == db1:
-						poly.append(bot_verts[db0 % segs_bot])
-					else:
-						for k in range(db0, db1 + 1):
-							poly.append(bot_verts[k % segs_bot])
-				if top_pole:
-					poly.append(top_verts[0])
+					for k in range(db0, db1 + 1):
+						poly.append(bot_verts[k % segs_bot])
+			if top_pole:
+				poly.append(top_verts[0])
+			else:
+				var dt0: int = t * segs_top / cell_segs
+				var dt1: int = (t + 1) * segs_top / cell_segs
+				if dt0 == dt1:
+					poly.append(top_verts[dt0 % segs_top])
 				else:
-					var dt0: int = t * segs_top / cell_segs
-					var dt1: int = (t + 1) * segs_top / cell_segs
-					if dt0 == dt1:
-						poly.append(top_verts[dt0 % segs_top])
-					else:
-						for k in range(dt1, dt0 - 1, -1):
-							poly.append(top_verts[k % segs_top])
+					for k in range(dt1, dt0 - 1, -1):
+						poly.append(top_verts[k % segs_top])
 
 			# Fan-triangulate the convex cell polygon: always watertight.
 			var poly_count: int = poly.size()
