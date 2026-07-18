@@ -142,13 +142,11 @@ func _assign_real_tile_colors() -> void:
 		if grid_segs <= 0:
 			continue
 
-		var next_segs: int = band_segs[b_idx + 1] if b_idx + 1 < band_segs.size() else grid_segs
-		var sparser_segs: int = mini(grid_segs, next_segs)
-		var ratio: int = maxi(grid_segs / sparser_segs, 1)
-
 		for s in range(grid_segs):
-			var sparser_s: int = s / ratio
-			var tile_id: String = "B%d_%d" % [b_idx, sparser_s]
+			# Denser-frame tile ID — matches tile_mapping_100km.json convention
+			# (build_tile_mapping_100km.py uses denser_100 = max(segs_a, segs_a+1))
+			# and generate_tint()'s cell_segs = maxi(segs_bot, segs_top).
+			var tile_id: String = "B%d_%d" % [b_idx, s]
 
 			if tile_mapping.has(tile_id):
 				var palette_idx: int = tile_mapping[tile_id]
