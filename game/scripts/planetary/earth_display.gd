@@ -141,8 +141,13 @@ func _assign_real_tile_colors() -> void:
 		var grid_segs: int = band_segs[b_idx]
 		if grid_segs <= 0:
 			continue
+		var next_segs: int = band_segs[b_idx + 1] if b_idx + 1 < band_segs.size() else grid_segs
+		# Use denser frame (cell_segs) — matches generate_tint()'s iteration
+		# and tile_mapping_100km.json. At southern-hemisphere merge bands
+		# (segs_top > segs_bot), grid_segs alone would miss half the entries.
+		var cell_segs: int = maxi(grid_segs, next_segs)
 
-		for s in range(grid_segs):
+		for s in range(cell_segs):
 			# Denser-frame tile ID — matches tile_mapping_100km.json convention
 			# (build_tile_mapping_100km.py uses denser_100 = max(segs_a, segs_a+1))
 			# and generate_tint()'s cell_segs = maxi(segs_bot, segs_top).
