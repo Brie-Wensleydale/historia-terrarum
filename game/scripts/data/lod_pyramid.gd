@@ -1,6 +1,20 @@
 # lod_pyramid.gd — Multi-LOD Earth mesh manager.
 # Generates coarser meshes from Level 0 territory data.
-# Each quad at LOD 1+ is classified solid (vertex color) or textured (R8 palette texture).
+# Each quad at LOD 1+ is classified solid (vertex color) or textured (RGBA8 texture).
+#
+# VERTICAL GAP FIX (LOD 2-3):
+# 1. Canonical ring subdivision: every latitude ring gets ONE vertex count
+#    (lcm of the two adjacent strips' sparser counts). Both strips sharing a
+#    ring sample it with identical vertices — watertight for ANY merge chain,
+#    including non-power-of-2 ratios (4<->12, 25<->12) where the old
+#    grid_below/grid_above heuristic could disagree.
+# 2. Ring latitudes come from LOD N's own band structure (ring / total_bands).
+#    Identical to the old band0=b*span mapping for LOD 1-2 (200=100*2=50*4),
+#    but LOD 3 (26 bands, 26*8=208 != 200) placed rings at wrong latitudes and
+#    LOD 4 (12 bands, 12*16=192 != 200) never reached the pole.
+# 3. Tile lookups clamp/wrap into valid LOD 0 range. LOD 3's classify pass
+#    read bands 200..207 (nonexistent) → owner 0 → ocean → skipped quads
+#    (holes). Longitude is periodic, so out-of-range segs wrap.
 extends Node
 
 const PaletteTextureGen := preload("res://scripts/data/palette_texture_gen.gd")
@@ -59,7 +73,6 @@ func _ready() -> void:
 	_lod_materials.resize(NUM_LODS)
 	_print_summary()
 
-
 func _process(delta: float) -> void:
 	_animate_transition(delta)
 
@@ -67,12 +80,11 @@ func _process(delta: float) -> void:
 func _animate_transition(delta: float) -> void:
 	if not _transition_active:
 		return
-
 	_transition_time += delta
-	var t := clampf(_transition_time / TRANSITION_DURATION, 0.0, 1.0)
+	var t: float = clampf(_transition_time / TRANSITION_DURATION, 0.0, 1.0)
 
 	# Ease in-out
-	var ease_t := t * t * (3.0 - 2.0 * t)
+	var ease_t: float = t * t * (3.0 - 2.0 * t)
 
 	# Old LOD fades out
 	_set_lod_alpha(_transition_from, 1.0 - ease_t)
@@ -87,7 +99,6 @@ func _animate_transition(delta: float) -> void:
 		_show_only_lod(_transition_to)
 		_transition_active = false
 		_active_lod = _transition_to
-
 
 func _set_lod_alpha(lod: int, alpha: float) -> void:
 	# Use transparency for crossfade (0 = opaque, 1 = fully transparent)
@@ -106,7 +117,7 @@ func _set_lod_alpha(lod: int, alpha: float) -> void:
 
 func _show_only_lod(lod: int) -> void:
 	for i in range(NUM_LODS):
-		var visible := (i == lod)
+		var visible: bool = (i == lod)
 		if i < _lod_meshes.size() and _lod_meshes[i]:
 			_lod_meshes[i].visible = visible
 		if i < _lod_textured.size() and _lod_textured[i]:
@@ -124,6 +135,16 @@ func _print_summary() -> void:
 			bs.get("equator_segs", 0),
 		])
 
+## Clamp a LOD 0 band index into the valid tile range [0, total_bands0 - 1].
+## LOD 3 has 26 bands (26 × span 8 = 208 > 200), so qband*span+db can reach 207.
+## Reading those invented bands returned owner 0 → quads misclassified as ocean
+## → skipped → visible holes at LOD 3.
+func _clamp_band0(band0: int) -> int:
+	if _lod_structures.is_empty():
+		return band0
+	var bs0: Dictionary = _lod_structures[0]
+	var total_bands0: int = bs0["total_bands"]
+	return clampi(band0, 0, total_bands0 - 1)
 
 ## Classify a quad at a given LOD level.
 ## A quad at LOD N covers (2^N)×(2^N) Level 0 tiles.
@@ -137,7 +158,7 @@ func classify_quad(lod: int, qband: int, qseg: int, territory_data: Node) -> Str
 	var first_owner: int = -1
 
 	for db in range(span):
-		var band0: int = qband * span + db
+		var band0: int = _clamp_band0(qband * span + db)
 		for ds in range(span):
 			var raw_seg: int = qseg * span + ds
 			var sparser_seg: int = _to_sparser_seg(band0, raw_seg)
@@ -150,7 +171,6 @@ func classify_quad(lod: int, qband: int, qseg: int, territory_data: Node) -> Str
 
 	return "solid"
 
-
 ## Get the majority palette index for a solid quad (center tile's owner).
 func get_solid_owner(lod: int, qband: int, qseg: int, territory_data: Node) -> int:
 	if lod == 0:
@@ -159,7 +179,7 @@ func get_solid_owner(lod: int, qband: int, qseg: int, territory_data: Node) -> i
 		return territory_data.get_tile_owner_palette(tile_id)
 
 	var span: int = 1 << lod
-	var center_band: int = qband * span + (span / 2)
+	var center_band: int = _clamp_band0(qband * span + (span / 2))
 	var center_raw: int = qseg * span + (span / 2)
 	var sparser_seg: int = _to_sparser_seg(center_band, center_raw)
 	var tile_id: String = "B%d_%d" % [center_band, sparser_seg]
@@ -168,6 +188,10 @@ func get_solid_owner(lod: int, qband: int, qseg: int, territory_data: Node) -> i
 
 ## Convert a raw LOD 0 segment to sparser segment convention.
 ## At merge boundaries (ratio > 1), raw seg is ratio × sparser seg.
+## Out-of-range raw segs wrap (longitude is periodic): LOD 2-3 quads near
+## merge zones can request raw segs beyond the band's seg count
+## (e.g. sparser*span = 48 > 25 LOD 0 segs) — without the wrap they hit
+## nonexistent tile IDs and the quad was misclassified as ocean (a hole).
 func _to_sparser_seg(band: int, raw_seg: int) -> int:
 	if _lod_structures.is_empty():
 		return raw_seg
@@ -183,7 +207,7 @@ func _to_sparser_seg(band: int, raw_seg: int) -> int:
 	if sparser_segs <= 0:
 		return raw_seg
 	var ratio: int = maxi(segs_at / sparser_segs, 1)
-	return raw_seg / ratio
+	return (raw_seg / ratio) % sparser_segs
 
 
 ## Mark a quad dirty for regeneration.
@@ -198,7 +222,6 @@ func is_dirty(lod: int, qband: int, qseg: int) -> bool:
 			return true
 	return false
 
-
 ## Clear all dirty flags.
 func clear_dirty() -> void:
 	_dirty_quads.clear()
@@ -210,7 +233,6 @@ func select_lod(camera_distance_km: float) -> int:
 		if camera_distance_km < LOD_THRESHOLDS[lod - 1]:
 			return lod - 1
 	return NUM_LODS - 1
-
 
 ## Update visibility with smooth crossfade between old and new LOD.
 func update_visibility(active_lod: int) -> void:
@@ -250,7 +272,6 @@ func get_classification_stats(lod: int, territory_data: Node) -> Dictionary:
 	var solid: int = 0
 	var textured: int = 0
 
-	# Cover all LOD 0 bands — range(total_bands) ensures the polar caps are included.
 	for b_idx in range(total_bands):
 		var segs_a: int = band_segs[b_idx]
 		var segs_b: int = band_segs[b_idx + 1] if b_idx + 1 < band_segs.size() else segs_a
@@ -269,29 +290,79 @@ func get_classification_stats(lod: int, territory_data: Node) -> Dictionary:
 	return {"solid": solid, "textured": textured}
 
 
+## Integer least common multiple (via Euclidean gcd).
+static func _lcm(a: int, b: int) -> int:
+	if a <= 0 or b <= 0:
+		return maxi(a, b)
+	var x: int = a
+	var y: int = b
+	while y != 0:
+		var t: int = x % y
+		x = y
+		y = t
+	return a / x * b
+
+
+## Compute the canonical vertex count for every latitude ring.
+## Both strips adjacent to ring r MUST sample it with the same vertex count,
+## otherwise the shared edge has T-junctions → vertical gaps. ring_segs[r] is
+## the lcm of the two adjacent strips' sparser counts — the minimal uniform
+## longitude grid containing both sides' vertices. Every adjacent sparser
+## count divides it exactly (works for 2:1, 3:1, and non-dividing ratios like
+## 25<->12 where the old grid_below/grid_above heuristic disagreed).
+static func _compute_ring_segs(band_segs: Array) -> Array[int]:
+	var n: int = band_segs.size()  # total_bands + 1 ring entries
+	var ring_segs: Array[int] = []
+	ring_segs.resize(n)
+	for r in range(n):
+		var sparser_below: int = 0
+		if r > 0:
+			sparser_below = mini(band_segs[r - 1], band_segs[r])
+		var sparser_above: int = 0
+		if r + 1 < n:
+			sparser_above = mini(band_segs[r], band_segs[r + 1])
+		if sparser_below <= 0:
+			ring_segs[r] = maxi(sparser_above, 1)
+		elif sparser_above <= 0:
+			ring_segs[r] = maxi(sparser_below, 1)
+		else:
+			ring_segs[r] = _lcm(sparser_below, sparser_above)
+	return ring_segs
+
+
+## Compute a 3D vertex on the offset sphere for a given ring + longitude.
+## Latitude comes from the ring's own band fraction (ring / total_bands) —
+## analytic, no seg modulo. For LOD 1-2 this is bit-identical to the old
+## band0=b*span / total_bands0 mapping (200 = 100*2 = 50*4); for LOD 3
+## (26 bands) and LOD 4 (12 bands) the old mapping distorted ring latitudes
+## and missed/overran the pole.
+static func _sphere_vertex(ring: int, total_bands: int, lon: float,
+		offset_factor: float, radius_m: float) -> Vector3:
+	ring = clampi(ring, 0, total_bands)
+	var lat: float = -PI * 0.5 + PI * float(ring) / float(total_bands)
+	var r: float = radius_m * cos(lat) * offset_factor
+	return Vector3(r * cos(lon), radius_m * sin(lat) * offset_factor, r * sin(lon))
+
+
 ## Generate meshes for a given LOD level.
 ## Returns Dictionary with "solid" (MeshInstance3D) and "textured" (Node3D container).
-## Solid quads use direct RGB vertex colors; textured quads use RGBA8 textures.
-## Geometry is a centroid-fan per quad with union-grid boundary edges, so
-## adjacent strips share bit-identical vertices across merge boundaries.
+## Solid quads use direct RGB vertex colors; textured quads use per-quad RGBA8 textures.
 func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 	var result: Dictionary = {"solid": null, "textured": null}
 
 	if lod <= 0 or lod >= NUM_LODS:
 		return result
 
-	var span: int = 1 << lod
-
-	# LOD N band structure (for iteration bounds only)
+	# LOD N band structure — used for iteration AND vertex placement.
 	var bs: Dictionary = _lod_structures[lod]
 	var band_segs: Array = bs["band_segs"]
 	var total_bands: int = bs["total_bands"]
 
-	# LOD 0 band structure (for ring latitudes — ground truth)
-	var bs0: Dictionary = _lod_structures[0]
-	var total_bands0: int = bs0["total_bands"]
 	var radius_m: float = EARTH_RADIUS_KM * 1000.0
 	var offset_factor: float = 1.003 + lod * 0.0005
+
+	# Canonical vertex count per latitude ring (vertical gap fix — see header).
+	var ring_segs: Array[int] = _compute_ring_segs(band_segs)
 
 	var st_solid: SurfaceTool = SurfaceTool.new()
 	st_solid.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -302,9 +373,7 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 
 	var textured_quads: Array = []
 
-	# Cover all LOD 0 bands — range(total_bands) ensures the polar caps are
-	# included. The last quad's band0_top clamps to the pole ring (band == total_bands0).
-	for b_idx in range(total_bands):
+	for b_idx in range(total_bands):  # all bands (includes polar cap strip)
 		var segs_a: int = band_segs[b_idx]
 		var segs_b: int = band_segs[b_idx + 1] if b_idx + 1 < band_segs.size() else segs_a
 		if segs_a <= 0 or segs_b <= 0:
@@ -312,53 +381,33 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 
 		var sparser_segs: int = mini(segs_a, segs_b)
 
-		# Neighbor strip grids. The ring shared with an adjacent strip must be
-		# tessellated at the UNION of both strips' grids: if the neighbor is
-		# denser, our edge must carry its intermediate vertices — otherwise our
-		# single chord cuts inside the neighbor's polyline (sliver gap).
-		var grid_below: int = sparser_segs
-		if b_idx > 0:
-			grid_below = mini(band_segs[b_idx - 1], band_segs[b_idx])
-		var grid_above: int = sparser_segs
-		if b_idx + 2 < band_segs.size():
-			grid_above = mini(band_segs[b_idx + 1], band_segs[b_idx + 2])
-		var bottom_sub: int = maxi(grid_below / sparser_segs, 1)
-		var top_sub: int = maxi(grid_above / sparser_segs, 1)
+		# Exact edge subdivisions from the canonical ring counts. Both divide
+		# evenly by construction (ring_segs is an lcm of adjacent sparser
+		# counts, and sparser_segs is one of them) — no truncation, and both
+		# strips sharing a ring emit bit-identical vertices there.
+		var bottom_sub: int = maxi(ring_segs[b_idx] / sparser_segs, 1)
+		var top_sub: int = maxi(ring_segs[b_idx + 1] / sparser_segs, 1)
 
 		for s in range(sparser_segs):
 			var classification: String = classify_quad(lod, b_idx, s, territory_data)
 			var key: String = "%d_%d_%d" % [lod, b_idx, s]
 			_quad_classifications[key] = classification
 
-			# Corners pinned to LOD 0 rings (latitude = ground truth).
-			# Longitude is analytic: TAU * seg / segs of THIS grid. Never
-			# seg % segs_at_band — the modulo wraps at merge boundaries and
-			# shears quad corners across the sphere.
-			var band0_bot: int = clampi(b_idx * span, 0, total_bands0)
-			var band0_top: int = clampi((b_idx + 1) * span, 0, total_bands0)
-
-			# Boundary vertices on the union grid. Both strips adjacent to a
-			# shared ring emit bit-identical vertices (same formula, same
-			# inputs), so boundary chords are shared — no gaps, no banding.
+			# Analytic longitude on the canonical ring grid:
+			# denominator == ring_segs[ring] for both adjacent strips, so
+			# shared-edge vertices are computed by identical float ops.
 			var bottom_verts: Array[Vector3] = []
 			for k in range(bottom_sub + 1):
 				var lon_b: float = TAU * float(s * bottom_sub + k) / float(sparser_segs * bottom_sub)
-				bottom_verts.append(_lod0_vertex(band0_bot, lon_b, offset_factor, total_bands0, radius_m))
+				bottom_verts.append(_sphere_vertex(b_idx, total_bands, lon_b, offset_factor, radius_m))
 			var top_verts: Array[Vector3] = []
 			for k in range(top_sub + 1):
 				var lon_t: float = TAU * float(s * top_sub + k) / float(sparser_segs * top_sub)
-				top_verts.append(_lod0_vertex(band0_top, lon_t, offset_factor, total_bands0, radius_m))
+				top_verts.append(_sphere_vertex(b_idx + 1, total_bands, lon_t, offset_factor, radius_m))
 
-			var v_bl: Vector3 = bottom_verts[0]
-			var v_br: Vector3 = bottom_verts[bottom_sub]
-			var v_tl: Vector3 = top_verts[0]
-			var v_tr: Vector3 = top_verts[top_sub]
-
-			# Centroid fan pivot on the sphere. Lets any boundary edge carry
-			# extra vertices (merge stitching) without T-junctions.
-			var centroid: Vector3 = v_bl + v_br + v_tl + v_tr
+			var centroid: Vector3 = (bottom_verts[0] + bottom_verts[bottom_sub] + top_verts[0] + top_verts[top_sub])
 			if centroid.length() < 0.001:
-				centroid = v_bl
+				centroid = bottom_verts[0]
 			else:
 				centroid = centroid.normalized() * radius_m * offset_factor
 
@@ -383,12 +432,13 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 			solid_count += 1
 			var rgb: Color = _palette_colors.get(palette_idx, Color(0.5, 0.5, 0.5, 0.7))
 			st_solid.set_color(rgb)
+			# Centroid fan — watertight for any bottom/top subdivision pairing.
 			for k in range(bottom_sub):
 				st_solid.add_vertex(bottom_verts[k]); st_solid.add_vertex(bottom_verts[k + 1]); st_solid.add_vertex(centroid)
-			st_solid.add_vertex(v_br); st_solid.add_vertex(v_tr); st_solid.add_vertex(centroid)
+			st_solid.add_vertex(bottom_verts[bottom_sub]); st_solid.add_vertex(top_verts[top_sub]); st_solid.add_vertex(centroid)
 			for k in range(top_sub):
 				st_solid.add_vertex(top_verts[k + 1]); st_solid.add_vertex(top_verts[k]); st_solid.add_vertex(centroid)
-			st_solid.add_vertex(v_tl); st_solid.add_vertex(v_bl); st_solid.add_vertex(centroid)
+			st_solid.add_vertex(top_verts[0]); st_solid.add_vertex(bottom_verts[0]); st_solid.add_vertex(centroid)
 
 	# Build solid mesh
 	if solid_count > 0:
@@ -425,26 +475,13 @@ func generate_lod_mesh(lod: int, territory_data: Node) -> Dictionary:
 	return result
 
 
-## Compute 3D vertex position on a LOD 0 ring at an explicit longitude.
-## Longitude MUST be analytic (TAU * seg / segs of the emitting grid).
-## The old seg % segs_at_band mapping wrapped at merge boundaries and
-## produced sheared quad corners; band clamps to [0, total_bands] so the
-## pole ring (band == total_bands) is reachable.
-static func _lod0_vertex(band: int, lon: float, offset_factor: float,
-		total_bands: int, radius_m: float) -> Vector3:
-	var ring: int = clampi(band, 0, total_bands)
-	var lat: float = -PI * 0.5 + PI * float(ring) / float(total_bands)
-	var r: float = radius_m * cos(lat) * offset_factor
-	return Vector3(r * cos(lon), radius_m * sin(lat) * offset_factor, r * sin(lon))
-
-
 ## Build a 2D array of RGB Colors for a textured quad.
 ## Each element corresponds to a Level 0 sub-tile within the quad.
 func _build_texture_rgb(lod: int, qband: int, qseg: int, territory_data: Node) -> Array:
 	var span: int = 1 << lod
 	var colors: Array = []
 	for db in range(span):
-		var band0: int = qband * span + db
+		var band0: int = _clamp_band0(qband * span + db)
 		var row: Array = []
 		for ds in range(span):
 			var raw_seg: int = qseg * span + ds
@@ -457,9 +494,8 @@ func _build_texture_rgb(lod: int, qband: int, qseg: int, territory_data: Node) -
 
 
 ## Create a single textured quad MeshInstance3D with RGB texture.
-## Uses the same centroid-fan stitching as the solid mesh, so textured quads
-## stay watertight with their neighbors across merge boundaries. UVs are
-## interpolated along subdivided boundary edges; centroid samples texel center.
+## Triangulated as a centroid fan matching the solid path exactly, with UVs
+## mapped along the (possibly subdivided) boundary edges.
 func _build_textured_quad(qdata: Dictionary) -> MeshInstance3D:
 	var bottom_verts: Array = qdata["bottom_verts"]
 	var top_verts: Array = qdata["top_verts"]
@@ -477,28 +513,21 @@ func _build_textured_quad(qdata: Dictionary) -> MeshInstance3D:
 			img.set_pixel(col, row, c)
 	var texture: ImageTexture = ImageTexture.create_from_image(img)
 
-	# Build quad mesh (centroid fan, UVs interpolated along boundary edges)
+	# Build quad mesh (centroid fan, same winding as the solid path)
 	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 
 	for k in range(bottom_sub):
-		var u0: float = float(k) / float(bottom_sub)
-		var u1: float = float(k + 1) / float(bottom_sub)
-		st.set_uv(Vector2(u0, 0.0)); st.add_vertex(bottom_verts[k])
-		st.set_uv(Vector2(u1, 0.0)); st.add_vertex(bottom_verts[k + 1])
+		st.set_uv(Vector2(float(k) / bottom_sub, 0.0)); st.add_vertex(bottom_verts[k])
+		st.set_uv(Vector2(float(k + 1) / bottom_sub, 0.0)); st.add_vertex(bottom_verts[k + 1])
 		st.set_uv(Vector2(0.5, 0.5)); st.add_vertex(centroid)
-
 	st.set_uv(Vector2(1.0, 0.0)); st.add_vertex(bottom_verts[bottom_sub])
 	st.set_uv(Vector2(1.0, 1.0)); st.add_vertex(top_verts[top_sub])
 	st.set_uv(Vector2(0.5, 0.5)); st.add_vertex(centroid)
-
 	for k in range(top_sub):
-		var u0: float = float(k) / float(top_sub)
-		var u1: float = float(k + 1) / float(top_sub)
-		st.set_uv(Vector2(u1, 1.0)); st.add_vertex(top_verts[k + 1])
-		st.set_uv(Vector2(u0, 1.0)); st.add_vertex(top_verts[k])
+		st.set_uv(Vector2(float(k + 1) / top_sub, 1.0)); st.add_vertex(top_verts[k + 1])
+		st.set_uv(Vector2(float(k) / top_sub, 1.0)); st.add_vertex(top_verts[k])
 		st.set_uv(Vector2(0.5, 0.5)); st.add_vertex(centroid)
-
 	st.set_uv(Vector2(0.0, 1.0)); st.add_vertex(top_verts[0])
 	st.set_uv(Vector2(0.0, 0.0)); st.add_vertex(bottom_verts[0])
 	st.set_uv(Vector2(0.5, 0.5)); st.add_vertex(centroid)
@@ -524,7 +553,6 @@ func _build_textured_quad(qdata: Dictionary) -> MeshInstance3D:
 
 	return mi
 
-
 ## Scale an ArrayMesh by a factor (meters → kilometers).
 func _scale_array_mesh(mesh: ArrayMesh, factor: float) -> ArrayMesh:
 	var scaled: ArrayMesh = ArrayMesh.new()
@@ -543,7 +571,6 @@ func _scale_array_mesh(mesh: ArrayMesh, factor: float) -> ArrayMesh:
 		var prim: int = mesh.surface_get_primitive_type(surface_idx)
 		scaled.add_surface_from_arrays(prim, arrays)
 	return scaled
-
 
 ## Generate meshes for all LOD levels and store them.
 func generate_all_lod_meshes(territory_data: Node, palette_manager: Node, palette_colors: Dictionary = {}) -> void:
