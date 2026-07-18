@@ -185,17 +185,27 @@
 | P3 | 🟢 Medium | Borders offset 90° | REVERTED — uv1_offset is UV, not 3D | ❌ Misdiagnosis |
 | P4 | 🟢 Low | Earth texture blurred | `texture_filter = NEAREST` | ✅ Done |
 
+### 2026-07-18: Banding/Gap Fixes (7 commits: fe01daa..3d73866)
+
+- **Horizontal band gap (all LODs):** Fixed via precomputed canonical ring vertices + pole collapse + fan triangulation in `generate_tint()`. K3-verified watertight (0 non-manifold edges vs 2,302 before).
+- **Vertical gap (LOD 2-3):** Fixed via LCM-based canonical ring subdivision in `generate_lod_mesh()`. Replaced broken union-grid heuristic. Verified end-to-end watertight at all LODs.
+- **Tile stretching/doubling at merge bands:** Fixed `_assign_real_tile_colors()` — was using sparser indexing (`s/ratio`) causing key collisions. Switched to denser-frame indexing matching both `generate_tint()` and Python pipeline convention.
+- **Antarctica half-filled:** Fixed loop bound in `_assign_real_tile_colors()` — was using `grid_segs` instead of `cell_segs = maxi(grid_segs, next_segs)`, missing half the entries at southern-hemisphere merge bands.
+
 ### Additional work this session
-- **Direct RGB vertex colors**: `_assign_real_tile_colors()` loads palette.json and bakes RGB into vertex colors. StandardMaterial3D with `vertex_color_use_as_albedo=true`. Removed ShaderMaterial pipeline entirely — no more palette uniform timing issues.
-- **Unified grid edge overlay** (`edge_overlay.gd`): Borders + coastlines from same 100km grid. Replaced Natural Earth coastline vectors. Currently **disabled** — focus on tints + LOD.
-- **10km attempt**: Changed `BASE_CELL_KM=10.0` (6.25M tiles). Game crashes silently. Reverted to 100km. 10km data should be loaded as textures on 100km LOD quads, not as full grid.
-- **LOD pyramid alignment**: `generate_lod_mesh()` now derives quad corners from LOD 0 vertex positions (`_lod0_vertex()`). This fixed spatial offset between quad geometry and territory data.
-- **sparser segment conversion**: `classify_quad()`, `get_solid_owner()`, `_build_texture_rgb()` now use `_to_sparser_seg()` — territory queries use sparser segment convention matching tile_mapping keys. Fixed gaps at merge boundaries.
+- **Kimi K3 integration:** Configured `kimi-coding` provider for delegation. Successfully delegated 4 tasks to K3 (2.8T param model). Pattern: keep prompts <10KB for reliable completion.
+- **Direct RGB vertex colors**: `_assign_real_tile_colors()` loads palette.json and bakes RGB into vertex colors. StandardMaterial3D with `vertex_color_use_as_albedo=true`. Removed ShaderMaterial pipeline entirely.
+- **Unified grid edge overlay** (`edge_overlay.gd`): Borders + coastlines from same 100km grid. Currently **disabled**.
+- **10km attempt**: Changed `BASE_CELL_KM=10.0` (6.25M tiles). Game crashes silently. Reverted to 100km.
+- **LOD pyramid alignment**: `generate_lod_mesh()` uses LCM ring subdivision + `_sphere_vertex()` for consistent ring latitudes at LOD 3/4.
 
 ### Known issues (deferred)
+- **Filled sea tiles at merge bands:** May need tile_mapping_100km.json regeneration (JSON generated at initial Phase 4b commit, never regenerated after pipeline updates).
+- **Slanted wedge cells at merge boundaries:** Inherent geometric artifact — every other cell is a triangle at merge boundaries due to halving segment counts. Cosmetic, not a bug.
+- **LOD 2-3 vertical offset toward south pole:** May resolve with tile_mapping regeneration.
+- Borders/coastlines/rivers disabled pending tint + LOD stabilization.
+- 10km data not yet integrated into LOD textures.
 - LOD quad alignment at merge boundaries still has artifacts (vertical gap, sheared cells)
-- Borders/coastlines/rivers disabled pending tint + LOD stabilization
-- 10km data not yet integrated into LOD textures
 
 ---
 
