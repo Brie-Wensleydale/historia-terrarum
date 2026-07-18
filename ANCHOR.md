@@ -1,18 +1,23 @@
-# Project Anchor: Historia Terrarum
+# Project Anchor: Historia Terrarum 2
 
 ## 1. Vision & Purpose
 
-A grand strategy game where players control a nation throughout history, commanding land troops, naval squadrons, and air wings to conquer the globe. Modeled after Europa Universalis, built on Stella Nostra's proven spherical Earth grid system.
+A grand strategy game where players control a nation throughout history. **HT2 is a from-scratch rebuild** — clean, minimal, and correct.
 
-The Earth is divided into a high-resolution spherical grid (10km cells at the equator at Level 0), with a multi-resolution LOD pyramid for efficient rendering and information condensation. Political territories, province boundaries, and contested occupations are tracked at the per-cell level, with dynamic texture-based detail at coarser LOD levels.
+The Earth is divided into a deterministic spherical grid:
+- **4,096 segments at the equator** (~9.77 km wide)
+- **2,048 vertical bands** (~9.77 km tall)
+- Halving toward poles: `4096 → 2048 → 1024 → 512 → 256 → 128 → 64 → 32 → 16 → 8`
+- **8 triangular cells** at each pole
+- **~6.5M total tiles**
+
+Every cell is either **land or water** (binary), pre-baked from Natural Earth admin-0 polygons → compact `land_mask.bin` (~812 KB). At runtime, only cells within ~500 km of the camera's sub-point are rendered (viewport culling). No LOD pyramid, no palette system, no territory data — single-level, clean, correct.
 
 - **Working directory:** `D:\hermes-projects\historia-terrarum\`
-- **Parent system:** Stella Nostra (grid generator, coordinate math)
 - **Godot engine:** 4.6.3
-- **Current test resolution:** 100km (62,400 tiles, fast iteration)
-- **Target resolution:** 10km base cell at equator (Level 0), LOD pyramid up to 160km (Level 4)
-- **Current time scale:** 7 rungs from 15 min/sec to 1 day/sec
-- **Default start year:** 1950 (year index 11950, where 0 = 10,000 BC)
+- **Restore point:** tag `ht1-final` (original Historia Terrarum, Phase 1-11)
+- **Active branch:** `ht2-rebuild`
+- **Camera:** Stella Nostra orbit camera (right-drag orbit, scroll zoom, momentum)
 
 ---
 
@@ -20,47 +25,33 @@ The Earth is divided into a high-resolution spherical grid (10km cells at the eq
 
 ### 2.1 Grid System
 
-Multi-resolution spherical grid with LOD pyramid. Trapezoidal lat/lon cells with polar merging — "hexagonal-ish" (avg ~6 neighbors per cell due to merge pattern).
+| Property | Value |
+|----------|-------|
+| Equator segments | 4,096 (fixed) |
+| Total bands | 2,048 (fixed) |
+| Cell size at equator | ~9.77 × 9.77 km |
+| Halving threshold | Cell width < 5 km |
+| Halving chain | 4096→2048→1024→512→256→128→64→32→16→8 |
+| Polar cells | 8 triangular wedges each |
+| Total tiles | 6,498,160 |
 
-| Level | Cell size | Span | Tile count (100km) | Use |
-|-------|-----------|------|---------------------|-----|
-| 0 | 100 km | 1× | 62,400 | Tactical / regional view |
-| 1 | 200 km | 2× | 15,990 | Regional view |
-| 2 | 400 km | 4× | 3,872 | Continental view |
-| 3 | 800 km | 8× | 968 | Multi-continent |
-| 4 | 1,600 km | 16× | 280 | Global view |
-
-Each level has the same mesh structure (band-based quads). Quads at coarser levels can be:
-- **Solid:** all sub-tiles same owner → single color via vertex color + solid_tint shader
-- **Textured:** mixed owners → per-quad R8 palette-index texture + territory_palette shader
-
-### 2.2 Rendering Pipeline
+### 2.2 Data Pipeline (Build-Time Only)
 
 ```
-Camera distance → LOD selection per frame
-    → Crossfade: old LOD transparency ↑, new LOD transparency ↓ (0.35s ease)
-    → Solid quads: MeshInstance3D with vertex color R = palette index
-    → Textured quads: Node3D container of per-quad MeshInstance3D with R8 texture
-    → Highlighting: shader uniform palette swap (brighten selected, dim others)
+Natural Earth admin-0 (.shp)
+    ↓  generate_land_mask.py  (runs ONCE, ~3.5 min)
+land_mask.bin  (~812 KB, 1 bit/cell)
+    ↓  land_mask_loader.gd  (loads at startup)
+is_land(band, seg) → bool  (O(1) bit lookup)
 ```
 
-### 2.3 Territory System
+### 2.3 Rendering
 
-- Per-cell ownership at Level 0 (country + province + occupier)
-- Palette-based shader enables instant display mode switching (political, province, diplomatic)
-- `territory_changed` signal → border_overlay regenerates borders
-- Historical timeline with dynamic border changes (WWI, USSR dissolution, etc.)
-
-### 2.4 Data Pipeline
-
-```
-Python: grid math → tile registry (Level 0, 10km)
-    → Region assignment from Natural Earth + GADM shapefiles (5,171 regions)
-    → 100km tile mapping via majority-vote aggregation (committed)
-    → Coastline extraction + simplification (3 LODs)
-    → River snapping to grid edges
-    → Runtime: territory timeline events update Level 0
-```
+- **Earth sphere:** 4K texture at 1× radius (visual reference only)
+- **Land mesh:** Green cells at 1.003× radius, only ~2,500 visible at tactical zoom
+- **Culling:** 500 km radius around camera sub-point, rebuilt every 3 frames
+- **No LOD pyramid:** Single-resolution mesh
+- **No palette:** Land=green, Ocean=transparent (via vertex colors)
 
 ---
 
@@ -70,102 +61,64 @@ Python: grid math → tile registry (Level 0, 10km)
 historia-terrarum/
 ├── ANCHOR.md
 ├── PROGRESS.md
-├── README.md
-├── .gitignore
-├── game/                       # Godot project
+├── _legacy/                     # HT1 archive (palette, LOD, territories, etc.)
+├── game/                        # Godot project
 │   ├── project.godot
 │   ├── assets/
-│   │   ├── flags/              # 464 country flag PNGs (from Stella Nostra)
+│   │   ├── flags/               # Country flags (from Stella Nostra, legacy)
 │   │   └── textures/planet/earth/
 │   │       └── earth_color_4k.png
 │   ├── scenes/
-│   │   └── main.tscn
+│   │   └── main.tscn            # EarthDisplay + EarthCamera + Light + Env
 │   ├── scripts/
-│   │   ├── core/
-│   │   │   ├── game_state.gd        # Player country, selection state
-│   │   │   └── time_manager.gd      # Central time tracking, 7 speed rungs
 │   │   ├── camera/
-│   │   │   └── earth_camera.gd      # Orbit camera, zoom rungs, crossfade
+│   │   │   └── earth_camera.gd  # Orbit camera (Stella Nostra)
 │   │   ├── data/
-│   │   │   ├── spherical_grid_generator.gd
-│   │   │   ├── earth_chunk_manager.gd
-│   │   │   ├── territory_data.gd
-│   │   │   ├── lod_pyramid.gd        # LOD mesh generation + classification
-│   │   │   ├── palette_manager.gd    # 256-color palette, display modes
-│   │   │   └── palette_texture_gen.gd
-│   │   ├── planetary/
-│   │   │   ├── earth_display.gd      # Earth body, grid, tint, overlays
-│   │   │   ├── border_overlay.gd     # Dynamic political border rendering
-│   │   │   ├── coastline_overlay.gd  # Coastline LineStrips (3 LODs)
-│   │   │   └── river_overlay.gd      # River LineStrips
-│   │   └── ui/
-│   │       ├── country_panel.gd      # Left panel: player country + flag
-│   │       ├── selection_panel.gd    # Right panel: selected entity + flag
-│   │       ├── hover_tooltip.gd      # Country name under cursor
-│   │       └── time_control.gd       # Top-right time bar
-│   └── shaders/
-│       ├── solid_tint.gdshader       # Vertex-color palette lookup
-│       └── territory_palette.gdshader # R8 texture palette lookup
-└── data/                       # Python data pipeline
-    ├── countries/
-    │   ├── country_registry.json     # 249 countries with palette indices
-    │   ├── country_registry.yaml
-    │   ├── palette.json              # 256-color palette
-    │   └── tile_mapping_100km.json   # 100km tile → palette index (committed)
-    ├── timeline/
-    │   └── events.json              # Historical events
-    ├── regions/                     # 5,171 region YAML files
+│   │   │   ├── spherical_grid_generator.gd  # Grid math + tint mesh
+│   │   │   └── land_mask_loader.gd          # Binary mask reader
+│   │   └── planetary/
+│   │       └── earth_display.gd  # Earth body + culled land mesh
+└── data/                        # Build pipeline
+    ├── shapefiles/              # Natural Earth .shp files
+    ├── generate/
+    │   ├── generate_land_mask.py    # One-time land classification
+    │   └── verify_land_mask.py      # Automated verification
     ├── output/
-    │   ├── coastlines.json
-    │   └── grid_10km/rivers.json
-    └── generate/                    # Python pipeline scripts
+    │   └── grid_10km_ht2/
+    │       ├── land_mask.bin           # 812 KB binary (committed)
+    │       └── land_mask_summary.json  # Grid + tile stats
+    └── _legacy/                 # HT1 pipeline scripts
 ```
 
 ---
 
 ## 4. Key Design Decisions
 
-- **Derived LODs, not stored:** All LOD levels above 0 are views into Level 0 data. Changes at Level 0 propagate upward via dirty-tracking.
-- **Palette-index shaders:** Textures store territory identities as palette indices, not RGB. Display mode changes are uniform swaps — zero texture regeneration.
-- **Chunked rendering (planned):** Earth divided into geographic chunks for frustum + horizon culling.
-- **Lazy regeneration (planned):** Quads marked dirty on territory change, regenerated only when visible.
-- **Resolution-agnostic grid:** Same `SphericalGridGenerator` works for any `base_cell_km`.
-- **100km for dev, 10km for prod:** 62K tiles fast enough for iteration; pipeline outputs at 10km ready to switch.
-- **Flags committed:** 464 PNGs in repo so first-time clone needs nothing extra.
-- **Time scale rungs from Stella Nostra:** 15m/s, 30m/s, 1h/s, 3h/s, 6h/s, 12h/s, 1d/s. Pause stops ALL processing.
+- **Deterministic grid:** 4096×2048 is hardcoded, not auto-calculated. Clean halving chain guaranteed.
+- **Binary land/water:** No territory system yet. Green=land, transparent=ocean. Baked once, loaded fast.
+- **Viewport culling, not LOD:** Only render what's on screen. Single mesh regenerated on camera move.
+- **Camera from Stella Nostra:** Proven orbit camera, unchanged except for `:=` → explicit type fixes.
+- **No palette, no shader uniforms:** Direct RGB vertex colors via `vertex_color_use_as_albedo = true`.
 
 ---
 
-## 5. Development Phases
+## 5. Development Phases (HT2)
 
-| Phase | Name | Status | Description |
-|-------|------|--------|-------------|
-| 1 | Grid pipeline | ✅ | Generate 10km tile registry. Verify tile counts and merge chain. |
-| 2 | Earth display | ✅ | Earth sphere with grid wireframe + tint at 100km. |
-| 2b | Static overlays | ✅ | Coastlines (3 LODs) + rivers from Natural Earth. |
-| 3 | Palette shader | ✅ | Territory palette-index shader. Solid + textured quad rendering. |
-| 4 | Territory data | ✅ | Region assignment (5,171 regions). 100km tile mapping. |
-| 4b | Country registry | ✅ | 249 countries, palette indices, display mode switching. |
-| 5 | LOD pyramid | 🟡 | LOD 1-4 mesh generation. Crossfade. Needs Python pre-compute + dirty-tracking. |
-| 6 | Camera | ✅ | Zoom rungs, orbital momentum, far plane fix. |
-| 7 | Game mechanics | ⬜ | Army/navy/air wing entities, movement, combat, supply. |
-| 8 | Timeline | ✅ | JSON events, fast-forward engine, bbox support. |
-| 9 | UI | ✅ | Country selection, flags, left/right panels, hover tooltip. |
-| 10 | Time controls | 🟡 | Time manager, 7 speed rungs, pause, top-right bar. |
-| 11 | Optimization | ⬜ | P0-P4 plan ready (palette perf, depth cull, border offset, texture sharpness). |
+| Phase | Status | Description |
+|-------|--------|-------------|
+| 1 | ✅ | Git fork — tag ht1-final, branch ht2-rebuild, strip to scaffold |
+| 2 | ✅ | Deterministic grid math — 4096×2048, halving to 8 polar cells |
+| 3 | ✅ | Land/water pipeline — Natural Earth → land_mask.bin (29.0% land) |
+| 4 | ✅ | Viewport-culled display — 500km radius around camera sub-point |
+| 5 | ✅ | Camera integration — existing orbit camera, := fixes |
+| 6 | ✅ | Verification — grid structure, known points, tile counts |
+| 7 | ⬜ | Future: rivers, LoD pyramid, tile ownership, timeline |
 
 ---
 
-## 6. Immediate Next Session
+## 6. Immediate Next Steps (Post-Launch)
 
-**Priority order:**
-
-1. **P0 (CRITICAL):** Guard `_update_all_materials()` with dirty flag — only run on palette/highlight change. Remove from `_process()`. This single fix eliminates ~6.3M uniform calls/frame and should make the game responsive.
-
-2. **P2:** Set `no_depth_test = false` on all overlay materials (borders, rivers, coastlines, grid) — stop rendering far-side geometry through the Earth.
-
-3. **P1:** Skip O(n²) border chaining — render border edges directly as line pairs.
-
-4. **P3:** Apply 90° rotation to border vertex math matching `uv1_offset.x = 0.25`.
-
-5. **P4:** Set `texture_filter = TEXTURE_FILTER_NEAREST` on Earth material.
+1. **Launch in Godot** — verify the sphere + green land cells render correctly
+2. **Test orbit/zoom** — verify camera movement and mesh regeneration
+3. **Tune visible radius** — adjust 500km for best coverage at tactical zoom
+4. **Add band-level debug overlay** — wireframe grid for visual validation
