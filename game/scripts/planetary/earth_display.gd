@@ -7,7 +7,9 @@ const EARTH_RADIUS_KM := 6371.0
 const CELL_KM := 10.0
 const VISIBLE_RADIUS_KM := 500.0   # render cells within this radius of camera sub-point
 const REBUILD_FRAME_INTERVAL := 3   # throttle mesh rebuild
-const LAND_COLOR := Color(0.2, 0.7, 0.3, 1.0)  # green land
+const LAND_COLOR := Color(0.2, 0.7, 0.3, 1.0)   # green land
+const OCEAN_COLOR := Color(0.1, 0.3, 0.6, 1.0)  # blue ocean
+const MESH_NAME := "CellMesh"
 
 var _earth_body: MeshInstance3D
 var _land_mesh: MeshInstance3D
@@ -170,9 +172,10 @@ func _rebuild_visible_land_mesh(sub_point: Vector3) -> void:
 	var band_start: int = maxi(center_band - band_range, 0)
 	var band_end: int = mini(center_band + band_range, total_bands - 1)
 
-	# Build tile_colors dict for visible land cells
+	# Build tile_colors dict for visible cells (land + ocean)
 	var tile_colors: Dictionary = {}
 	var visible_land: int = 0
+	var visible_ocean: int = 0
 
 	for b_idx in range(band_start, band_end + 1):
 		var segs_bot: int = band_segs[b_idx]
@@ -181,20 +184,21 @@ func _rebuild_visible_land_mesh(sub_point: Vector3) -> void:
 		if cell_segs <= 0:
 			continue
 
-		# Center longitude segment
 		var center_seg: int = int((lon_deg + 180.0) / 360.0 * float(cell_segs)) % cell_segs
-		# Segment range: wider near equator, narrower near poles
 		var seg_range: int = maxi(int(angular_radius_deg / 360.0 * float(cell_segs)) + 1, 1)
-		# Account for longitude narrowing at higher latitudes
 		var cos_lat: float = cos(lat)
 		if cos_lat > 0.01:
 			seg_range = maxi(int(seg_range / cos_lat), 1)
 
 		for s in range(center_seg - seg_range, center_seg + seg_range + 1):
 			var wrapped_seg: int = ((s % cell_segs) + cell_segs) % cell_segs
+			var tile_id: String = "B%d_%d" % [b_idx, wrapped_seg]
 			if _land_loader.is_land(b_idx, wrapped_seg):
-				tile_colors["B%d_%d" % [b_idx, wrapped_seg]] = LAND_COLOR
+				tile_colors[tile_id] = LAND_COLOR
 				visible_land += 1
+			else:
+				tile_colors[tile_id] = OCEAN_COLOR
+				visible_ocean += 1
 
 	# Remove old land mesh
 	if _land_mesh and is_instance_valid(_land_mesh):
