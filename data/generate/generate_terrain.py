@@ -41,6 +41,7 @@ RASTER_DIR = os.path.join(PROJECT_ROOT, "data", "raster")
 OUTPUT_DIR = os.path.join(PROJECT_ROOT, "data", "output", "grid_10km_ht2")
 
 DEFAULT_RASTER = os.path.join(RASTER_DIR, "gebco_2024.tif")
+DEFAULT_NC = os.path.join(RASTER_DIR, "GEBCO_2024_CF.nc")
 
 # ── Terrain Classification ──
 # Elevation thresholds in meters
@@ -137,7 +138,24 @@ def generate_terrain(raster_path: str, cell_segs_per_band: list, total_tiles: in
     print(f"Opening raster: {raster_path}")
     t0 = time.time()
 
-    with rasterio.open(raster_path) as src:
+    # Handle NetCDF: rasterio can open .nc but may need subdataset selection
+    open_path = raster_path
+    is_nc = raster_path.lower().endswith('.nc')
+    if is_nc:
+        # GEBCO NetCDF has subdatasets; use the elevation one
+        with rasterio.open(raster_path) as probe:
+            subs = probe.subdatasets
+        if subs:
+            # Find the elevation subdataset
+            for s in subs:
+                if 'elevation' in s.lower() or 'height' in s.lower():
+                    open_path = s
+                    break
+            if open_path == raster_path:
+                open_path = subs[0]  # fallback: first subdataset
+            print(f"  NetCDF subdataset: {open_path}")
+
+    with rasterio.open(open_path) as src:
         print(f"  CRS: {src.crs}")
         print(f"  Bounds: {src.bounds}")
         print(f"  Shape: {src.height} × {src.width}")
@@ -263,11 +281,20 @@ def main():
                         help="Full windowed median mode (slow, 1-2 hours)")
     args = parser.parse_args()
 
-    if not os.path.exists(args.raster):
+    # Resolve raster: try .nc first (GEBCO default format), then .tif
+    raster_path = args.raster
+    if not os.path.exists(raster_path) and os.path.exists(DEFAULT_NC):
+        raster_path = DEFAULT_NC
+        print("Using NetCDF format: %s" % raster_path)
+    elif not os.path.exists(raster_path) and os.path.exists(DEFAULT_RASTER):
+        raster_path = DEFAULT_RASTER
+
+    if not os.path.exists(raster_path):
         print(f"ERROR: GEBCO raster not found at {args.raster}")
+        print(f"  Also checked: {DEFAULT_NC}, {DEFAULT_RASTER}")
         print(f"\nDownload from: https://www.bodc.ac.uk/data/open_download/gebco/gebco_2024/zip/")
-        print(f"Extract and place the .tif in: {RASTER_DIR}/")
-        print(f"Or specify with: --raster /path/to/gebco_2024.tif")
+        print(f"Place the .nc or .tif file in: {RASTER_DIR}/")
+        print(f"Or specify with: --raster /path/to/gebco_file")
         sys.exit(1)
 
     print("=" * 60)
