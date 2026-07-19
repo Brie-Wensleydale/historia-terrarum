@@ -1,0 +1,2 @@
+data/output/grid_10km_ht2/weather.bin filter=lfs diff=lfs merge=lfs -text
+data/output/grid_10km_ht2/weather.bin filter=lfs diff=lfs merge=lfs -text

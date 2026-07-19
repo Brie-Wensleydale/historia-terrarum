@@ -1,17 +1,26 @@
-# weather_loader.gd — HT2 monthly temperature & precipitation reader
-# Loads pre-baked weather.bin (48 bytes per cell, ~312 MB for ~6.5M tiles).
-# Format per cell: 12 × int16 temp (°C×10) + 12 × int16 precip (mm)
+# weather_loader.gd — HT2 monthly climate data reader (4 variables)
+# Loads pre-baked weather.bin (96 bytes per cell, ~624 MB for ~6.5M tiles).
+# Format per cell (96 bytes):
+#   24 bytes: tavg (temp °C × 10, 12 × int16)
+#   24 bytes: prec (precip mm, 12 × int16)
+#   24 bytes: srad (solar radiation kJ/m²/d, 12 × int16)
+#   24 bytes: wind (wind speed m/s × 10, 12 × int16)
 # Provides O(1) monthly lookups.
 extends RefCounted
 
 const DATA_DIR := "res://../data/output/grid_10km_ht2/"
 const WEATHER_FILE := "weather.bin"
-const SUMMARY_FILE := "weather_summary.json"
 
-const STRIDE := 48         # bytes per cell: 12 temp + 12 precip, int16 each
-const TEMP_OFFSET := 0     # bytes from cell start
-const PREC_OFFSET := 24    # bytes from cell start
+const STRIDE := 96              # bytes per cell: 4 vars × 12 months × int16
 const MONTH_COUNT := 12
+const NVARS := 4
+
+# Variable index within stride
+const VAR_TEMP := 0   # tavg: °C × 10
+const VAR_PREC := 1   # prec: mm
+const VAR_SRAD := 2   # srad: kJ/m²/day
+const VAR_WIND := 3   # wind: m/s × 10
+const VAR_BYTES := MONTH_COUNT * 2  # 24 bytes per variable
 
 const MONTH_NAMES := ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                       "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -68,7 +77,6 @@ func load() -> bool:
 
 
 func _cell_offset(band: int, seg: int) -> int:
-	"""Byte offset for a cell in weather.bin."""
 	if band < 0 or band >= _total_bands:
 		return -1
 	if _cell_segs_per_band.size() == 0:
@@ -83,55 +91,79 @@ func _cell_offset(band: int, seg: int) -> int:
 
 
 func _read_int16(offset: int) -> int:
-	"""Read a little-endian int16 from the byte array at given offset."""
 	if offset < 0 or offset + 2 > _data.size():
 		return 0
 	return (_data[offset] | (_data[offset + 1] << 8)) as int
 
 
-func get_monthly_temp(band: int, seg: int, month: int) -> float:
-	"""Temperature in °C for given month (0=Jan, 11=Dec)."""
-	var offset: int = _cell_offset(band, seg)
-	if offset < 0:
-		return 0.0
+func _get_var_value(band: int, seg: int, var_idx: int, month: int) -> int:
+	var cell_off: int = _cell_offset(band, seg)
+	if cell_off < 0:
+		return 0
 	if month < 0 or month >= MONTH_COUNT:
-		return 0.0
-	var raw: int = _read_int16(offset + TEMP_OFFSET + month * 2)
-	# Handle signed int16 from unsigned read
+		return 0
+	var offset: int = cell_off + var_idx * VAR_BYTES + month * 2
+	var raw: int = _read_int16(offset)
 	if raw >= 32768:
-		raw -= 65536
-	return float(raw) / 10.0
+		raw -= 65536  # unsigned → signed
+	return raw
 
 
-func get_monthly_precip(band: int, seg: int, month: int) -> float:
-	"""Precipitation in mm for given month (0=Jan, 11=Dec)."""
-	var offset: int = _cell_offset(band, seg)
-	if offset < 0:
-		return 0.0
-	if month < 0 or month >= MONTH_COUNT:
-		return 0.0
-	var raw: int = _read_int16(offset + PREC_OFFSET + month * 2)
-	return float(raw)
+# ── Temperature ──
+
+func get_monthly_temp(band: int, seg: int, month: int) -> float:
+	return float(_get_var_value(band, seg, VAR_TEMP, month)) / 10.0
 
 
 func get_annual_temp(band: int, seg: int) -> float:
-	"""Annual mean temperature in °C."""
-	var sum_temp: float = 0.0
+	var s: float = 0.0
 	for m in range(MONTH_COUNT):
-		sum_temp += get_monthly_temp(band, seg, m)
-	return sum_temp / float(MONTH_COUNT)
+		s += get_monthly_temp(band, seg, m)
+	return s / float(MONTH_COUNT)
+
+
+# ── Precipitation ──
+
+func get_monthly_precip(band: int, seg: int, month: int) -> float:
+	return float(_get_var_value(band, seg, VAR_PREC, month))
 
 
 func get_annual_precip(band: int, seg: int) -> float:
-	"""Annual total precipitation in mm."""
-	var sum_prec: float = 0.0
+	var s: float = 0.0
 	for m in range(MONTH_COUNT):
-		sum_prec += get_monthly_precip(band, seg, m)
-	return sum_prec
+		s += get_monthly_precip(band, seg, m)
+	return s
 
+
+# ── Solar Radiation ──
+
+func get_monthly_srad(band: int, seg: int, month: int) -> float:
+	return float(_get_var_value(band, seg, VAR_SRAD, month))
+
+
+func get_annual_srad(band: int, seg: int) -> float:
+	var s: float = 0.0
+	for m in range(MONTH_COUNT):
+		s += get_monthly_srad(band, seg, m)
+	return s
+
+
+# ── Wind Speed ──
+
+func get_monthly_wind(band: int, seg: int, month: int) -> float:
+	return float(_get_var_value(band, seg, VAR_WIND, month)) / 10.0
+
+
+func get_annual_wind(band: int, seg: int) -> float:
+	var s: float = 0.0
+	for m in range(MONTH_COUNT):
+		s += get_monthly_wind(band, seg, m)
+	return s / float(MONTH_COUNT)
+
+
+# ── Interpolation ──
 
 func get_temp_by_day(band: int, seg: int, day_of_year: int) -> float:
-	"""Interpolated temperature for a given day (0-364)."""
 	var month: int = clampi(day_of_year / 30, 0, 11)
 	var next_month: int = (month + 1) % 12
 	var frac: float = float(day_of_year % 30) / 30.0
