@@ -1,238 +1,145 @@
-# PROGRESS.md — Historia Terrarum
+# PROGRESS.md — Historia Terrarum 2
 
-> Last updated: 2026-07-16 (session: P0-P4 execution, direct RGB tints, LOD alignment, sparser_seg fix)
-
----
-
-## Phase 1: Grid Pipeline
-
-**Status:** ✅ Complete
-
-- [x] Create `data/generate/grid_registry.py` — generate tile registry at configurable resolution
-- [x] Verify 10km tile count (6,249,000 tiles, 2,002 bands, 4,000 equator segs)
-- [x] Verify 100km tile count (62,400 tiles, 200 bands, 400 equator segs — matches Stella Nostra)
-- [x] Grid pipeline works for any resolution
+> Last updated: 2026-07-20 (session: HT2 rebuild — grid, land mask, terrain, climate, weather)
 
 ---
 
-## Phase 2: Earth Display
+## HT2 Rebuild (2026-07-20)
 
-**Status:** ✅ Complete
+**Restore point:** tag `ht1-final` → branch `ht2-rebuild`
 
-- [x] Godot project setup — `project.godot`, main scene with camera + lights
-- [x] `earth_display.gd` — Earth body with grid wireframe + tint (test stripes)
-- [x] `earth_camera.gd` — simplified orbit camera from Stella Nostra (scroll zoom, drag orbit)
-- [x] `earth_chunk_manager.gd` — geographic chunk partitioning stub
-- [x] Grid wireframe generation at 100km (test resolution, 62K tiles)
-- [x] Tint mesh generation with test territory colors (vertical stripes)
-- [x] Main scene validated in Godot
-- [x] Earth texture from Stella Nostra applied (4K, uv1_offset alignment)
+### Phase 1: Git Fork & Bare Scaffold ✅
 
----
+- [x] Tag ht1-final at commit fdc42c6
+- [x] Create ht2-rebuild branch
+- [x] Move HT1 code to `_legacy/` (palette, LOD, territories, UI, shaders, overlays)
+- [x] Strip main.tscn to EarthDisplay + EarthCamera + Light + Environment
+- [x] Simplify project.godot
 
-## Phase 2b: Static Overlays (Coastlines + Rivers)
+### Phase 2: Deterministic Grid Math ✅
 
-**Status:** ✅ Complete
+- [x] Rewrite `spherical_grid_generator.gd` — hardcoded 4096×2048
+- [x] Halving chain: 4096→2048→1024→512→256→128→64→32→16→8
+- [x] 8 triangular polar cells at each pole
+- [x] 6,498,160 total tiles
+- [x] seg=0 at prime meridian (lon=0°), matching GDScript mesh convention
 
-- [x] Natural Earth 10m shapefiles downloaded (coastline + rivers)
-- [x] `coastline_gen.py` — extract + simplify to 3 LODs (4,133 rings)
-- [x] `grid_graph.py` — grid vertex graph for river A* pathfinding
-- [x] `river_gen.py` — snap 1,213 rivers to grid cell edges (89,685 edges)
-- [x] `coastline_overlay.gd` — LOD-switching LineStrip renderer
-- [x] `river_overlay.gd` — cell-edge river LineStrip renderer
-- [x] Overlays integrated into earth_display.gd layer stack
+### Phase 3: Land/Water Pipeline ✅
 
----
+- [x] `generate_land_mask.py` — Natural Earth admin-0 polygons → `land_mask.bin`
+- [x] `land_mask_loader.gd` — O(1) bit-packing reader
+- [x] 1,887,685 land tiles (29.0%), 812 KB binary
+- [x] `verify_land_mask.py` — London/Sahara/Pacific/South Atlantic checks
+- [x] Fix: seg=0 at prime meridian (was dateline, 180° offset)
+- [x] Fix: antimeridian epsilon nudge for polygon-edge misses
 
-## Phase 3: Palette Shader
+### Phase 4: Viewport-Culled Display ✅
 
-**Status:** ✅ Complete
+- [x] Rewrite `earth_display.gd` — Earth sphere + culled cell mesh
+- [x] 500 km visible radius around camera sub-point
+- [x] Band-range optimization: ~100 visible bands out of 2048
+- [x] Both land and ocean cells rendered (green/blue, opaque)
+- [x] Lag: 1-2 FPS — performance optimization deferred
 
-- [x] `solid_tint.gdshader` — palette-index from vertex color R channel (solid quads)
-- [x] `territory_palette.gdshader` — palette-index texture lookup (mixed quads)
-- [x] `palette_manager.gd` — 256-color palette arrays, display mode switching
-- [x] `palette_texture_gen.gd` — R8 palette-index texture generator utility
-- [x] `earth_display.gd` integration — ShaderMaterial replaces StandardMaterial3D for tint
-- [x] Highlight palette swap (bright/dim blend via highlight_mix uniform)
-- [ ] MultiMesh batching (deferred)
+### Phase 5: Camera Integration ✅
 
----
+- [x] `earth_camera.gd` from Stella Nostra — orbit, zoom rungs, momentum
+- [x] Fix: `:=` → explicit types for Godot 4.6 warnings-as-errors
+- [x] Fix: x-axis mirror — right-drag now orbits right
 
-## Phase 4: Territory Core (Data Pipeline)
+### Phase 6: Verification ✅
 
-**Status:** ✅ Complete
+- [x] Grid structure: 2048 bands, 4096 equator, 8 polar ✅
+- [x] Known points: London/LAND, Pacific/OCEAN, Sahara/LAND, S. Atlantic/OCEAN ✅
+- [x] Land percentage: 29.0% (expected ~29.2%)
 
-- [x] `tile_registry.py` — generate 10km tile registry (913 MB, 6,245,000 tiles)
-- [x] Natural Earth shapefiles (admin-0, admin-1, admin-2 US-only, subunits)
-- [x] GADM admin-2 shapefiles downloaded for 11 countries
-- [x] `region_config.yaml` — strategy config (adm_0: 43, adm_2: 4, adm_1 default, UK custom)
-- [x] `region_assign.py` — 3-point majority test + GADM/NE admin-2 + auto-split
-- [x] **Result: 5,171 regions** from 1,852,412 land tiles
-- [x] 1,578 admin-2 regions with parent-linked hierarchy
-- [x] 41 mega-provinces auto-split (Sakha→29, Alaska→16, Xinjiang→11, etc.)
+### Phase 8a: Terrain Pipeline (GEBCO 2024) ✅
 
-### Phase 4b: Country Registry & Palette Indices
+- [x] `generate_terrain.py` — 7 GB GEBCO NetCDF → `terrain.bin` + `slope.bin`
+- [x] 11 terrain types: deep_ocean through extreme_mountain
+- [x] 5 slope types: flat/gentle/moderate/steep/cliff
+- [x] `terrain_loader.gd` — O(1) byte lookup
+- [x] 29.5% land from elevation (matches expected)
+- [x] 6.5 MB each, 4 minutes runtime
 
-**Status:** ✅ Complete
+### Phase 8b: Climate Pipeline (Beck Köppen-Geiger) ✅
 
-- [x] Build country registry from 5,171 regions → `data/countries/country_registry.yaml`
-- [x] Deterministic palette color assignment → `data/countries/palette.json`
-- [x] 249 countries, 228 unique palette indices (major=7, regional=27, minor=91, micro=124)
-- [x] 100km tile mapping via majority-vote aggregation → `data/countries/tile_mapping_100km.json`
-- [x] Wire into PaletteManager — loads JSON at startup
-- [x] `territory_data.gd` — loads tile mapping (now `tile_mapping_100km.json` as primary)
-- [x] `earth_display.gd` — real country colors instead of test stripes
-- [x] Display mode switching — keys 1/2/3/4
+- [x] `generate_climate.py` — Beck_KG_V1_0p0083.tif → `climate.bin`
+- [x] 30 Köppen types: Af/Am/Aw, BWh/BWk/BSh/BSk, Csa/Csb/Csc, Cwa/Cwb/Cwc, Cfa/Cfb/Cfc, Dsa/Dsb/Dsc/Dsd, Dwa/Dwb/Dwc/Dwd, Dfa/Dfb/Dfc/Dfd, ET/EF
+- [x] `climate_loader.gd` — O(1) byte lookup
+- [x] Code 0 = ocean/marine (not classified)
+- [x] Fix: label mapping corrected (Beck 1-30, not 1-31)
+- [x] 6.5 MB, 5 minutes runtime
 
----
+### Phase 8c: Weather Pipeline (WorldClim 2.1) ✅
 
-## Phase 5: LOD Pyramid
-
-**Status:** 🟡 In Progress — code written, meshes generate, LOD 1-4 visible
-
-- [x] `lod_pyramid.gd` — LOD pyramid manager (classify, generate, crossfade)
-- [x] Quad classification — `classify_quad()` per-LOD (solid vs textured)
-- [x] Solid mesh generation — vertex-color palette indices + `solid_tint.gdshader`
-- [x] Textured mesh generation — per-quad R8 textures + `territory_palette.gdshader`
-- [x] LOD crossfade — smooth alpha transition with `transparency` property
-- [x] `generate_all_lod_meshes()` — LOD 1-4 from territory data
-- [x] `register_lod_zero()` — existing tint mesh as LOD 0
-- [x] `update_visibility()` — show/hide with crossfade on camera distance change
-- [ ] Static LOD pre-compute pipeline (Python — currently all in-engine at startup)
-- [ ] Dirty-tracking for lazy regeneration on territory change
-- [ ] Verify wireframe + tint rendering at all LOD levels
+- [x] `generate_weather.py` — 48 GeoTIFFs → `weather.bin`
+- [x] 4 variables: tavg (°C×10), prec (mm), srad (kJ/m²/d), wind (m/s×10)
+- [x] 12 monthly values per variable = 96 bytes/cell total
+- [x] `weather_loader.gd` — O(1) lookup + day-level interpolation
+- [x] 624 MB, tracked via Git LFS
+- [x] Fix: wind raster float32 + nodata (-3.4e38) handling
+- [x] 4 minutes runtime
 
 ---
 
-## Phase 6: Camera
+## Current State
 
-**Status:** ✅ Complete
+| Layer | Status | Size | Loader |
+|-------|--------|------|--------|
+| Grid | ✅ 4096×2048 | — | `spherical_grid_generator.gd` |
+| Land/water | ✅ | 812 KB | `land_mask_loader.gd` |
+| Terrain | ✅ | 6.5 MB | `terrain_loader.gd` |
+| Climate | ✅ | 6.5 MB | `climate_loader.gd` |
+| Weather | ✅ | 624 MB | `weather_loader.gd` |
 
-- [x] Zoom rungs — 5 discrete levels (Tactical/Regional/Continental/Hemisphere/Global)
-- [x] Smooth LOD crossfade — alpha transition (0.35s ease-in-out)
-- [x] Orbit momentum — right-drag velocity decays on release
-- [x] Surface tracking — focus_on_surface() snaps to LOD 0
-- [x] Edge clamping — no underground orbits, phi bounds, min/max distance
-- [x] View reset — R key returns to Continental default
-- [x] **Fixed:** Camera far plane set to 200,000 (was default 4,000 — everything clipped)
-
----
-
-## Phase 7: Game Mechanics
-
-**Status:** ⬜ Not started
-
-- [ ] Army/navy/air wing entity system
-- [ ] Movement on the grid
-- [ ] Combat resolution
-- [ ] Supply system
-- [ ] Province-level administration
-- [ ] Historical timeline engine
+**Total binary data: ~644 MB** (624 MB via Git LFS)
 
 ---
 
-## Phase 8: Timeline Engine
+## Known Issues
 
-**Status:** ✅ Complete
-
-- [x] Timeline event format — JSON with year, name, changes (tiles + bbox)
-- [x] Sample events — WWI (1914/1918), USSR dissolution (1991), test swap events
-- [x] Event loader — native JSON parsing, country name → palette index mapping
-- [x] Fast-forward engine — apply all events ≤ target year to territory state
-- [x] Bbox support — find tiles in lat/lon region, approximate from tile IDs
-- [x] Year advancement — T key advances one year, F key jumps to 1991
-- [x] Default start: 1950, events validated with tile ownership changes
+| Issue | Status | Notes |
+|-------|--------|-------|
+| 1-2 FPS lag | Deferred | ~10K triangles rebuilt every 3 frames. Needs mesh pooling or static batching |
+| Ocean band at dateline | ✅ Fixed | Antimeridian epsilon nudge in all pipelines |
+| 180° longitude offset | ✅ Fixed | seg=0 now at prime meridian matching GDScript mesh |
+| Camera x-axis reversed | ✅ Fixed | Mirrored orbit direction |
+| Climate label mapping | ✅ Fixed | Beck et al. 2018 encoding (1-30, 0=ocean) |
 
 ---
 
-## Phase 9: UI
+## Next Steps (Post-Ready)
 
-**Status:** ✅ Complete (basic selection + panels + flags)
-
-- [x] Click detection — ray-sphere intersection, find tile + country
-- [x] Drag-vs-click discrimination — 5px threshold
-- [x] GameState node — player country, selected entity tracking
-- [x] Country highlight — brighten selected, dim others via PaletteManager
-- [x] Left panel — player country name, flag, tabs (Stats/Diplomacy/Military/Tech)
-- [x] Right panel — selected object name + type, flag, info rows
-- [x] Hover tooltip — country name follows cursor
-- [x] Country flags — 464 flag PNGs from Stella Nostra, loaded from `res://assets/flags/`
-
----
-
-## Phase 10: Time Controls
-
-**Status:** 🟡 In Progress — base system running, needs perf fix
-
-- [x] `time_manager.gd` — central time tracking, 7 speed rungs (15m/s → 1d/s)
-- [x] Pause/resume — all game processes query `TimeManager.get_game_delta()`
-- [x] `time_control.gd` — top-right UI bar with date, speed label, pause/play/speed buttons
-- [x] Universal time scale — any process plugs into TimeManager for synchronized speed
-- [ ] Time controls feel laggy due to P0 palette performance issue (see Issues)
-- [ ] Day/month display logic (currently placeholder month names)
+1. **Performance** — fix 1-2 FPS lag from per-frame mesh rebuild
+2. **Visual toggles** — wire terrain/climate/weather loaders into earth_display.gd
+   - T key: terrain colors
+   - C key: climate overlay
+   - W key: temperature map
+   - P key: precipitation map
+3. **Rivers** — re-implement river pipeline on new grid
+4. **LoD pyramid** — multi-level zoom support
+5. **Tile ownership** — territory system
+6. **Timeline** — historical date engine
 
 ---
 
-## Phase 11: Optimization (P0-P4)
-
-**Status:** 🟡 Mostly done — tints + LOD working; overlay alignment deferred
-
-| Id | Priority | Issue | Fix | Status |
-|----|----------|-------|-----|--------|
-| P0 | 🔴 Critical | `_update_all_materials()` every frame ~6.3M calls | Dirty flag on palette/highlight change | ✅ Done — game playable |
-| P1 | 🟡 High | O(n²) border chaining | O(n) spatial hash + Douglas-Peucker | ✅ Done |
-| P2 | 🟡 High | Overlays visible through Earth | `no_depth_test = false` | ✅ Done |
-| P3 | 🟢 Medium | Borders offset 90° | REVERTED — uv1_offset is UV, not 3D | ❌ Misdiagnosis |
-| P4 | 🟢 Low | Earth texture blurred | `texture_filter = NEAREST` | ✅ Done |
-
-### 2026-07-18: Banding/Gap Fixes (7 commits: fe01daa..3d73866)
-
-- **Horizontal band gap (all LODs):** Fixed via precomputed canonical ring vertices + pole collapse + fan triangulation in `generate_tint()`. K3-verified watertight (0 non-manifold edges vs 2,302 before).
-- **Vertical gap (LOD 2-3):** Fixed via LCM-based canonical ring subdivision in `generate_lod_mesh()`. Replaced broken union-grid heuristic. Verified end-to-end watertight at all LODs.
-- **Tile stretching/doubling at merge bands:** Fixed `_assign_real_tile_colors()` — was using sparser indexing (`s/ratio`) causing key collisions. Switched to denser-frame indexing matching both `generate_tint()` and Python pipeline convention.
-- **Antarctica half-filled:** Fixed loop bound in `_assign_real_tile_colors()` — was using `grid_segs` instead of `cell_segs = maxi(grid_segs, next_segs)`, missing half the entries at southern-hemisphere merge bands.
-
-### Additional work this session
-- **Kimi K3 integration:** Configured `kimi-coding` provider for delegation. Successfully delegated 4 tasks to K3 (2.8T param model). Pattern: keep prompts <10KB for reliable completion.
-- **Direct RGB vertex colors**: `_assign_real_tile_colors()` loads palette.json and bakes RGB into vertex colors. StandardMaterial3D with `vertex_color_use_as_albedo=true`. Removed ShaderMaterial pipeline entirely.
-- **Unified grid edge overlay** (`edge_overlay.gd`): Borders + coastlines from same 100km grid. Currently **disabled**.
-- **10km attempt**: Changed `BASE_CELL_KM=10.0` (6.25M tiles). Game crashes silently. Reverted to 100km.
-- **LOD pyramid alignment**: `generate_lod_mesh()` uses LCM ring subdivision + `_sphere_vertex()` for consistent ring latitudes at LOD 3/4.
-
-### Known issues (deferred)
-- **Filled sea tiles at merge bands:** May need tile_mapping_100km.json regeneration (JSON generated at initial Phase 4b commit, never regenerated after pipeline updates).
-- **Slanted wedge cells at merge boundaries:** Inherent geometric artifact — every other cell is a triangle at merge boundaries due to halving segment counts. Cosmetic, not a bug.
-- **LOD 2-3 vertical offset toward south pole:** May resolve with tile_mapping regeneration.
-- Borders/coastlines/rivers disabled pending tint + LOD stabilization.
-- 10km data not yet integrated into LOD textures.
-- LOD quad alignment at merge boundaries still has artifacts (vertical gap, sheared cells)
-
----
-
-## File Paths & Cross-Reference from Stella Nostra
-
-| Asset | Source | Destination |
-|-------|--------|-------------|
-| Flags (464 PNGs) | `stella-nostra-geo-data/data/flags/` | `game/assets/flags/` |
-| Earth 4K texture | Already committed | `game/assets/textures/planet/earth/earth_color_4k.png` |
-| 100km tile mapping | Generated by pipeline | `data/countries/tile_mapping_100km.json` (committed) |
-| 10km tile mapping | Generated by pipeline | `data/countries/tile_mapping.json` (gitignored, 26MB) |
-| Coastlines | Generated by pipeline | `data/output/coastlines.json` (committed) |
-| Rivers | Generated by pipeline | `data/output/grid_10km/rivers.json` (committed) |
-
----
-
-## Decisions Log
+## Decisions Log (HT2)
 
 | Date | Decision | Rationale |
 |------|----------|-----------|
-| 2026-07-07 | Start as clean repo, not Stella Nostra fork | Clean history, no solar system baggage |
-| 2026-07-07 | LOD pyramid derived from Level 0 | Single source of truth, dynamic updates |
-| 2026-07-07 | Palette-index shader for territory | Zero-cost display mode switching |
-| 2026-07-07 | Chunked rendering with geographic partitioning | Frustum + horizon culling for free |
-| 2026-07-15 | Camera zoom rungs with discrete LOD mapping | Scroll snaps between levels instead of continuous zoom |
-| 2026-07-15 | Smooth LOD crossfade via transparency | No material swaps mid-zoom, cheap GPU blend |
-| 2026-07-15 | Timeline events as JSON | Native Godot parsing, no YAML dependency |
-| 2026-07-16 | Time scale 1:900 through 1:86400 | Stella Nostra speeds, capped at 1 day/sec, no reverse |
-| 2026-07-16 | Flags committed to repo (84MB) | First-time clone gets everything, no manual copy step |
-| 2026-07-16 | Develop at 100km, pipeline at 10km | 62K tiles fast enough for iteration; 10km ready for production |
+| 2026-07-20 | Full rebuild vs incremental refactor | HT1 code too complex (palettes, territories, LOD) |
+| 2026-07-20 | Deterministic 4096×2048 grid | Guaranteed clean halving chain |
+| 2026-07-20 | Binary land/water baked from shapefiles | Shapefiles never enter the game |
+| 2026-07-20 | Viewport culling, no LOD pyramid | Simpler rendering, single mesh |
+| 2026-07-20 | All data baked at build-time | Python pipelines + GDScript loaders, O(1) lookup |
+| 2026-07-20 | seg=0 at prime meridian | Matches GDScript mesh from Stella Nostra |
+| 2026-07-20 | Camera x-axis mirrored | Per user preference |
+| 2026-07-20 | Git LFS for weather.bin | 624 MB exceeds GitHub 100 MB limit |
+| 2026-07-20 | 4 weather variables (tavg, prec, srad, wind) | Per user request for comprehensive climate data |
+
+---
+
+## HT1 Archive
+
+The original HT1 (Phases 1-11) is archived at tag `ht1-final` and in `_legacy/`. See the [HT1 PROGRESS.md](https://github.com/Brie-Wensleydale/historia-terrarum/blob/ht1-final/PROGRESS.md) for the full history.
