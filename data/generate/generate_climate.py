@@ -45,15 +45,15 @@ DEFAULT_RASTER = os.path.join(RASTER_DIR, "beck_koppen_2018.tif")
 # ── Köppen Climate Codes ──
 # Beck et al. 2018 raster encoding (values 1-30)
 CLIMATE_NAMES = {
-    1:  "Af",  2:  "Am",  3:  "Aw",  4:  "As",
-    5:  "BWh", 6:  "BWk", 7:  "BSh", 8:  "BSk",
-    9:  "Csa", 10: "Csb", 11: "Csc",
-    12: "Cwa", 13: "Cwb", 14: "Cwc",
-    15: "Cfa", 16: "Cfb", 17: "Cfc",
-    18: "Dsa", 19: "Dsb", 20: "Dsc", 21: "Dsd",
-    22: "Dwa", 23: "Dwb", 24: "Dwc", 25: "Dwd",
-    26: "Dfa", 27: "Dfb", 28: "Dfc", 29: "Dfd",
-    30: "ET",  31: "EF",
+    1:  "Af",  2:  "Am",  3:  "Aw",
+    4:  "BWh", 5:  "BWk", 6:  "BSh", 7:  "BSk",
+    8:  "Csa", 9:  "Csb", 10: "Csc",
+    11: "Cwa", 12: "Cwb", 13: "Cwc",
+    14: "Cfa", 15: "Cfb", 16: "Cfc",
+    17: "Dsa", 18: "Dsb", 19: "Dsc", 20: "Dsd",
+    21: "Dwa", 22: "Dwb", 23: "Dwc", 24: "Dwd",
+    25: "Dfa", 26: "Dfb", 27: "Dfc", 28: "Dfd",
+    29: "ET",  30: "EF",
 }
 
 CLIMATE_GROUPS = {

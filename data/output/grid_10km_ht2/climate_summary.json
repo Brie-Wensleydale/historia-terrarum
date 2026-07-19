@@ -1,0 +1,192 @@
+{
+  "source": "Beck_KG_V1_present_0p0083.tif",
+  "total_tiles": 6498160,
+  "climate_types": {
+    "0": {
+      "code": "Unknown_0",
+      "group": "Unknown",
+      "count": 4591455,
+      "pct": 70.66
+    },
+    "1": {
+      "code": "Af",
+      "group": "Tropical",
+      "count": 74630,
+      "pct": 1.15
+    },
+    "2": {
+      "code": "Am",
+      "group": "Tropical",
+      "count": 54168,
+      "pct": 0.83
+    },
+    "3": {
+      "code": "Aw",
+      "group": "Tropical",
+      "count": 180755,
+      "pct": 2.78
+    },
+    "4": {
+      "code": "As",
+      "group": "Tropical",
+      "count": 250967,
+      "pct": 3.86
+    },
+    "5": {
+      "code": "BWh",
+      "group": "Arid",
+      "count": 104716,
+      "pct": 1.61
+    },
+    "6": {
+      "code": "BWk",
+      "group": "Arid",
+      "count": 88159,
+      "pct": 1.36
+    },
+    "7": {
+      "code": "BSh",
+      "group": "Arid",
+      "count": 125384,
+      "pct": 1.93
+    },
+    "8": {
+      "code": "BSk",
+      "group": "Arid",
+      "count": 18717,
+      "pct": 0.29
+    },
+    "9": {
+      "code": "Csa",
+      "group": "Temperate",
+      "count": 11144,
+      "pct": 0.17
+    },
+    "10": {
+      "code": "Csb",
+      "group": "Temperate",
+      "count": 103,
+      "pct": 0.0
+    },
+    "11": {
+      "code": "Csc",
+      "group": "Temperate",
+      "count": 48004,
+      "pct": 0.74
+    },
+    "12": {
+      "code": "Cwa",
+      "group": "Temperate",
+      "count": 19588,
+      "pct": 0.3
+    },
+    "13": {
+      "code": "Cwb",
+      "group": "Temperate",
+      "count": 88,
+      "pct": 0.0
+    },
+    "14": {
+      "code": "Cwc",
+      "group": "Temperate",
+      "count": 67802,
+      "pct": 1.04
+    },
+    "15": {
+      "code": "Cfa",
+      "group": "Temperate",
+      "count": 35657,
+      "pct": 0.55
+    },
+    "16": {
+      "code": "Cfb",
+      "group": "Temperate",
+      "count": 1718,
+      "pct": 0.03
+    },
+    "17": {
+      "code": "Cfc",
+      "group": "Temperate",
+      "count": 3311,
+      "pct": 0.05
+    },
+    "18": {
+      "code": "Dsa",
+      "group": "Continental",
+      "count": 8028,
+      "pct": 0.12
+    },
+    "19": {
+      "code": "Dsb",
+      "group": "Continental",
+      "count": 21999,
+      "pct": 0.34
+    },
+    "20": {
+      "code": "Dsc",
+      "group": "Continental",
+      "count": 821,
+      "pct": 0.01
+    },
+    "21": {
+      "code": "Dsd",
+      "group": "Continental",
+      "count": 16764,
+      "pct": 0.26
+    },
+    "22": {
+      "code": "Dwa",
+      "group": "Continental",
+      "count": 17646,
+      "pct": 0.27
+    },
+    "23": {
+      "code": "Dwb",
+      "group": "Continental",
+      "count": 49029,
+      "pct": 0.75
+    },
+    "24": {
+      "code": "Dwc",
+      "group": "Continental",
+      "count": 2713,
+      "pct": 0.04
+    },
+    "25": {
+      "code": "Dwd",
+      "group": "Continental",
+      "count": 28458,
+      "pct": 0.44
+    },
+    "26": {
+      "code": "Dfa",
+      "group": "Continental",
+      "count": 121797,
+      "pct": 1.87
+    },
+    "27": {
+      "code": "Dfb",
+      "group": "Continental",
+      "count": 225767,
+      "pct": 3.47
+    },
+    "28": {
+      "code": "Dfc",
+      "group": "Continental",
+      "count": 8057,
+      "pct": 0.12
+    },
+    "29": {
+      "code": "Dfd",
+      "group": "Continental",
+      "count": 111068,
+      "pct": 1.71
+    },
+    "30": {
+      "code": "ET",
+      "group": "Polar",
+      "count": 209647,
+      "pct": 3.23
+    }
+  }
+}
