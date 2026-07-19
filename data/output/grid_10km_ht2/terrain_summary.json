@@ -1,0 +1,63 @@
+{
+  "source": "GEBCO_2024_CF.nc",
+  "total_tiles": 6498160,
+  "mode": "fast",
+  "terrain_types": {
+    "deep_ocean": {
+      "code": 0,
+      "count": 2381999,
+      "pct": 36.66
+    },
+    "ocean": {
+      "code": 1,
+      "count": 1628884,
+      "pct": 25.07
+    },
+    "shallow_ocean": {
+      "code": 2,
+      "count": 214936,
+      "pct": 3.31
+    },
+    "continental_shelf": {
+      "code": 3,
+      "count": 352189,
+      "pct": 5.42
+    },
+    "coastal": {
+      "code": 4,
+      "count": 62861,
+      "pct": 0.97
+    },
+    "lowland": {
+      "code": 5,
+      "count": 478411,
+      "pct": 7.36
+    },
+    "upland": {
+      "code": 6,
+      "count": 517021,
+      "pct": 7.96
+    },
+    "highland": {
+      "code": 7,
+      "count": 347829,
+      "pct": 5.35
+    },
+    "mountain": {
+      "code": 8,
+      "count": 289939,
+      "pct": 4.46
+    },
+    "high_mountain": {
+      "code": 9,
+      "count": 191817,
+      "pct": 2.95
+    },
+    "extreme_mountain": {
+      "code": 10,
+      "count": 32274,
+      "pct": 0.5
+    }
+  },
+  "slope_types": {}
+}
