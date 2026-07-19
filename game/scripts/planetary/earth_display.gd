@@ -28,10 +28,15 @@ func _ready() -> void:
 
 	# 2. Load band structure
 	_band_structure = SphericalGridGenerator.compute_band_structure(EARTH_RADIUS_KM, CELL_KM)
+	var merge_set: Array = []
+	for segs in _band_structure["band_segs"]:
+		if not segs in merge_set:
+			merge_set.append(segs)
+	merge_set.sort()
 	print("  Band structure: %d bands, %d equator segs, merge chain: %s" % [
 		_band_structure["total_bands"],
 		_band_structure["equator_segs"],
-		sorted(Array(_band_structure["band_segs"]).reduce(func(acc, v): if not v in acc: acc.append(v); return acc, []),
+		merge_set,
 	])
 
 	# 3. Load land mask
