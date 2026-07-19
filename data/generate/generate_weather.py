@@ -91,8 +91,11 @@ def tile_to_lat_lon(band: int, seg: int, cell_segs_per_band: list):
     segs = cell_segs_per_band[band]
     if segs <= 0:
         segs = 1
-    lon = 2.0 * math.pi * seg / segs - math.pi
-    return math.degrees(lat), math.degrees(lon)
+    lon = 2.0 * math.pi * seg / segs  # 0 to 2π, seg=0 at prime meridian
+    lon_deg = math.degrees(lon)
+    if lon_deg > 180.0:
+        lon_deg -= 360.0
+    return math.degrees(lat), lon_deg
 
 
 def generate_weather(raster_dir: str, cell_segs_per_band: list, total_tiles: int):

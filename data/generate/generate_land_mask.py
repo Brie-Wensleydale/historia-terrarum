@@ -142,15 +142,17 @@ def load_antarctica():
 
 
 def tile_to_lat_lon(band: int, seg: int, band_segs: list):
-    """Compute the center lat/lon of a tile (band, segment)."""
+    """Compute the center lat/lon of a tile (band, segment).
+    Seg=0 → lon=0° (prime meridian), matching GDScript spherical_grid_generator convention."""
     lat = -math.pi * 0.5 + math.pi * (band + 0.5) / TOTAL_BANDS
     segs_at_band = band_segs[band]
     if segs_at_band <= 0:
         segs_at_band = 1
-    lon = 2.0 * math.pi * seg / segs_at_band - math.pi  # -180..180
-    lat_deg = math.degrees(lat)
-    lon_deg = math.degrees(lon)
-    return lat_deg, lon_deg
+    lon = 2.0 * math.pi * seg / segs_at_band  # 0 to 2π
+    lon_deg = math.degrees(lon)  # 0 to 360
+    if lon_deg > 180.0:
+        lon_deg -= 360.0  # to -180..180
+    return math.degrees(lat), lon_deg
 
 
 def generate_mask(band_segs: list, total_tiles: int, cell_segs_per_band: list,

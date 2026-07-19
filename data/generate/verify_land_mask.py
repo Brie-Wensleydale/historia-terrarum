@@ -140,19 +140,20 @@ def main():
     print(f"\n[Known Points]")
 
     # London: ~51.5°N, -0.1°W → should be land
-    # Band: (51.5 + 90) / 180 * 2048 ≈ 1614
+    # Seg=0 at lon=0 (prime meridian). lon=-0.17 → seg ≈ N - 0.17/360*N = 4094
     london_band = int((51.5 + 90) / 180 * 2048)
     london_segs = cell_segs_per_band[london_band] if london_band < len(cell_segs_per_band) else 0
-    london_seg = int((-0.1 + 180) / 360 * london_segs) if london_segs > 0 else 0
+    london_seg = int(((-0.1 % 360.0 + 360.0) % 360.0) / 360.0 * london_segs) if london_segs > 0 else 0
     london_result = is_land(mask_bytes, band_offsets, cell_segs_per_band, london_band, london_seg)
     print(f"  London (51.5°N, 0.1°W): band={london_band}, seg={london_seg}/{london_segs} → {'LAND' if london_result else 'OCEAN'} (expected LAND)")
     if not london_result:
         print("    WARNING: London classified as ocean!")
 
     # Pacific Ocean: 0°N, 140°W → should be ocean
+    # lon=-140 → seg = (-140+360)/360*N = 220/360*N
     pacific_band = int((0 + 90) / 180 * 2048)
     pacific_segs = cell_segs_per_band[pacific_band] if pacific_band < len(cell_segs_per_band) else 0
-    pacific_seg = int((-140 + 180) / 360 * pacific_segs) if pacific_segs > 0 else 0
+    pacific_seg = int(((-140 % 360.0 + 360.0) % 360.0) / 360.0 * pacific_segs) if pacific_segs > 0 else 0
     pacific_result = is_land(mask_bytes, band_offsets, cell_segs_per_band, pacific_band, pacific_seg)
     print(f"  Pacific (0°N, 140°W): band={pacific_band}, seg={pacific_seg}/{pacific_segs} → {'LAND' if pacific_result else 'OCEAN'} (expected OCEAN)")
     if pacific_result:
@@ -161,7 +162,7 @@ def main():
     # Sahara Desert: 23°N, 13°E → should be land
     sahara_band = int((23 + 90) / 180 * 2048)
     sahara_segs = cell_segs_per_band[sahara_band] if sahara_band < len(cell_segs_per_band) else 0
-    sahara_seg = int((13 + 180) / 360 * sahara_segs) if sahara_segs > 0 else 0
+    sahara_seg = int((13.0 % 360.0) / 360.0 * sahara_segs) if sahara_segs > 0 else 0
     sahara_result = is_land(mask_bytes, band_offsets, cell_segs_per_band, sahara_band, sahara_seg)
     print(f"  Sahara (23°N, 13°E): band={sahara_band}, seg={sahara_seg}/{sahara_segs} → {'LAND' if sahara_result else 'OCEAN'} (expected LAND)")
     if not sahara_result:
@@ -170,7 +171,7 @@ def main():
     # South Atlantic: 30°S, 20°W → should be ocean
     satlantic_band = int((-30 + 90) / 180 * 2048)
     satlantic_segs = cell_segs_per_band[satlantic_band] if satlantic_band < len(cell_segs_per_band) else 0
-    satlantic_seg = int((-20 + 180) / 360 * satlantic_segs) if satlantic_segs > 0 else 0
+    satlantic_seg = int(((-20 % 360.0 + 360.0) % 360.0) / 360.0 * satlantic_segs) if satlantic_segs > 0 else 0
     satlantic_result = is_land(mask_bytes, band_offsets, cell_segs_per_band, satlantic_band, satlantic_seg)
     print(f"  S. Atlantic (30°S, 20°W): band={satlantic_band}, seg={satlantic_seg}/{satlantic_segs} → {'LAND' if satlantic_result else 'OCEAN'} (expected OCEAN)")
     if satlantic_result:
