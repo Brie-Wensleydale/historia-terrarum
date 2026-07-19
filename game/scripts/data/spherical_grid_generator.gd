@@ -104,26 +104,34 @@ static func find_cell_at_point(
 ## tile_colors: Dictionary[String, Color] — tile ID "B{band}_{seg}" → Color.
 ## Only generates cells with non-transparent colors (land cells).
 ## Uses canonical ring vertices + fan triangulation for watertightness.
+## Optional band_start/band_end: only process bands in [start, end) — use for viewport culling.
 static func generate_tint(
 	radius_km: float,
 	band_struct: Dictionary,
-	tile_colors: Dictionary
+	tile_colors: Dictionary,
+	band_start: int = -1,
+	band_end: int = -1
 ) -> MeshInstance3D:
 	var radius_m: float = radius_km * 1000.0
 	var total_bands: int = band_struct["total_bands"]
 	var full_band_segs: Array = band_struct["band_segs"]
 
-	# Precompute canonical vertex rings — guarantees bitwise-identical shared vertices
+	# Determine band range
+	var b_start: int = band_start if band_start >= 0 else 0
+	var b_end: int = band_end if band_end >= 0 else total_bands
+	b_start = clampi(b_start, 0, total_bands - 1)
+	b_end = clampi(b_end, 1, total_bands)
+
+	# Precompute ring vertices only for the needed range (+1 for the top ring of b_end-1)
 	var ring_verts: Array = []
 	var ring_is_pole: Array = []
-	for ring_idx in range(total_bands + 1):
+	for ring_idx in range(b_start, b_end + 1):
 		var ring_segs: int = full_band_segs[ring_idx]
 		var ring_lat: float = -PI * 0.5 + PI * float(ring_idx) / float(total_bands)
 		var ring_r: float = radius_m * cos(ring_lat)
 		var ring_y: float = radius_m * sin(ring_lat)
 		var verts: PackedVector3Array = PackedVector3Array()
 		if absf(ring_r) < 1.0:
-			# Pole ring: every longitude coincides — collapse to one vertex
 			verts.append(Vector3(0.0, ring_y, 0.0))
 			ring_is_pole.append(true)
 		else:
@@ -140,17 +148,17 @@ static func generate_tint(
 	var colored_cells: int = 0
 	var skipped_cells: int = 0
 
-	for b_idx in range(total_bands):
+	for b_idx in range(b_start, b_end):
 		var segs_bot: int = full_band_segs[b_idx]
 		var segs_top: int = full_band_segs[b_idx + 1]
 		if segs_bot <= 0 or segs_top <= 0:
 			continue
 
 		var cell_segs: int = maxi(segs_bot, segs_top)
-		var bot_verts: PackedVector3Array = ring_verts[b_idx]
-		var top_verts: PackedVector3Array = ring_verts[b_idx + 1]
-		var bot_pole: bool = ring_is_pole[b_idx]
-		var top_pole: bool = ring_is_pole[b_idx + 1]
+		var bot_verts: PackedVector3Array = ring_verts[b_idx - b_start]
+		var top_verts: PackedVector3Array = ring_verts[b_idx + 1 - b_start]
+		var bot_pole: bool = ring_is_pole[b_idx - b_start]
+		var top_pole: bool = ring_is_pole[b_idx + 1 - b_start]
 
 		for t in range(cell_segs):
 			var tile_id: String = "B%d_%d" % [b_idx, t]
@@ -162,7 +170,6 @@ static func generate_tint(
 			colored_cells += 1
 			st.set_color(color)
 
-			# Build cell polygon: bottom edge ascending, top edge descending
 			var poly: Array[Vector3] = []
 			if bot_pole:
 				poly.append(bot_verts[0])
@@ -185,20 +192,18 @@ static func generate_tint(
 					for k in range(dt1, dt0 - 1, -1):
 						poly.append(top_verts[k % segs_top])
 
-			# Fan-triangulate — watertight for any merge ratio
 			var poly_count: int = poly.size()
 			for i in range(1, poly_count - 1):
 				st.add_vertex(poly[0])
 				st.add_vertex(poly[i])
 				st.add_vertex(poly[i + 1])
 
-	print_verbose("Tint mesh: %d colored cells, %d skipped (ocean)" % [colored_cells, skipped_cells])
+	print_verbose("Tint mesh: %d colored cells, %d skipped (ocean) [bands %d-%d]" % [colored_cells, skipped_cells, b_start, b_end - 1])
 
 	var mesh: ArrayMesh = st.commit()
 	if not mesh:
 		return null
 
-	# Scale to display units (km → Godot units at 1:1) and offset above surface
 	var scaled_mesh: ArrayMesh = _scale_mesh(mesh, 1.0 / 1000.0)
 	var offset_mesh: ArrayMesh = _scale_mesh(scaled_mesh, TINT_RADIUS_FACTOR)
 

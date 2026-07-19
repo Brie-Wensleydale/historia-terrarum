@@ -208,6 +208,8 @@ func _rebuild_visible_land_mesh(sub_point: Vector3) -> void:
 		EARTH_RADIUS_KM,
 		_band_structure,
 		tile_colors,
+		band_start,
+		band_end + 1,  # band_end is inclusive, generate_tint uses exclusive
 	)
 	if _land_mesh:
 		add_child(_land_mesh)
