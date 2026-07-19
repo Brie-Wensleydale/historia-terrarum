@@ -315,7 +315,7 @@ def main():
     print(f"  Mode: {mode}")
 
     print(f"\n[2/2] Classifying {total_tiles:,} tiles...")
-    generate_terrain(args.raster, cell_segs_per_band, total_tiles, fast_mode=not args.full)
+    generate_terrain(raster_path, cell_segs_per_band, total_tiles, fast_mode=not args.full)
 
     print(f"\nDone. Output directory: {OUTPUT_DIR}")
 
