@@ -95,6 +95,10 @@ def tile_to_lat_lon(band: int, seg: int, cell_segs_per_band: list):
     lon_deg = math.degrees(lon)
     if lon_deg > 180.0:
         lon_deg -= 360.0
+    if lon_deg >= 179.999:
+        lon_deg = 179.999
+    elif lon_deg <= -179.999:
+        lon_deg = -179.999
     return math.degrees(lat), lon_deg
 
 

@@ -142,7 +142,7 @@ func _process_drag(event: InputEventMouseMotion) -> void:
 
 	if _drag_button == MOUSE_BUTTON_RIGHT:
 		# Orbit — accumulate velocity for momentum
-		var theta_delta: float = -delta_pos.x * ORBIT_SENSITIVITY
+		var theta_delta: float = delta_pos.x * ORBIT_SENSITIVITY
 		var phi_delta: float = -delta_pos.y * ORBIT_SENSITIVITY
 		_target_theta += theta_delta
 		_target_phi += phi_delta

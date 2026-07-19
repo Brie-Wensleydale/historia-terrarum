@@ -8,9 +8,9 @@
   },
   "tiles": {
     "total": 6498160,
-    "land": 1887316,
-    "ocean": 4610844,
-    "land_pct": 29.04
+    "land": 1887685,
+    "ocean": 4610475,
+    "land_pct": 29.05
   },
   "band_segs": {
     "0": 8,

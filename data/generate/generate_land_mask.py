@@ -152,6 +152,11 @@ def tile_to_lat_lon(band: int, seg: int, band_segs: list):
     lon_deg = math.degrees(lon)  # 0 to 360
     if lon_deg > 180.0:
         lon_deg -= 360.0  # to -180..180
+    # Nudge points at exact antimeridian to avoid polygon-edge misses
+    if lon_deg >= 179.999:
+        lon_deg = 179.999
+    elif lon_deg <= -179.999:
+        lon_deg = -179.999
     return math.degrees(lat), lon_deg
 
 
