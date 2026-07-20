@@ -129,30 +129,61 @@ func _process(delta: float) -> void:
 		var row_cos: float = cos(row_lat)
 
 		var max_segs: int = 0
+		var min_segs: int = 999999
 		for b in range(cb0, cb1):
 			var sb: int = band_segs[b] if b < band_segs.size() else 0
 			var st: int = band_segs[b + 1] if b + 1 < band_segs.size() else sb
-			if maxi(sb, st) > max_segs: max_segs = maxi(sb, st)
+			var mb: int = maxi(sb, st)
+			if mb > max_segs: max_segs = mb
+			if mb < min_segs: min_segs = mb
 
 		var ncols: int = maxi(1, (max_segs + CHUNK_SEGS_0 - 1) / CHUNK_SEGS_0)
 		var chunk_h_km: float = PI * float(CHUNK_BANDS_0) / float(total_bands) * EARTH_RADIUS_KM
-		var chunk_w_km: float = TAU * float(CHUNK_SEGS_0) / float(max_segs) * EARTH_RADIUS_KM * maxf(row_cos, 0.01)
-		var chunk_margin: float = sqrt(chunk_h_km * chunk_h_km + chunk_w_km * chunk_w_km) * 0.5 + 300.0
 
 		for cc in range(ncols):
 			var s0: int = cc * CHUNK_SEGS_0
 			var segs_center: float = float(s0) + float(CHUNK_SEGS_0) * 0.5
 			var row_lon: float = TAU * segs_center / float(max_segs)
 
+			# Check post-halving center if this row straddles a halving boundary
+			# (min_segs < max_segs means at least one band halved within the row)
+			var is_visible: bool = false
+			var lon_post: float = 0.0
+			var has_halving: bool = min_segs < max_segs
+			if has_halving:
+				lon_post = TAU * fmod(segs_center, float(min_segs)) / float(min_segs)
+				# Pre-compute chunk width using post-halving scale for margin below
+			else:
+				lon_post = row_lon  # unused, fall through to single check
+
+			# Pre-halving center check
 			var ccenter: Vector3 = Vector3(
 				EARTH_RADIUS_KM * row_cos * cos(row_lon),
 				EARTH_RADIUS_KM * sin(row_lat),
 				-EARTH_RADIUS_KM * row_cos * sin(row_lon),
 			)
-
 			var dot: float = clampf(sub_point.normalized().dot(ccenter.normalized()), -1.0, 1.0)
+			var chunk_w_km: float = TAU * float(CHUNK_SEGS_0) / float(max_segs) * EARTH_RADIUS_KM * maxf(row_cos, 0.01)
+			var chunk_margin: float = sqrt(chunk_h_km * chunk_h_km + chunk_w_km * chunk_w_km) * 0.5 + 300.0
 			var arc_km: float = acos(dot) * EARTH_RADIUS_KM
 			if arc_km <= visible_radius + chunk_margin:
+				is_visible = true
+
+			# Post-halving center check (only for rows straddling a halving boundary)
+			if not is_visible and has_halving:
+				var ccenter_post: Vector3 = Vector3(
+					EARTH_RADIUS_KM * row_cos * cos(lon_post),
+					EARTH_RADIUS_KM * sin(row_lat),
+					-EARTH_RADIUS_KM * row_cos * sin(lon_post),
+				)
+				var dot_post: float = clampf(sub_point.normalized().dot(ccenter_post.normalized()), -1.0, 1.0)
+				var chunk_w_post: float = TAU * float(CHUNK_SEGS_0) / float(min_segs) * EARTH_RADIUS_KM * maxf(row_cos, 0.01)
+				var chunk_margin_post: float = sqrt(chunk_h_km * chunk_h_km + chunk_w_post * chunk_w_post) * 0.5 + 300.0
+				var arc_post: float = acos(dot_post) * EARTH_RADIUS_KM
+				if arc_post <= visible_radius + chunk_margin_post:
+					is_visible = true
+
+			if is_visible:
 				var key: String = "R%d_C%d" % [cr, cc]
 				needed[key] = {"row": cr, "col": cc}
 
