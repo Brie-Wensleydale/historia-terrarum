@@ -204,7 +204,7 @@ func focus_on_surface(surface_point: Vector3, body_radius: float = EARTH_RADIUS_
 
 	# Orient toward the point
 	var dir: Vector3 = surface_point.normalized()
-	_target_theta = atan2(dir.z, -dir.x)  # neg X to match flipped mesh
+	_target_theta = atan2(-dir.z, dir.x)  # inverses negated-Z mesh
 	_target_phi = acos(clampf(dir.y / dir.length(), -1.0, 1.0))
 
 	# Snap to LOD 0 (tactical, closest)

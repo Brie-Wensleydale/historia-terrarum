@@ -178,7 +178,7 @@ func _camera_to_sub_point() -> Vector3:
 func _rebuild_visible_land_mesh(sub_point: Vector3) -> void:
 	# Convert sub_point to lat/lon
 	var lat: float = asin(clampf(sub_point.y / EARTH_RADIUS_KM, -1.0, 1.0))
-	var lon: float = atan2(sub_point.z, -sub_point.x)  # neg X to match flipped mesh
+	var lon: float = atan2(-sub_point.z, sub_point.x)  # inverses negated-Z mesh
 	if lon < 0.0:
 		lon += TAU
 	var lat_deg: float = rad_to_deg(lat)
