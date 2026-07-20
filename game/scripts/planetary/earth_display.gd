@@ -144,7 +144,14 @@ func _ready() -> void:
 	_mode_label.name = "ModeLabel"
 	_mode_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_mode_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_mode_label.anchors_preset = Control.PRESET_FULL_RECT
+	_mode_label.anchor_left = 0.0
+	_mode_label.anchor_right = 1.0
+	_mode_label.anchor_top = 0.0
+	_mode_label.anchor_bottom = 1.0
+	_mode_label.offset_left = 0
+	_mode_label.offset_right = 0
+	_mode_label.offset_top = 0
+	_mode_label.offset_bottom = 0
 	_mode_label.modulate = Color(0, 0, 0, 0)  # start invisible
 	_mode_label.add_theme_font_size_override("font_size", 64)
 	_mode_label.add_theme_color_override("font_color", Color(0, 0, 0, 1))

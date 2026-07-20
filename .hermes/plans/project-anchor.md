@@ -11,11 +11,11 @@ HT2 is a Godot 4.6 rebuild of Historia Terrarum — a spherical-grid Earth simul
 - **Data pipeline:** Python (shapely + fiona) → binary files (land_mask.bin, terrain.bin, weather.bin)
 
 ## Current Architecture
-- `earth_display.gd` — LOD 0: chunk-based vertex-color cell meshes (64×256 base cells per chunk)
-- `lod_display.gd` — LOD 1-4: pre-baked terrain texture atlases on sphere-surface chunk meshes
+- `earth_display.gd` — LOD 0: chunk-based vertex-color cell meshes (64×256 base cells per chunk), 8 display modes (0=land/sea, 1=elevation, 2=climate, 3=temp, 4=precip, 5=wind, 6=daylight, 7=slope)
+- `lod_display.gd` — LOD 1-4: pre-baked terrain texture atlases on sphere-surface chunk meshes (reportedly broken)
 - `spherical_grid_generator.gd` — mesh generation with shared vertex rings, halving-band pentagons, polar fan triangulation
 - `earth_camera.gd` — 8 zoom rungs (Cell through Global), mouse drag/zoom
-- `land_mask_loader.gd` / `terrain_loader.gd` / `climate_loader.gd` — data readers
+- `land_mask_loader.gd` / `terrain_loader.gd` / `climate_loader.gd` / `weather_loader.gd` — data readers (all wired into display)
 
 ## Key Fixes Applied (2026-07-20)
 - Cells flipped to match Earth texture (negated Z + 180° offset)
@@ -23,9 +23,14 @@ HT2 is a Godot 4.6 rebuild of Historia Terrarum — a spherical-grid Earth simul
 - Halving-band pentagons instead of tri+trapezoid pairs
 - Egypt land mask fix (invalid geometry repair in shapefile pipeline)
 - LOD: shared vertex rings, pole fan tris, mipmap filtering, hemisphere pre-load
+- Halving-band chunk visibility: dual-center check for rows straddling halving rings
+- Display modes 0-7 with number keys, mode name overlay with fade
+- Wind/solar ramps rescaled to match real data ranges
 
 ## Next Sessions
-- Visual mode system: mode 0 (land/sea), mode 1 (elevation) — **DONE** (2026-07-20)
-- Future modes: climate, precip, temp, wind, solar, day/night
-- Cell-level visual mode switching with keybind — **DONE** (number keys 0-9, _unhandled_input)
-- Reflect cell-level modes onto LOD sphere textures
+- Chunk loading/unloading threshold tuning
+- LOD system repair
+- Mode-switching performance optimization (pre-baked textures?)
+- Time system port from Stella Nostra / previous HT
+- Day/night cycle after time system
+- Slope data regeneration (--full flag for real slope computation)
