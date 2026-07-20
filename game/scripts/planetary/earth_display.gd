@@ -100,7 +100,7 @@ func _process(delta: float) -> void:
 	# Visible radius from camera height
 	var cam_height_km: float = maxf(cam_pos.length() - EARTH_RADIUS_KM, 10.0)
 	var horizon_km: float = EARTH_RADIUS_KM * acos(EARTH_RADIUS_KM / (EARTH_RADIUS_KM + cam_height_km))
-	var visible_radius: float = minf(horizon_km, 1000.0)
+	var visible_radius: float = minf(horizon_km, 1500.0)
 
 	# Determine visible chunks: iterate all rows, check arc distance from sub_point to chunk center
 	var total_bands: int = _band_structure["total_bands"]
@@ -127,7 +127,7 @@ func _process(delta: float) -> void:
 		var ncols: int = maxi(1, (max_segs + CHUNK_SEGS_0 - 1) / CHUNK_SEGS_0)
 		var chunk_h_km: float = PI * float(CHUNK_BANDS_0) / float(total_bands) * EARTH_RADIUS_KM
 		var chunk_w_km: float = TAU * float(CHUNK_SEGS_0) / float(max_segs) * EARTH_RADIUS_KM * maxf(row_cos, 0.01)
-		var chunk_margin: float = sqrt(chunk_h_km * chunk_h_km + chunk_w_km * chunk_w_km) * 0.5 + 20.0
+		var chunk_margin: float = sqrt(chunk_h_km * chunk_h_km + chunk_w_km * chunk_w_km) * 0.5 + 300.0
 
 		for cc in range(ncols):
 			var s0: int = cc * CHUNK_SEGS_0
