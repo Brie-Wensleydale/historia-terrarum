@@ -18,7 +18,6 @@ var _camera: Camera3D
 var _band_structure: Dictionary = {}
 var _land_loader: RefCounted = null  # LandMaskLoader instance
 var _frame_counter: int = 0
-var _last_cache_key: String = ""
 var _mesh_dirty: bool = true
 
 # Mesh pool — avoids queue_free() + MeshInstance3D.new() per rebuild
@@ -28,7 +27,8 @@ var _mat: StandardMaterial3D  # shared material, created once
 
 # TIER 2: Spatial mesh cache — keyed by rounded lat/lon/radius
 var _mesh_cache: Dictionary = {}  # String → ArrayMesh
-var _cache_keys: Array = []  # LRU access order
+var _cache_keys: Array = []  # LRU access order (int keys)
+var _cache_next_id: int = 0  # auto-incrementing cache entry ID
 
 
 func _ready() -> void:
@@ -98,38 +98,48 @@ func _process(_delta: float) -> void:
 	if _frame_counter % REBUILD_FRAME_INTERVAL != 0:
 		return
 
-	# Compute camera sub-point on Earth surface
 	var sub_point: Vector3 = _camera_to_sub_point()
 	if sub_point.length() < 0.001:
 		return
 
-	# Compute visible radius from camera height (closer = smaller patch = fewer cells)
+	# Dynamic visible radius from camera height
 	var cam_height_km: float = maxf(_camera.global_position.length() - EARTH_RADIUS_KM, 10.0)
 	var horizon_km: float = EARTH_RADIUS_KM * acos(EARTH_RADIUS_KM / (EARTH_RADIUS_KM + cam_height_km))
 	var visible_radius: float = minf(horizon_km, 1000.0)
 
-	# Compute cache key from rounded lat/lon + radius bucket
+	# Lat/lon for band/seg computation
 	var lat: float = asin(clampf(sub_point.y / EARTH_RADIUS_KM, -1.0, 1.0))
-	var lon: float = atan2(-sub_point.z, sub_point.x)  # inverses negated-Z mesh
+	var lon: float = atan2(-sub_point.z, sub_point.x)
 	if lon < 0.0:
 		lon += TAU
 	var lat_deg: float = rad_to_deg(lat)
 	var lon_deg: float = rad_to_deg(lon) - 180.0
-	var radius_bucket: int = int(visible_radius / 100.0)  # 0-10
-	var lat_bucket: int = int(lat_deg / 3.0)  # ~330 km per bucket at equator
-	var lon_bucket: int = int(lon_deg / 5.0)  # ~550 km at equator
-	var cache_key: String = "%d_%d_%d" % [lat_bucket, lon_bucket, radius_bucket]
 
-	if not _mesh_dirty and cache_key == _last_cache_key:
-		return
+	# Compute band range (used for cache proximity check)
+	var band_start: int = _compute_band_start(sub_point, visible_radius, lat_deg)
+	var band_end: int = _compute_band_end(sub_point, visible_radius, lat_deg)
+	var band_range: int = band_end - band_start
 
-	_last_cache_key = cache_key
-	_mesh_dirty = false
+	# Proximity-based cache lookup
+	var best_entry = null
+	var best_dist_sq: float = INF
+	var reuse_radius_sq: float = visible_radius * visible_radius * 0.25  # within 50% of visible radius
 
-	# Check cache
-	if _mesh_cache.has(cache_key):
-		_swap_to_pool_mesh(_mesh_cache[cache_key])
-		_touch_cache(cache_key)
+	for cache_id in _cache_keys:
+		var entry: Dictionary = _mesh_cache[cache_id]
+		# Must have similar band range (same zoom level effectively)
+		if abs(int(entry.band_start) - band_start) > band_range:
+			continue
+		if abs(float(entry.visible_radius) - visible_radius) > visible_radius * 0.2:
+			continue
+		var dist_sq: float = (entry.sub_point as Vector3).distance_squared_to(sub_point)
+		if dist_sq < best_dist_sq and dist_sq < reuse_radius_sq:
+			best_dist_sq = dist_sq
+			best_entry = entry
+
+	if best_entry:
+		_swap_to_pool_mesh(best_entry.mesh)
+		_touch_cache(best_entry.id)
 		return
 
 	# Cache miss — rebuild
@@ -141,14 +151,29 @@ func _process(_delta: float) -> void:
 		EARTH_RADIUS_KM,
 		_band_structure,
 		tile_colors,
-		_compute_band_start(sub_point, visible_radius, lat_deg),
-		_compute_band_end(sub_point, visible_radius, lat_deg) + 1,
+		band_start,
+		band_end + 1,
 	)
 	if not new_mi or not new_mi.mesh:
 		return
 
-	# Store in cache and swap to pool
-	_store_cached(cache_key, new_mi.mesh)
+	# Store in cache with metadata
+	var entry: Dictionary = {
+		"id": _cache_next_id,
+		"sub_point": sub_point,
+		"visible_radius": visible_radius,
+		"band_start": band_start,
+		"band_end": band_end,
+		"mesh": new_mi.mesh,
+	}
+	_mesh_cache[_cache_next_id] = entry
+	_touch_cache(_cache_next_id)
+	_cache_next_id += 1
+	while _cache_keys.size() > MAX_CACHE_ENTRIES:
+		var old_id = _cache_keys[0]
+		_cache_keys.remove_at(0)
+		_mesh_cache.erase(old_id)
+
 	_swap_to_pool_mesh(new_mi.mesh)
 
 
@@ -234,9 +259,11 @@ func _build_tile_colors(sub_point: Vector3, visible_radius: float, lat_deg: floa
 	for b_idx in range(band_start, band_end + 1):
 		var segs_bot: int = band_segs[b_idx]
 		var segs_top: int = band_segs[b_idx + 1] if b_idx + 1 < band_segs.size() else segs_bot
-		var cell_segs: int = maxi(segs_bot, segs_top)
-		if cell_segs <= 0:
+		if segs_bot <= 0 or segs_top <= 0:
 			continue
+
+		var cell_segs: int = mini(segs_bot, segs_top)  # pentagons at halving bands
+		var denser_segs: int = maxi(segs_bot, segs_top)  # for land mask lookup
 
 		var center_seg: int = int((lon_deg + 180.0) / 360.0 * float(cell_segs)) % cell_segs
 		var seg_range: int = maxi(int(angular_radius_deg / 360.0 * float(cell_segs)) + 1, 1)
@@ -247,7 +274,10 @@ func _build_tile_colors(sub_point: Vector3, visible_radius: float, lat_deg: floa
 		for s in range(center_seg - seg_range, center_seg + seg_range + 1):
 			var wrapped_seg: int = ((s % cell_segs) + cell_segs) % cell_segs
 			var tile_id: String = "B%d_%d" % [b_idx, wrapped_seg]
-			if _land_loader.is_land(b_idx, wrapped_seg):
+			# At transition bands, each pentagon maps to the first of N denser cells
+			var scale_factor: int = maxi(1, denser_segs / maxi(cell_segs, 1))
+			var land_seg: int = wrapped_seg * scale_factor
+			if _land_loader.is_land(b_idx, land_seg):
 				tile_colors[tile_id] = LAND_COLOR
 			else:
 				tile_colors[tile_id] = OCEAN_COLOR
@@ -255,7 +285,7 @@ func _build_tile_colors(sub_point: Vector3, visible_radius: float, lat_deg: floa
 	return tile_colors
 
 
-func _compute_band_start(sub_point: Vector3, visible_radius: float, lat_deg: float) -> int:
+func _compute_band_start(sub_point: Vector3, visible_radius: float, _lat_deg: float) -> int:
 	var angular_radius_deg: float = rad_to_deg(visible_radius / EARTH_RADIUS_KM)
 	var total_bands: int = _band_structure["total_bands"]
 	var bands_per_deg: float = float(total_bands) / 180.0
@@ -265,7 +295,7 @@ func _compute_band_start(sub_point: Vector3, visible_radius: float, lat_deg: flo
 	return maxi(center_band - band_range, 0)
 
 
-func _compute_band_end(sub_point: Vector3, visible_radius: float, lat_deg: float) -> int:
+func _compute_band_end(sub_point: Vector3, visible_radius: float, _lat_deg: float) -> int:
 	var angular_radius_deg: float = rad_to_deg(visible_radius / EARTH_RADIUS_KM)
 	var total_bands: int = _band_structure["total_bands"]
 	var bands_per_deg: float = float(total_bands) / 180.0
@@ -286,21 +316,11 @@ func _swap_to_pool_mesh(mesh: ArrayMesh) -> void:
 
 
 ## Mark a cache entry as recently used (LRU).
-func _touch_cache(key: String) -> void:
-	var idx: int = _cache_keys.find(key)
+func _touch_cache(id: int) -> void:
+	var idx: int = _cache_keys.find(id)
 	if idx >= 0:
 		_cache_keys.remove_at(idx)
-	_cache_keys.append(key)
-
-
-## Store a generated mesh in the cache, evicting oldest if full.
-func _store_cached(key: String, mesh: ArrayMesh) -> void:
-	_touch_cache(key)
-	_mesh_cache[key] = mesh
-	while _cache_keys.size() > MAX_CACHE_ENTRIES:
-		var old_key: String = _cache_keys[0]
-		_cache_keys.remove_at(0)
-		_mesh_cache.erase(old_key)
+	_cache_keys.append(id)
 
 
 ## Force mesh rebuild on next process frame.

@@ -163,7 +163,7 @@ static func generate_tint(
 		if segs_bot <= 0 or segs_top <= 0:
 			continue
 
-		var cell_segs: int = maxi(segs_bot, segs_top)
+		var cell_segs: int = mini(segs_bot, segs_top)  # mini → pentagons at halving bands
 		var bot_verts: PackedVector3Array = ring_verts[b_idx - b_start]
 		var top_verts: PackedVector3Array = ring_verts[b_idx + 1 - b_start]
 		var bot_pole: bool = ring_is_pole[b_idx - b_start]
