@@ -113,62 +113,49 @@ func _process(delta: float) -> void:
 	var horizon_km: float = EARTH_RADIUS_KM * acos(EARTH_RADIUS_KM / (EARTH_RADIUS_KM + cam_height_km))
 	var visible_radius: float = minf(horizon_km, 1000.0)
 
-	# Determine visible chunks
-	var lat: float = asin(clampf(sub_point.y / EARTH_RADIUS_KM, -1.0, 1.0))
-	var lon: float = atan2(-sub_point.z, sub_point.x)
-	if lon < 0.0: lon += TAU
-	var lat_deg: float = rad_to_deg(lat)
-	var lon_deg: float = rad_to_deg(lon) - 180.0
-
-	var angular_radius_deg: float = rad_to_deg(visible_radius / EARTH_RADIUS_KM)
+	# Determine visible chunks: iterate all rows, check arc distance from sub_point to chunk center
 	var total_bands: int = _band_structure["total_bands"]
 	var band_segs: Array = _band_structure["band_segs"]
-	var bands_per_deg: float = float(total_bands) / 180.0
-
-	var center_band: int = clampi(int((lat + PI * 0.5) / PI * float(total_bands)), 0, total_bands - 1)
-	var band_range: int = maxi(int(angular_radius_deg * bands_per_deg) + 1, 1)
-	var band_lo: int = maxi(center_band - band_range, 0)
-	var band_hi: int = mini(center_band + band_range, total_bands - 1)
-
-	# Find all chunks overlapping the visible band range
 	var needed: Dictionary = {}
-	var chunk_row_lo: int = band_lo / CHUNK_BANDS_0
-	var chunk_row_hi: int = band_hi / CHUNK_BANDS_0
 
-	for cr in range(chunk_row_lo, chunk_row_hi + 1):
+	var max_chunk_rows: int = (total_bands + CHUNK_BANDS_0 - 1) / CHUNK_BANDS_0
+
+	for cr in range(max_chunk_rows):
 		var cb0: int = cr * CHUNK_BANDS_0
 		var cb1: int = mini(cb0 + CHUNK_BANDS_0, total_bands)
-		if cb1 <= cb0:
-			continue
+		if cb1 <= cb0: continue
 
-		# Determine seg columns for this row (varies by latitude)
+		var row_center_band: float = float(cb0 + cb1) * 0.5
+		var row_lat: float = -PI * 0.5 + PI * row_center_band / float(total_bands)
+		var row_cos: float = cos(row_lat)
+
 		var max_segs: int = 0
 		for b in range(cb0, cb1):
 			var sb: int = band_segs[b] if b < band_segs.size() else 0
 			var st: int = band_segs[b + 1] if b + 1 < band_segs.size() else sb
-			var cs: int = maxi(sb, st)
-			if cs > max_segs: max_segs = cs
+			if maxi(sb, st) > max_segs: max_segs = maxi(sb, st)
+
 		var ncols: int = maxi(1, (max_segs + CHUNK_SEGS_0 - 1) / CHUNK_SEGS_0)
+		var chunk_h_km: float = PI * float(CHUNK_BANDS_0) / float(total_bands) * EARTH_RADIUS_KM
+		var chunk_w_km: float = TAU * float(CHUNK_SEGS_0) / float(max_segs) * EARTH_RADIUS_KM * maxf(row_cos, 0.01)
+		var chunk_margin: float = sqrt(chunk_h_km * chunk_h_km + chunk_w_km * chunk_w_km) * 0.5 + 20.0
 
-		# Determine which columns are needed
-		var segs_at_row: int = max_segs
-		var center_seg: int = int(((lon_deg + 180.0) / 360.0) * float(segs_at_row)) % maxi(segs_at_row, 1)
-		var seg_range: int = maxi(int(angular_radius_deg / 360.0 * float(segs_at_row)) + 1, 1)
-		var cos_lat2: float = cos(lat)
-		if cos_lat2 > 0.01:
-			seg_range = maxi(int(seg_range / cos_lat2), 1)
+		for cc in range(ncols):
+			var s0: int = cc * CHUNK_SEGS_0
+			var segs_center: float = float(s0) + float(CHUNK_SEGS_0) * 0.5
+			var row_lon: float = TAU * segs_center / float(max_segs)
 
-		var seg_lo: int = center_seg - seg_range
-		var seg_hi: int = center_seg + seg_range
-		var col_lo: int = seg_lo / CHUNK_SEGS_0
-		var col_hi: int = seg_hi / CHUNK_SEGS_0
+			var ccenter: Vector3 = Vector3(
+				EARTH_RADIUS_KM * row_cos * cos(row_lon),
+				EARTH_RADIUS_KM * sin(row_lat),
+				-EARTH_RADIUS_KM * row_cos * sin(row_lon),
+			)
 
-		# Handle wrap-around
-		for cc in range(col_lo, col_hi + 1):
-			var wc: int = ((cc % ncols) + ncols) % ncols
-			var key: String = "R%d_C%d" % [cr, wc]
-			if not needed.has(key):
-				needed[key] = {"row": cr, "col": wc}
+			var dot: float = clampf(sub_point.normalized().dot(ccenter.normalized()), -1.0, 1.0)
+			var arc_km: float = acos(dot) * EARTH_RADIUS_KM
+			if arc_km <= visible_radius + chunk_margin:
+				var key: String = "R%d_C%d" % [cr, cc]
+				needed[key] = {"row": cr, "col": cc}
 
 	# Show needed chunks, hide others
 	_show_chunks(needed)
