@@ -39,11 +39,13 @@
 - [x] Shared vertex rings, pole fan tris, mipmap filtering
 - [x] Pre-load all chunks at LOD switch
 
-## Phase 8: Visual Modes (Next)
-- [ ] Mode 0: simple land/sea (green/blue)
-- [ ] Mode 1: elevation-based colors (terrain palette)
-- [ ] Mode N: climate, precipitation, temperature, etc.
-- [ ] Keybind: number keys toggle modes
+## Phase 8: Visual Modes ✓
+- [x] Mode 0: simple land/sea (green/blue) — key 0
+- [x] Mode 1: elevation-based colors (11 terrain types) — key 1, default
+- [x] terrain_loader wired into earth_display for elevation palette
+- [x] Keybind: number keys 0-9 toggle modes via _unhandled_input()
+- [x] Cache invalidation: mode switch clears chunks, rebuilds with new colours
+- [ ] Mode 2+: climate, precipitation, temperature, wind, solar, day/night
 - [ ] Reflect cell-level mode on LOD sphere textures
 
 ## Issues

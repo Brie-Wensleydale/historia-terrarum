@@ -25,6 +25,7 @@ HT2 is a Godot 4.6 rebuild of Historia Terrarum — a spherical-grid Earth simul
 - LOD: shared vertex rings, pole fan tris, mipmap filtering, hemisphere pre-load
 
 ## Next Sessions
-- Visual mode system: mode 0 (land/sea), mode 1 (elevation), mode N (climate, precip, temp, etc.)
-- Cell-level visual mode switching with keybind
+- Visual mode system: mode 0 (land/sea), mode 1 (elevation) — **DONE** (2026-07-20)
+- Future modes: climate, precip, temp, wind, solar, day/night
+- Cell-level visual mode switching with keybind — **DONE** (number keys 0-9, _unhandled_input)
 - Reflect cell-level modes onto LOD sphere textures

@@ -20,7 +20,9 @@ var _earth_body: MeshInstance3D
 var _camera: Camera3D
 var _band_structure: Dictionary = {}
 var _land_loader: RefCounted = null
+var _terrain_loader: RefCounted = null
 var _frame_counter: int = 0
+var _display_mode: int = 1  # 0 = simple land/sea, 1 = elevation terrain palette
 var _mat: StandardMaterial3D
 
 # Chunk cache: key = "R{row}_C{col}" → ArrayMesh
@@ -58,6 +60,14 @@ func _ready() -> void:
 		_land_loader.land_count(), _land_loader.total_tiles(),
 		float(_land_loader.land_count()) / float(_land_loader.total_tiles()) * 100.0,
 	])
+
+	# Terrain loader for elevation display mode (mode 1)
+	var tl_script: Script = load("res://scripts/data/terrain_loader.gd")
+	_terrain_loader = tl_script.new()
+	if _terrain_loader.load():
+		print("  Terrain data loaded: %d terrain types" % _terrain_loader.TERRAIN_NAMES.size())
+	else:
+		push_warning("HT2: terrain data not loaded — elevation mode unavailable")
 
 	_camera = _find_camera()
 	if not _camera:
@@ -153,6 +163,38 @@ func _process(delta: float) -> void:
 	if _preload_queue.is_empty():
 		_build_preload_queue(needed)
 	_preload_one_chunk()
+
+
+# ── Display mode switching ──
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not (event is InputEventKey) or not event.pressed:
+		return
+	var key: int = event.keycode
+	if key >= KEY_0 and key <= KEY_9:
+		var mode: int = key - KEY_0
+		set_display_mode(mode)
+
+
+func set_display_mode(mode: int) -> void:
+	if mode == _display_mode:
+		return
+	_display_mode = mode
+	print("HT2: display mode = %d" % mode)
+
+	# Invalidate all chunk caches — next _process will rebuild with new colours
+	_chunk_cache.clear()
+	_chunk_cache_order.clear()
+
+	# Hide all currently visible chunk nodes (they reference old meshes)
+	for key in _visible_chunks:
+		var node: MeshInstance3D = _visible_chunks[key]
+		if is_instance_valid(node):
+			node.mesh = null
+			node.visible = false
+			_recycled_nodes.append(node)
+	_visible_chunks.clear()
+	_preload_queue.clear()
 
 
 # ── Chunk visibility ──
@@ -266,9 +308,18 @@ func _build_chunk_mesh(row: int, col: int) -> ArrayMesh:
 			if land_seg >= denser_segs:
 				continue
 			var tid: String = "B%d_%d" % [b_idx, ws]
-			if _land_loader.is_land(b_idx, land_seg):
-				tile_colors[tid] = LAND_COLOR
+
+			if _display_mode == 0:
+				# Simple land/sea binary
+				if _land_loader.is_land(b_idx, land_seg):
+					tile_colors[tid] = LAND_COLOR
+				else:
+					tile_colors[tid] = OCEAN_COLOR
+			elif _terrain_loader:
+				# Elevation palette (mode 1) and all future modes use terrain base
+				tile_colors[tid] = _terrain_loader.get_terrain_color(b_idx, land_seg)
 			else:
+				# Fallback if terrain not loaded
 				tile_colors[tid] = OCEAN_COLOR
 
 	if tile_colors.is_empty():
