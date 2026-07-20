@@ -1,12 +1,16 @@
-[gd_scene load_steps=4 format=3 uid="uid://historia_terrarum_main"]
+[gd_scene load_steps=5 format=3 uid="uid://historia_terrarum_main"]
 
 [ext_resource type="Script" path="res://scripts/planetary/earth_display.gd" id="1_earth_display"]
 [ext_resource type="Script" path="res://scripts/camera/earth_camera.gd" id="2_earth_camera"]
+[ext_resource type="Script" path="res://scripts/planetary/lod_display.gd" id="3_lod_display"]
 
 [node name="Main" type="Node3D"]
 
 [node name="EarthDisplay" type="Node3D" parent="."]
 script = ExtResource("1_earth_display")
+
+[node name="LoDDisplay" type="Node3D" parent="."]
+script = ExtResource("3_lod_display")
 
 [node name="EarthCamera" type="Camera3D" parent="."]
 script = ExtResource("2_earth_camera")
