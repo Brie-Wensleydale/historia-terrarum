@@ -167,7 +167,7 @@ func _process(delta: float) -> void:
 
 # ── Display mode switching ──
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if not (event is InputEventKey) or not event.pressed:
 		return
 	var key: int = event.keycode

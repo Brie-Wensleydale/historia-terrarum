@@ -155,7 +155,7 @@ func _load_metadata() -> bool:
 	var lod_list: Array = []
 	for lod_str in data:
 		lod_list.append(lod_str)
-	print("  Loaded metadata: %s" % lod_list)
+	print("  Loaded metadata: %s" % str(lod_list))
 	return true
 
 
