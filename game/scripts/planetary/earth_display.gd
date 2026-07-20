@@ -1,6 +1,7 @@
 # earth_display.gd — HT2: single-level land mesh with viewport culling
 # Creates the Earth sphere, loads land mask, and renders visible land cells
 # based on the camera's sub-point on the sphere.
+# TIER 1c: Mesh pool — two pre-allocated MeshInstance3D nodes, swapped on rebuild.
 extends Node3D
 
 const EARTH_RADIUS_KM := 6371.0
@@ -10,15 +11,20 @@ const REBUILD_FRAME_INTERVAL := 3   # throttle mesh rebuild
 const LAND_COLOR := Color(0.2, 0.7, 0.3, 1.0)   # green land
 const OCEAN_COLOR := Color(0.1, 0.3, 0.6, 1.0)  # blue ocean
 const MESH_NAME := "CellMesh"
+const POOL_SIZE := 2
 
 var _earth_body: MeshInstance3D
-var _land_mesh: MeshInstance3D
 var _camera: Camera3D
 var _band_structure: Dictionary = {}
 var _land_loader: RefCounted = null  # LandMaskLoader instance
 var _frame_counter: int = 0
 var _last_sub_point: Vector3 = Vector3.ZERO
 var _mesh_dirty: bool = true
+
+# Mesh pool — avoids queue_free() + MeshInstance3D.new() per rebuild
+var _mesh_pool: Array[MeshInstance3D] = []
+var _active_pool_idx: int = 0
+var _mat: StandardMaterial3D  # shared material, created once
 
 
 func _ready() -> void:
@@ -58,6 +64,24 @@ func _ready() -> void:
 		push_error("HT2: no Camera3D found in scene!")
 		return
 	print("  Camera found: %s" % _camera.name)
+
+	# 5. Pre-create shared material + mesh pool
+	_mat = StandardMaterial3D.new()
+	_mat.vertex_color_use_as_albedo = true
+	_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	_mat.flags_unshaded = true
+	_mat.albedo_color = Color(1.0, 1.0, 1.0, 1.0)
+
+	_mesh_pool.resize(POOL_SIZE)
+	for i in range(POOL_SIZE):
+		var mi := MeshInstance3D.new()
+		mi.name = "CellMesh_%d" % i
+		mi.material_override = _mat
+		mi.visible = false
+		add_child(mi)
+		_mesh_pool[i] = mi
 
 	print("HT2 EarthDisplay ready.")
 
@@ -104,7 +128,7 @@ func _setup_earth_body() -> void:
 		var tex: Texture2D = load(tex_path)
 		mat.albedo_texture = tex
 		mat.albedo_color = Color.WHITE
-		mat.uv1_offset.x = 0.25
+		mat.uv1_offset.x = 0.0  # HT2 mesh: seg 0 at +X, default sphere UV should align
 		print("  Earth texture loaded: %s" % tex_path)
 	else:
 		mat.albedo_color = Color(0.15, 0.25, 0.55)
@@ -150,6 +174,7 @@ func _camera_to_sub_point() -> Vector3:
 
 
 ## Rebuild the land mesh for cells within VISIBLE_RADIUS_KM of sub_point.
+## TIER 1c: swaps between pool nodes — no queue_free() / MeshInstance3D.new() per rebuild.
 func _rebuild_visible_land_mesh(sub_point: Vector3) -> void:
 	# Convert sub_point to lat/lon
 	var lat: float = asin(clampf(sub_point.y / EARTH_RADIUS_KM, -1.0, 1.0))
@@ -200,24 +225,28 @@ func _rebuild_visible_land_mesh(sub_point: Vector3) -> void:
 				tile_colors[tile_id] = OCEAN_COLOR
 				visible_ocean += 1
 
-	# Remove old land mesh
-	if _land_mesh and is_instance_valid(_land_mesh):
-		_land_mesh.queue_free()
-
-	# Build new mesh
+	# Build new mesh via generate_tint
 	if tile_colors.is_empty():
 		return
 
-	_land_mesh = SphericalGridGenerator.generate_tint(
+	var new_mi: MeshInstance3D = SphericalGridGenerator.generate_tint(
 		EARTH_RADIUS_KM,
 		_band_structure,
 		tile_colors,
 		band_start,
 		band_end + 1,  # band_end is inclusive, generate_tint uses exclusive
 	)
-	if _land_mesh:
-		add_child(_land_mesh)
-		print_verbose("  Visible land mesh: %d cells in bands %d-%d" % [visible_land, band_start, band_end])
+	if not new_mi or not new_mi.mesh:
+		return
+
+	# Swap pool: hide active, show inactive with new mesh
+	var old_idx: int = _active_pool_idx
+	var new_idx: int = (old_idx + 1) % POOL_SIZE
+	_mesh_pool[old_idx].visible = false
+	_mesh_pool[new_idx].mesh = new_mi.mesh
+	_mesh_pool[new_idx].visible = true
+	_active_pool_idx = new_idx
+	print_verbose("  Visible land mesh: %d cells in bands %d-%d" % [visible_land, band_start, band_end])
 
 
 ## Force mesh rebuild on next process frame.

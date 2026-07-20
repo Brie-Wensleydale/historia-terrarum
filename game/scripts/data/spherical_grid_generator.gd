@@ -105,6 +105,10 @@ static func find_cell_at_point(
 ## Only generates cells with non-transparent colors (land cells).
 ## Uses canonical ring vertices + fan triangulation for watertightness.
 ## Optional band_start/band_end: only process bands in [start, end) — use for viewport culling.
+##
+## TIER 1 OPTIMIZED: vertices computed directly at target scale (km×TINT_RADIUS_FACTOR),
+## batched ArrayMesh build (no SurfaceTool per-vertex overhead), no _scale_mesh copies.
+## Coordinates: ring vertices computed directly at display scale.
 static func generate_tint(
 	radius_km: float,
 	band_struct: Dictionary,
@@ -112,7 +116,7 @@ static func generate_tint(
 	band_start: int = -1,
 	band_end: int = -1
 ) -> MeshInstance3D:
-	var radius_m: float = radius_km * 1000.0
+	var display_radius: float = radius_km * TINT_RADIUS_FACTOR  # compute directly at target scale
 	var total_bands: int = band_struct["total_bands"]
 	var full_band_segs: Array = band_struct["band_segs"]
 
@@ -123,15 +127,16 @@ static func generate_tint(
 	b_end = clampi(b_end, 1, total_bands)
 
 	# Precompute ring vertices only for the needed range (+1 for the top ring of b_end-1)
+	# Vertices in display-km directly at TINT_RADIUS_FACTOR — no scaling pass needed.
 	var ring_verts: Array = []
 	var ring_is_pole: Array = []
 	for ring_idx in range(b_start, b_end + 1):
 		var ring_segs: int = full_band_segs[ring_idx]
 		var ring_lat: float = -PI * 0.5 + PI * float(ring_idx) / float(total_bands)
-		var ring_r: float = radius_m * cos(ring_lat)
-		var ring_y: float = radius_m * sin(ring_lat)
+		var ring_r: float = display_radius * cos(ring_lat)
+		var ring_y: float = display_radius * sin(ring_lat)
 		var verts: PackedVector3Array = PackedVector3Array()
-		if absf(ring_r) < 1.0:
+		if absf(ring_r) < 1.0 / 1000.0:  # ~1 meter threshold at display scale
 			verts.append(Vector3(0.0, ring_y, 0.0))
 			ring_is_pole.append(true)
 		else:
@@ -142,8 +147,11 @@ static func generate_tint(
 			ring_is_pole.append(false)
 		ring_verts.append(verts)
 
-	var st: SurfaceTool = SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	# ── Batched ArrayMesh build (Tier 1b) ──
+	# Build vertex + index arrays in one pass, then feed to SurfaceTool all at once.
+	var all_verts: PackedVector3Array = PackedVector3Array()
+	var all_colors: PackedColorArray = PackedColorArray()
+	var all_indices: PackedInt32Array = PackedInt32Array()
 
 	var colored_cells: int = 0
 	var skipped_cells: int = 0
@@ -168,7 +176,6 @@ static func generate_tint(
 				continue
 
 			colored_cells += 1
-			st.set_color(color)
 
 			var poly: Array[Vector3] = []
 			if bot_pole:
@@ -192,24 +199,36 @@ static func generate_tint(
 					for k in range(dt1, dt0 - 1, -1):
 						poly.append(top_verts[k % segs_top])
 
+			# Fan triangulation: first vertex is anchor, rest form triangle fan
+			var base_idx: int = all_verts.size()
+			for v in poly:
+				all_verts.append(v)
+				all_colors.append(color)
+
 			var poly_count: int = poly.size()
 			for i in range(1, poly_count - 1):
-				st.add_vertex(poly[0])
-				st.add_vertex(poly[i])
-				st.add_vertex(poly[i + 1])
+				all_indices.append(base_idx)
+				all_indices.append(base_idx + i)
+				all_indices.append(base_idx + i + 1)
 
 	print_verbose("Tint mesh: %d colored cells, %d skipped (ocean) [bands %d-%d]" % [colored_cells, skipped_cells, b_start, b_end - 1])
 
+	if all_verts.is_empty():
+		return null
+
+	# Feed batched arrays to SurfaceTool
+	var st: SurfaceTool = SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_vertices(all_verts)
+	st.set_colors(all_colors)
+	st.set_indices(all_indices)
 	var mesh: ArrayMesh = st.commit()
 	if not mesh:
 		return null
 
-	var scaled_mesh: ArrayMesh = _scale_mesh(mesh, 1.0 / 1000.0)
-	var offset_mesh: ArrayMesh = _scale_mesh(scaled_mesh, TINT_RADIUS_FACTOR)
-
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Tint_Earth"
-	mi.mesh = offset_mesh
+	mi.mesh = mesh
 
 	var mat: StandardMaterial3D = StandardMaterial3D.new()
 	mat.vertex_color_use_as_albedo = true
@@ -222,21 +241,3 @@ static func generate_tint(
 
 	return mi
 
-
-static func _scale_mesh(mesh: ArrayMesh, factor: float) -> ArrayMesh:
-	var scaled: ArrayMesh = ArrayMesh.new()
-	for surface_idx in range(mesh.get_surface_count()):
-		var arrays: Array = mesh.surface_get_arrays(surface_idx)
-		if arrays.is_empty():
-			continue
-		var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
-		if verts.is_empty():
-			continue
-		var scaled_verts := PackedVector3Array()
-		scaled_verts.resize(verts.size())
-		for i in range(verts.size()):
-			scaled_verts[i] = verts[i] * factor
-		arrays[Mesh.ARRAY_VERTEX] = scaled_verts
-		var prim: int = mesh.surface_get_primitive_type(surface_idx)
-		scaled.add_surface_from_arrays(prim, arrays)
-	return scaled
