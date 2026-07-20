@@ -328,13 +328,6 @@ func _ensure_chunk_visible(lod: int, row: int, col: int, key: String, chunk: Dic
 	_chunk_nodes[key] = node
 
 
-func _hide_all_chunks() -> void:
-	for key in _chunk_nodes:
-		var node: MeshInstance3D = _chunk_nodes[key]
-		if is_instance_valid(node):
-			node.visible = false
-
-
 # ── Camera helpers ──
 
 func _find_camera() -> Camera3D:
