@@ -216,15 +216,15 @@ static func generate_tint(
 	if all_verts.is_empty():
 		return null
 
-	# Feed batched arrays to SurfaceTool
-	var st: SurfaceTool = SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	st.set_vertices(all_verts)
-	st.set_colors(all_colors)
-	st.set_indices(all_indices)
-	var mesh: ArrayMesh = st.commit()
-	if not mesh:
-		return null
+	# Build ArrayMesh directly from batched arrays (Godot 4: no SurfaceTool bulk setters)
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = all_verts
+	arrays[Mesh.ARRAY_COLOR] = all_colors
+	arrays[Mesh.ARRAY_INDEX] = all_indices
+
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Tint_Earth"
