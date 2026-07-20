@@ -62,6 +62,12 @@ var _frame_counter: int = 0
 var _display_mode: int = 1  # 0 = simple land/sea, 1 = elevation terrain palette
 var _mat: StandardMaterial3D
 
+# Mode label overlay
+var _mode_label: Label = null
+var _label_timer: float = 0.0
+const LABEL_FADE_SEC := 2.5
+const MODE_NAMES := ["Land", "Elevation", "Climate", "Temperature", "Precipitation", "Wind", "Daylight", "Slope"]
+
 # Chunk cache: key = "R{row}_C{col}" → ArrayMesh
 var _chunk_cache: Dictionary = {}
 var _chunk_cache_order: Array = []  # LRU access order (String keys)
@@ -127,6 +133,22 @@ func _ready() -> void:
 		push_error("HT2: no Camera3D found!")
 		return
 	print("  Camera found: %s" % _camera.name)
+
+	# Mode name label overlay (CanvasLayer for screen-space text)
+	var canvas: CanvasLayer = CanvasLayer.new()
+	canvas.name = "ModeLabelCanvas"
+	canvas.layer = 100
+	add_child(canvas)
+
+	_mode_label = Label.new()
+	_mode_label.name = "ModeLabel"
+	_mode_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_mode_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_mode_label.anchors_preset = Control.PRESET_FULL_RECT
+	_mode_label.modulate = Color(0, 0, 0, 0)  # start invisible
+	_mode_label.add_theme_font_size_override("font_size", 64)
+	_mode_label.add_theme_color_override("font_color", Color(0, 0, 0, 1))
+	canvas.add_child(_mode_label)
 
 	_mat = StandardMaterial3D.new()
 	_mat.vertex_color_use_as_albedo = true
@@ -241,7 +263,14 @@ func _process(delta: float) -> void:
 	# Show needed chunks, hide others
 	_show_chunks(needed)
 
-	# Auto-prefetch: start preloading neighbors immediately, always keep queue full
+	# Fade mode label
+	if _label_timer > 0.0:
+		_label_timer -= delta
+		if _mode_label:
+			var alpha: float = clampf(_label_timer / LABEL_FADE_SEC, 0.0, 1.0)
+			_mode_label.modulate = Color(0, 0, 0, alpha)
+
+	# Auto-prefetch
 	if _preload_queue.is_empty():
 		_build_preload_queue(needed)
 	_preload_one_chunk()
@@ -263,6 +292,12 @@ func set_display_mode(mode: int) -> void:
 		return
 	_display_mode = mode
 	print("HT2: display mode = %d" % mode)
+
+	# Update mode label text
+	if _mode_label and mode >= 0 and mode < MODE_NAMES.size():
+		_mode_label.text = MODE_NAMES[mode]
+		_mode_label.modulate = Color(0, 0, 0, 1)
+		_label_timer = LABEL_FADE_SEC
 
 	# Invalidate all chunk caches — next _process will rebuild with new colours
 	_chunk_cache.clear()
@@ -492,14 +527,15 @@ func _precip_color(mm: float) -> Color:
 
 
 func _wind_color(ms: float) -> Color:
-	# Grey → magenta (0 → 20 m/s)
-	var w: float = clampf(ms / 20.0, 0.0, 1.0)
+	# Grey → magenta (0 → 3 m/s, real wind range is 0-2.3 m/s)
+	var w: float = clampf(ms / 3.0, 0.0, 1.0)
 	return Color(0.4 + w * 0.6, 0.4 + w * 0.1, 0.4 + w * 0.6, 1.0)
 
 
 func _solar_color(kjm2: float) -> Color:
-	# Dark brown → orange → bright yellow (0 → 30 MJ/m²)
-	var s: float = clampf(kjm2 / 30.0, 0.0, 1.0)
+	# Dark brown → orange → bright yellow (0 → 35000 kJ/m²/day)
+	# Real range: 0-32767 kJ/m²/day (WorldClim srad int16 values)
+	var s: float = clampf(kjm2 / 35000.0, 0.0, 1.0)
 	return Color(0.2 + s * 0.8, 0.1 + s * 0.8, 0.0 + s * 0.2, 1.0)
 
 
