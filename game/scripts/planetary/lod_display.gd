@@ -129,7 +129,10 @@ func _load_metadata() -> bool:
 		var lod: int = int(lod_str)
 		_lod_metadata[lod] = data[lod_str]
 
-	print("  Loaded metadata: %s" % [lod_str for lod_str in data.keys()])
+	var lod_list: Array = []
+	for lod_str in data:
+		lod_list.append(lod_str)
+	print("  Loaded metadata: %s" % lod_list)
 	return true
 
 
