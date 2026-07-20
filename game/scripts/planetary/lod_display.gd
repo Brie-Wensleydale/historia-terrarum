@@ -95,6 +95,7 @@ func _process(_delta: float) -> void:
 	if _active_lod <= 0 and _earth_display:
 		# Switching from LOD 0 to LOD 1+ — hide earth_display
 		_earth_display.visible = false
+		print("LOD switch: EarthDisplay OFF, LoDDisplay level %d (%d chunks)" % [new_lod, _lod_metadata.get(new_lod, []).size()])
 
 	_active_lod = new_lod
 

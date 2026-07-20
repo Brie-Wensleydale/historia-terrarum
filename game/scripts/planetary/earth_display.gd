@@ -30,6 +30,11 @@ var _mesh_cache: Dictionary = {}  # String → ArrayMesh
 var _cache_keys: Array = []  # LRU access order (int keys)
 var _cache_next_id: int = 0  # auto-incrementing cache entry ID
 
+# Rebuild-on-stop: defer mesh generation until camera settles
+var _last_cam_pos: Vector3 = Vector3.ZERO
+var _settle_timer: float = 0.0
+const SETTLE_SEC := 0.3  # wait this long after camera stops before rebuilding
+
 
 func _ready() -> void:
 	print("HT2 EarthDisplay: starting setup...")
@@ -90,7 +95,7 @@ func _ready() -> void:
 	print("HT2 EarthDisplay ready.")
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if not _land_loader or not _camera:
 		return
 
@@ -101,6 +106,16 @@ func _process(_delta: float) -> void:
 	var sub_point: Vector3 = _camera_to_sub_point()
 	if sub_point.length() < 0.001:
 		return
+
+	# Track camera movement for rebuild-on-stop
+	var cam_pos: Vector3 = _camera.global_position
+	var cam_moved: float = cam_pos.distance_to(_last_cam_pos)
+	_last_cam_pos = cam_pos
+
+	if cam_moved > 10.0:  # camera is moving (>10 km/frame)
+		_settle_timer = 0.0
+	else:
+		_settle_timer += delta
 
 	# Dynamic visible radius from camera height
 	var cam_height_km: float = maxf(_camera.global_position.length() - EARTH_RADIUS_KM, 10.0)
@@ -115,19 +130,18 @@ func _process(_delta: float) -> void:
 	var lat_deg: float = rad_to_deg(lat)
 	var lon_deg: float = rad_to_deg(lon) - 180.0
 
-	# Compute band range (used for cache proximity check)
+	# Compute band range
 	var band_start: int = _compute_band_start(sub_point, visible_radius, lat_deg)
 	var band_end: int = _compute_band_end(sub_point, visible_radius, lat_deg)
 	var band_range: int = band_end - band_start
 
-	# Proximity-based cache lookup
+	# Proximity-based cache lookup (always use best match while moving)
 	var best_entry = null
 	var best_dist_sq: float = INF
-	var reuse_radius_sq: float = visible_radius * visible_radius * 0.25  # within 50% of visible radius
+	var reuse_radius_sq: float = visible_radius * visible_radius * 0.64  # 80% — aggressive reuse while moving
 
 	for cache_id in _cache_keys:
 		var entry: Dictionary = _mesh_cache[cache_id]
-		# Must have similar band range (same zoom level effectively)
 		if abs(int(entry.band_start) - band_start) > band_range:
 			continue
 		if abs(float(entry.visible_radius) - visible_radius) > visible_radius * 0.2:
@@ -140,9 +154,24 @@ func _process(_delta: float) -> void:
 	if best_entry:
 		_swap_to_pool_mesh(best_entry.mesh)
 		_touch_cache(best_entry.id)
+		# If camera settled AND the cached mesh is far from exact position, schedule rebuild
+		if _settle_timer < SETTLE_SEC:
+			return
+		var settle_dist_sq: float = (best_entry.sub_point as Vector3).distance_squared_to(sub_point)
+		if settle_dist_sq < visible_radius * visible_radius * 0.01:  # within 10% — close enough
+			return
+		# Fall through to rebuild for exact position
+	else:
+		# No cache entry at all — must rebuild
+		_settle_timer = SETTLE_SEC  # force rebuild on first load
+
+	# Only rebuild when camera has settled
+	if _settle_timer < SETTLE_SEC:
 		return
 
-	# Cache miss — rebuild
+	_settle_timer = 0.0  # reset after rebuild
+
+	# Build tile_colors and generate mesh
 	var tile_colors: Dictionary = _build_tile_colors(sub_point, visible_radius, lat_deg, lon_deg)
 	if tile_colors.is_empty():
 		return
@@ -157,7 +186,7 @@ func _process(_delta: float) -> void:
 	if not new_mi or not new_mi.mesh:
 		return
 
-	# Store in cache with metadata
+	# Store in cache
 	var entry: Dictionary = {
 		"id": _cache_next_id,
 		"sub_point": sub_point,
