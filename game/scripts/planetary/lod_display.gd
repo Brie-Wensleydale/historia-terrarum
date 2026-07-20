@@ -93,12 +93,35 @@ func _process(_delta: float) -> void:
 
 	_active_lod = new_lod
 
+	# Ensure all chunks for this LOD are loaded
+	var chunk_list: Array = _lod_metadata.get(new_lod, [])
+	_build_all_chunks(new_lod, chunk_list)
+
 	# Compute visible chunks
 	var sub_point: Vector3 = _camera_to_sub_point()
 	if sub_point.length() < 0.001:
 		return
 
-	_show_visible_chunks(new_lod, sub_point)
+	# Show all loaded chunks for this LOD
+	_show_all_lod_chunks(new_lod)
+
+
+func _build_all_chunks(lod: int, chunk_list: Array) -> void:
+	"""Build mesh+texture for every chunk in this LOD level (if not cached)."""
+	for chunk in chunk_list:
+		var key: String = "lod_%d_%d_%d" % [lod, chunk["chunk_row"], chunk["chunk_col"]]
+		if _chunk_nodes.has(key) and is_instance_valid(_chunk_nodes[key]):
+			continue  # already built
+		_ensure_chunk_visible(lod, chunk["chunk_row"], chunk["chunk_col"], key, chunk)
+
+
+func _show_all_lod_chunks(lod: int) -> void:
+	"""Make all chunks for the active LOD visible, hide chunks from other LODs."""
+	for key in _chunk_nodes:
+		var node: MeshInstance3D = _chunk_nodes[key]
+		var is_active: bool = key.begins_with("lod_%d_" % lod)
+		if is_instance_valid(node):
+			node.visible = is_active
 
 
 # ── Metadata loading ──
@@ -138,7 +161,7 @@ func _load_metadata() -> bool:
 
 # ── Shared mesh builder ──
 # Builds a sphere-surface quad mesh for a specific chunk at a given LoD level.
-# Vertices are on the sphere at TINT_RADIUS_FACTOR, UVs map atlas tiles to quads.
+# Uses shared vertex rings (no gaps), polar fan triangulation, and proper UVs.
 
 func _build_chunk_mesh(chunk: Dictionary, lod: int) -> ArrayMesh:
 	var full_band_segs: Array = _band_structure["band_segs"]
@@ -147,26 +170,17 @@ func _build_chunk_mesh(chunk: Dictionary, lod: int) -> ArrayMesh:
 
 	var b0: int = chunk["band_start_0"]
 	var b1: int = chunk["band_end_0"]
-	var s0: int = chunk["seg_start_0"]
-	var s1: int = chunk["seg_end_0"]
 	var mega_bands: int = chunk["mega_bands"]
 	var mega_segs: int = chunk["mega_segs"]
 
 	if mega_bands <= 0 or mega_segs <= 0:
 		return null
 
-	# Build ring vertices at this chunk's actual latitude/longitude range
-	var ring_verts: Array = []  # PackedVector3Array per ring (mega_bands + 1 rings)
+	if b0 >= b1:
+		return null
 
-	# Determine longitude span: fraction of 360° that this chunk covers
-	var center_b0: float = (float(b0) + float(b1)) * 0.5
-	var center_band: int = clampi(int(center_b0), 0, total_bands - 1)
-	var segs_bot_c: int = full_band_segs[center_band]
-	var segs_top_c: int = full_band_segs[center_band + 1] if center_band + 1 < full_band_segs.size() else segs_bot_c
-	var segs_at_center: int = maxi(segs_bot_c, segs_top_c)
-	var lon_start: float = TAU * float(s0) / float(segs_at_center)
-	var lon_end: float = TAU * float(s1) / float(segs_at_center)
-
+	# Build shared ring vertices — one ring per mega-band boundary
+	var ring_verts: Array = []  # PackedVector3Array per ring
 	for ring_i in range(mega_bands + 1):
 		var base_band_f: float = float(b0) + float(ring_i) / float(mega_bands) * float(b1 - b0)
 		var ring_lat: float = -PI * 0.5 + PI * base_band_f / float(total_bands)
@@ -175,41 +189,80 @@ func _build_chunk_mesh(chunk: Dictionary, lod: int) -> ArrayMesh:
 		var verts: PackedVector3Array = PackedVector3Array()
 		verts.resize(mega_segs)
 		for k in range(mega_segs):
-			var frac: float = float(k) / float(mega_segs)
-			var ring_lon: float = lon_start + frac * (lon_end - lon_start)
+			var ring_lon: float = TAU * float(k) / float(mega_segs)
 			verts[k] = Vector3(ring_r * cos(ring_lon), ring_y, -ring_r * sin(ring_lon))
 		ring_verts.append(verts)
 
-	# Build quad mesh with UVs
+	# Determine which rings are poles (radius near zero) for fan triangulation
+	var ring_is_pole: Array = []  # bool per ring
+	for ring_i in range(mega_bands + 1):
+		var r: float = ring_verts[ring_i][0].length()  # XZ length of first vertex
+		ring_is_pole.append(r < 1.0)  # radius < 1km → treat as pole
+
+	# Build mesh: one quad (or triangle fan for poles) per mega-cell
 	var vertices: PackedVector3Array = PackedVector3Array()
 	var uvs: PackedVector2Array = PackedVector2Array()
 	var indices: PackedInt32Array = PackedInt32Array()
 
 	for row in range(mega_bands):
-		var bot: PackedVector3Array = ring_verts[row]
-		var top: PackedVector3Array = ring_verts[row + 1]
-		for col in range(mega_segs):
-			var vi: int = vertices.size()
-			vertices.append(bot[col])
-			vertices.append(bot[(col + 1) % mega_segs])
-			vertices.append(top[(col + 1) % mega_segs])
-			vertices.append(top[col])
+		var bot_verts: PackedVector3Array = ring_verts[row]
+		var top_verts: PackedVector3Array = ring_verts[row + 1]
+		var bot_pole: bool = ring_is_pole[row]
+		var top_pole: bool = ring_is_pole[row + 1]
 
+		if bot_pole and top_pole:
+			continue  # fully polar — nothing to render
+
+		for col in range(mega_segs):
+			var col_next: int = (col + 1) % mega_segs
+
+			# UV for this tile
 			var u0: float = float(col) / float(mega_segs)
 			var u1: float = float(col + 1) / float(mega_segs)
 			var v0: float = float(row) / float(mega_bands)
 			var v1: float = float(row + 1) / float(mega_bands)
-			uvs.append(Vector2(u0, v1))
-			uvs.append(Vector2(u1, v1))
-			uvs.append(Vector2(u1, v0))
-			uvs.append(Vector2(u0, v0))
 
-			indices.append(vi)
-			indices.append(vi + 1)
-			indices.append(vi + 2)
-			indices.append(vi)
-			indices.append(vi + 2)
-			indices.append(vi + 3)
+			if bot_pole:
+				# Fan triangle: one top vertex, two bottom (pole) → single point
+				var vi: int = vertices.size()
+				vertices.append(bot_verts[0])  # pole point
+				vertices.append(top_verts[col_next])
+				vertices.append(top_verts[col])
+				uvs.append(Vector2(u0 + (u1 - u0) * 0.5, v0))  # center-bottom
+				uvs.append(Vector2(u1, v1))
+				uvs.append(Vector2(u0, v1))
+				indices.append(vi)
+				indices.append(vi + 1)
+				indices.append(vi + 2)
+			elif top_pole:
+				# Fan triangle: one bottom vertex, two top (pole) → single point
+				var vi: int = vertices.size()
+				vertices.append(bot_verts[col])
+				vertices.append(bot_verts[col_next])
+				vertices.append(top_verts[0])  # pole point
+				uvs.append(Vector2(u0, v0))
+				uvs.append(Vector2(u1, v0))
+				uvs.append(Vector2(u0 + (u1 - u0) * 0.5, v1))  # center-top
+				indices.append(vi)
+				indices.append(vi + 1)
+				indices.append(vi + 2)
+			else:
+				# Regular quad
+				var vi: int = vertices.size()
+				vertices.append(bot_verts[col])
+				vertices.append(bot_verts[col_next])
+				vertices.append(top_verts[col_next])
+				vertices.append(top_verts[col])
+				uvs.append(Vector2(u0, v0))
+				uvs.append(Vector2(u1, v0))
+				uvs.append(Vector2(u1, v1))
+				uvs.append(Vector2(u0, v1))
+				indices.append(vi)
+				indices.append(vi + 1)
+				indices.append(vi + 2)
+				indices.append(vi)
+				indices.append(vi + 2)
+				indices.append(vi + 3)
 
 	var arrays: Array = []
 	arrays.resize(Mesh.ARRAY_MAX)
@@ -224,69 +277,17 @@ func _build_chunk_mesh(chunk: Dictionary, lod: int) -> ArrayMesh:
 
 # ── Chunk visibility ──
 
-func _show_visible_chunks(lod: int, sub_point: Vector3) -> void:
-	if not _lod_metadata.has(lod):
-		return
-
-	var chunks: Array = _lod_metadata[lod]
-	var visible_keys: Dictionary = {}  # keys that should be visible this frame
-
-	# Convert sub_point to lat/lon to find which chunk the camera is over
-	var lat: float = asin(clampf(sub_point.y / EARTH_RADIUS_KM, -1.0, 1.0))
-	var lon: float = atan2(-sub_point.z, sub_point.x)
-	if lon < 0.0:
-		lon += TAU
-	var lat_deg: float = rad_to_deg(lat)
-	var lon_deg: float = rad_to_deg(lon) - 180.0
-
-	# Compute which base bands/seg the sub_point is in
-	var total_bands: int = _band_structure["total_bands"]
-	var center_band: int = clampi(int((lat + PI * 0.5) / PI * float(total_bands)), 0, total_bands - 1)
-	var eq_segs: int = _band_structure["equator_segs"]
-	var band_segs: Array = _band_structure["band_segs"]
-	var cell_segs_center: int = maxi(
-		band_segs[center_band] if center_band < band_segs.size() else eq_segs,
-		band_segs[center_band + 1] if center_band + 1 < band_segs.size() else eq_segs
-	)
-	var center_seg: int = int(((lon_deg + 180.0) / 360.0) * float(cell_segs_center)) % maxi(cell_segs_center, 1)
-
-	# Show chunks near the camera sub_point
-	for chunk in chunks:
-		var cr: int = chunk["chunk_row"]
-		var cc: int = chunk["chunk_col"]
-		var key: String = "lod_%d_%d_%d" % [lod, cr, cc]
-
-		# Check if this chunk is near the camera
-		var bs: int = chunk["band_start_0"]
-		var be: int = chunk["band_end_0"]
-		var ss: int = chunk["seg_start_0"]
-		var se: int = chunk["seg_end_0"]
-
-		var near_band: bool = center_band >= bs - 256 and center_band <= be + 256
-		var near_seg: bool = false
-		# Seg check is approximate — chunks near the camera longitudinally
-		var seg_dist: int = mini(abs(center_seg - ss), mini(abs(center_seg - se), abs(center_seg + cell_segs_center - ss)))
-		near_seg = seg_dist < 512
-
-		if near_band and near_seg:
-			visible_keys[key] = true
-			_ensure_chunk_visible(lod, cr, cc, key, chunk)
-
-	# Hide chunks not visible this frame
-	var keys_to_hide: Array = []
+func _hide_all_chunks() -> void:
 	for key in _chunk_nodes:
-		if not visible_keys.has(key):
-			var node: MeshInstance3D = _chunk_nodes[key]
-			if is_instance_valid(node) and node.visible:
-				node.visible = false
+		var node: MeshInstance3D = _chunk_nodes[key]
+		if is_instance_valid(node):
+			node.visible = false
 
 
 func _ensure_chunk_visible(lod: int, row: int, col: int, key: String, chunk: Dictionary) -> void:
 	if _chunk_nodes.has(key):
 		var node: MeshInstance3D = _chunk_nodes[key]
 		if is_instance_valid(node):
-			if not node.visible:
-				node.visible = true
 			return
 
 	# Build chunk mesh on the sphere surface
@@ -315,14 +316,14 @@ func _ensure_chunk_visible(lod: int, row: int, col: int, key: String, chunk: Dic
 	# Create material
 	var mat: StandardMaterial3D = StandardMaterial3D.new()
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	if tex:
 		mat.albedo_texture = tex
 	node.material_override = mat
 
-	node.visible = true
+	node.visible = false  # will be toggled by _show_all_lod_chunks
 	add_child(node)
 	_chunk_nodes[key] = node
 
