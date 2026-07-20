@@ -110,8 +110,11 @@ def load_coastline():
     with fiona.open(admin0_path) as src:
         for feat in src:
             geom = shape(feat["geometry"])
-            if geom.is_valid and not geom.is_empty:
-                polygons.append(geom)
+            if geom.is_empty:
+                continue
+            if not geom.is_valid:
+                geom = geom.buffer(0)  # repair self-intersections etc.
+            polygons.append(geom)
 
     from shapely.ops import unary_union
     land = unary_union(polygons)

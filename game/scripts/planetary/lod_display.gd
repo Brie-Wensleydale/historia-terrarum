@@ -30,10 +30,6 @@ var _active_lod: int = -1
 var _chunk_nodes: Dictionary = {}  # key → MeshInstance3D
 var _chunk_textures: Dictionary = {}  # key → ImageTexture (cached)
 
-# Per-LOD shared mesh (one quad grid, UV-mapped for atlas tiles)
-var _lod_meshes: Dictionary = {}  # lod → ArrayMesh
-var _lod_materials: Dictionary = {}  # lod → StandardMaterial3D (shared, texture swapped per chunk)
-
 
 func _ready() -> void:
 	print("LoD Display: initializing...")
@@ -57,12 +53,10 @@ func _ready() -> void:
 		print("  LoD: no atlas data — run generate_lod_terrain.py to build. Using EarthDisplay only.")
 		# Don't return; let _process handle graceful fallback
 
-	# Pre-build shared meshes + materials for LoD levels 1-4
-	if not _lod_metadata.is_empty():
-		for lod in range(1, 5):
-			_build_lod_mesh(lod)
-
-	print("LoD Display: ready (%d levels)" % _lod_metadata.size())
+	var total_chunks: int = 0
+	for lod_key in _lod_metadata:
+		total_chunks += _lod_metadata[lod_key].size()
+	print("LoD Display: ready (%d levels, %d total chunks)" % [_lod_metadata.size(), total_chunks])
 
 
 func _process(_delta: float) -> void:
@@ -143,85 +137,73 @@ func _load_metadata() -> bool:
 
 
 # ── Shared mesh builder ──
+# Builds a sphere-surface quad mesh for a specific chunk at a given LoD level.
+# Vertices are on the sphere at TINT_RADIUS_FACTOR, UVs map atlas tiles to quads.
 
-func _build_lod_mesh(lod: int) -> void:
-	"""
-	Build a shared quad-grid mesh for this LoD level.
-	One quad per mega-cell in a chunk (16×16 px tile in atlas).
-	UVs map to atlas tile positions.
-
-	The mesh is built from the COARSER band structure at this LoD resolution.
-	A chunk covers CHUNK_BANDS_0 base bands and CHUNK_SEGS_0 base segs.
-	At LoD stride, this becomes mega_bands × mega_segs quads.
-	"""
-	# Determine stride for this LoD
-	var stride: int = int(pow(4, lod))  # 4, 16, 64, 256
-	var chunk_bands_0: int = 64   # base bands per chunk
-	var chunk_segs_0: int = 256   # base segs per chunk
-
-	var mega_bands: int = maxi(1, (chunk_bands_0 + stride - 1) / stride)
-	var mega_segs: int = maxi(1, (chunk_segs_0 + stride - 1) / stride)
-
-	print("  Building LOD %d mesh: stride=%d, %dx%d quads" % [lod, stride, mega_bands, mega_segs])
-
+func _build_chunk_mesh(chunk: Dictionary, lod: int) -> ArrayMesh:
 	var full_band_segs: Array = _band_structure["band_segs"]
-
-	# Build ring vertices for a representative chunk at the equator
-	# (the mesh is parametric — UVs handle the atlas mapping, vertex positions are approximate)
-	var ring_verts: Array = []  # Array of PackedVector3Array, one per ring in the chunk
-	var chunk_bands_lod: int = mega_bands  # number of LOD bands in this chunk's mesh
-	var chunk_segs_lod: int = mega_segs  # number of LOD segs in this chunk's mesh
-
-	# We need chunk_bands_lod + 1 rings of vertices
-	# Each ring has chunk_segs_lod vertices (uniform for simplicity — atlas handles halving)
 	var total_bands: int = _band_structure["total_bands"]
 	var display_radius: float = EARTH_RADIUS_KM * SphericalGridGenerator.TINT_RADIUS_FACTOR
 
-	# Build a regular grid of quads spanning a representative lat/lon patch
-	# For simplicity, build the mesh for an equatorial chunk and rely on UVs for atlas mapping
-	var lat_start: float = 0.0  # equator
-	var lat_span: float = PI * float(chunk_bands_0) / float(total_bands)  # angular span of chunk
+	var b0: int = chunk["band_start_0"]
+	var b1: int = chunk["band_end_0"]
+	var s0: int = chunk["seg_start_0"]
+	var s1: int = chunk["seg_end_0"]
+	var mega_bands: int = chunk["mega_bands"]
+	var mega_segs: int = chunk["mega_segs"]
 
-	for ring_idx in range(chunk_bands_lod + 1):
-		var ring_lat: float = lat_start + lat_span * float(ring_idx) / float(chunk_bands_lod)
+	if mega_bands <= 0 or mega_segs <= 0:
+		return null
+
+	# Build ring vertices at this chunk's actual latitude/longitude range
+	var ring_verts: Array = []  # PackedVector3Array per ring (mega_bands + 1 rings)
+
+	# Determine longitude span: fraction of 360° that this chunk covers
+	var center_b0: float = (float(b0) + float(b1)) * 0.5
+	var center_band: int = clampi(int(center_b0), 0, total_bands - 1)
+	var segs_bot_c: int = full_band_segs[center_band]
+	var segs_top_c: int = full_band_segs[center_band + 1] if center_band + 1 < full_band_segs.size() else segs_bot_c
+	var segs_at_center: int = maxi(segs_bot_c, segs_top_c)
+	var lon_start: float = TAU * float(s0) / float(segs_at_center)
+	var lon_end: float = TAU * float(s1) / float(segs_at_center)
+
+	for ring_i in range(mega_bands + 1):
+		var base_band_f: float = float(b0) + float(ring_i) / float(mega_bands) * float(b1 - b0)
+		var ring_lat: float = -PI * 0.5 + PI * base_band_f / float(total_bands)
 		var ring_r: float = display_radius * cos(ring_lat)
 		var ring_y: float = display_radius * sin(ring_lat)
 		var verts: PackedVector3Array = PackedVector3Array()
-		verts.resize(chunk_segs_lod)
-		for k in range(chunk_segs_lod):
-			var ring_lon: float = TAU * float(k) / float(chunk_segs_lod)
-			# negated Z mesh convention (matches generate_tint)
+		verts.resize(mega_segs)
+		for k in range(mega_segs):
+			var frac: float = float(k) / float(mega_segs)
+			var ring_lon: float = lon_start + frac * (lon_end - lon_start)
 			verts[k] = Vector3(ring_r * cos(ring_lon), ring_y, -ring_r * sin(ring_lon))
 		ring_verts.append(verts)
 
-	# Build quad mesh
+	# Build quad mesh with UVs
 	var vertices: PackedVector3Array = PackedVector3Array()
 	var uvs: PackedVector2Array = PackedVector2Array()
 	var indices: PackedInt32Array = PackedInt32Array()
 
-	for row in range(chunk_bands_lod):
+	for row in range(mega_bands):
 		var bot: PackedVector3Array = ring_verts[row]
 		var top: PackedVector3Array = ring_verts[row + 1]
-		for col in range(chunk_segs_lod):
+		for col in range(mega_segs):
 			var vi: int = vertices.size()
-
-			# Four corners of the quad
 			vertices.append(bot[col])
-			vertices.append(bot[(col + 1) % chunk_segs_lod])
-			vertices.append(top[(col + 1) % chunk_segs_lod])
+			vertices.append(bot[(col + 1) % mega_segs])
+			vertices.append(top[(col + 1) % mega_segs])
 			vertices.append(top[col])
 
-			# UVs: map to atlas tile at (col, row)
-			var u0: float = float(col) / float(chunk_segs_lod)
-			var u1: float = float(col + 1) / float(chunk_segs_lod)
-			var v0: float = float(row) / float(chunk_bands_lod)
-			var v1: float = float(row + 1) / float(chunk_bands_lod)
+			var u0: float = float(col) / float(mega_segs)
+			var u1: float = float(col + 1) / float(mega_segs)
+			var v0: float = float(row) / float(mega_bands)
+			var v1: float = float(row + 1) / float(mega_bands)
 			uvs.append(Vector2(u0, v1))
 			uvs.append(Vector2(u1, v1))
 			uvs.append(Vector2(u1, v0))
 			uvs.append(Vector2(u0, v0))
 
-			# Two triangles
 			indices.append(vi)
 			indices.append(vi + 1)
 			indices.append(vi + 2)
@@ -237,16 +219,7 @@ func _build_lod_mesh(lod: int) -> void:
 
 	var mesh: ArrayMesh = ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-
-	# Create shared material for this LOD level
-	var mat: StandardMaterial3D = StandardMaterial3D.new()
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-
-	_lod_meshes[lod] = mesh
-	_lod_materials[lod] = mat
+	return mesh
 
 
 # ── Chunk visibility ──
@@ -309,7 +282,6 @@ func _show_visible_chunks(lod: int, sub_point: Vector3) -> void:
 
 
 func _ensure_chunk_visible(lod: int, row: int, col: int, key: String, chunk: Dictionary) -> void:
-	# Check if already created
 	if _chunk_nodes.has(key):
 		var node: MeshInstance3D = _chunk_nodes[key]
 		if is_instance_valid(node):
@@ -317,37 +289,42 @@ func _ensure_chunk_visible(lod: int, row: int, col: int, key: String, chunk: Dic
 				node.visible = true
 			return
 
-	# Create new chunk node
+	# Build chunk mesh on the sphere surface
+	var mesh: ArrayMesh = _build_chunk_mesh(chunk, lod)
+	if not mesh:
+		return
+
+	# Create chunk node
 	var node: MeshInstance3D = MeshInstance3D.new()
 	node.name = "LoD%d_Chunk_%d_%d" % [lod, row, col]
-	node.mesh = _lod_meshes[lod]
+	node.mesh = mesh
 
-	# Load atlas texture (or reuse cached)
+	# Load atlas texture
 	var tex_key: String = "lod%d_%s" % [lod, chunk["filename"]]
+	var tex: ImageTexture
 	if _chunk_textures.has(tex_key):
-		node.material_override = _make_chunk_material(lod, _chunk_textures[tex_key])
+		tex = _chunk_textures[tex_key]
 	else:
 		var atlas_path: String = DATA_DIR + "lod%d/%s" % [lod, chunk["filename"]]
 		if FileAccess.file_exists(atlas_path):
 			var img: Image = Image.load_from_file(atlas_path)
 			if img:
-				var tex: ImageTexture = ImageTexture.create_from_image(img)
+				tex = ImageTexture.create_from_image(img)
 				_chunk_textures[tex_key] = tex
-				node.material_override = _make_chunk_material(lod, tex)
 
-	if not node.material_override:
-		# Fallback: use shared material without texture
-		node.material_override = _lod_materials[lod]
+	# Create material
+	var mat: StandardMaterial3D = StandardMaterial3D.new()
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	if tex:
+		mat.albedo_texture = tex
+	node.material_override = mat
 
 	node.visible = true
 	add_child(node)
 	_chunk_nodes[key] = node
-
-
-func _make_chunk_material(lod: int, tex: ImageTexture) -> StandardMaterial3D:
-	var mat: StandardMaterial3D = _lod_materials[lod].duplicate()
-	mat.albedo_texture = tex
-	return mat
 
 
 func _hide_all_chunks() -> void:
