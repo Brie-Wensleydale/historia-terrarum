@@ -128,8 +128,7 @@ func _setup_earth_body() -> void:
 		var tex: Texture2D = load(tex_path)
 		mat.albedo_texture = tex
 		mat.albedo_color = Color.WHITE
-		mat.uv1_scale.x = -1.0  # mirror texture horizontally (east/west flip)
-		mat.uv1_offset.x = 0.0  # no offset; scale handles the flip
+		mat.uv1_offset.x = 0.25
 		print("  Earth texture loaded: %s" % tex_path)
 	else:
 		mat.albedo_color = Color(0.15, 0.25, 0.55)
@@ -179,7 +178,7 @@ func _camera_to_sub_point() -> Vector3:
 func _rebuild_visible_land_mesh(sub_point: Vector3) -> void:
 	# Convert sub_point to lat/lon
 	var lat: float = asin(clampf(sub_point.y / EARTH_RADIUS_KM, -1.0, 1.0))
-	var lon: float = atan2(sub_point.z, sub_point.x)
+	var lon: float = atan2(sub_point.z, -sub_point.x)  # neg X to match flipped mesh
 	if lon < 0.0:
 		lon += TAU
 	var lat_deg: float = rad_to_deg(lat)

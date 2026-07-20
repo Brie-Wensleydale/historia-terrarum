@@ -85,7 +85,7 @@ static func find_cell_at_point(
 	if point.length() < 0.001:
 		return {}
 	var lat: float = asin(clampf(point.y / point.length(), -1.0, 1.0))
-	var lon: float = atan2(point.z, point.x)
+	var lon: float = atan2(point.z, -point.x)  # neg X to match flipped mesh
 	if lon < 0.0:
 		lon += TAU
 
@@ -143,7 +143,8 @@ static func generate_tint(
 			verts.resize(ring_segs)
 			for k in range(ring_segs):
 				var ring_lon: float = TAU * float(k) / float(ring_segs)
-				verts[k] = Vector3(ring_r * cos(ring_lon), ring_y, ring_r * sin(ring_lon))
+				# Negate X to flip east/west — mesh mirrors across YZ plane
+				verts[k] = Vector3(-ring_r * cos(ring_lon), ring_y, ring_r * sin(ring_lon))
 			ring_is_pole.append(false)
 		ring_verts.append(verts)
 
