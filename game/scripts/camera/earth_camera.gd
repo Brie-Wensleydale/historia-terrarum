@@ -6,16 +6,19 @@ const EARTH_RADIUS_KM := 6371.0
 const EARTH_RADIUS_DISPLAY := 6371.0
 
 # ── Zoom Rungs ──
-# Discrete zoom levels paired with LOD recommendations.
-# Distance in km from Earth center. Each rung = 1 LOD level.
+# Distance in km from Earth center (radius = 6371 km).
+# Cell/Close/Local: deep zoom for ground-level inspection (5-50 cells on screen)
 const ZOOM_RUNGS := [
-	{"name": "Tactical",  "distance": 7500.0,  "lod": 0},
-	{"name": "Regional",  "distance": 12000.0, "lod": 1},
+	{"name": "Cell",       "distance": 6420.0,  "lod": 0},  #  49 km above surface, ~8 cells screen
+	{"name": "Close",      "distance": 6500.0,  "lod": 0},  # 129 km above, ~20 cells
+	{"name": "Local",      "distance": 6700.0,  "lod": 0},  # 329 km above, ~50 cells
+	{"name": "Tactical",   "distance": 7500.0,  "lod": 0},  # 1129 km above, ~200 cells
+	{"name": "Regional",   "distance": 12000.0, "lod": 1},
 	{"name": "Continental", "distance": 22000.0, "lod": 2},
 	{"name": "Hemisphere",  "distance": 38000.0, "lod": 3},
-	{"name": "Global",    "distance": 60000.0, "lod": 4},
+	{"name": "Global",     "distance": 60000.0, "lod": 4},
 ]
-var _current_rung: int = 2  # Start at continental view
+var _current_rung: int = 5  # Start at continental view
 
 # ── Orbit State ──
 var _theta: float = 0.0        # Horizontal angle (radians)
@@ -31,7 +34,7 @@ const MOMENTUM_DECAY := 5.0       # How fast momentum fades (per second)
 const ORBIT_SENSITIVITY := 0.004
 const ZOOM_SPEED := 6.0           # Smooth zoom speed
 const ROTATION_SPEED := 8.0       # Smooth rotation speed
-const MIN_DISTANCE := EARTH_RADIUS_KM * 1.08  # Just above surface (no clipping)
+const MIN_DISTANCE := 6400.0  # Just above surface (~29 km) for Cell zoom rung
 const MAX_DISTANCE := EARTH_RADIUS_KM * 60.0  # Far orbit
 
 # ── Object / Surface Mode ──
@@ -189,7 +192,7 @@ func get_lod_recommendation() -> int:
 
 ## Smoothly reset view to default angle.
 func _reset_view() -> void:
-	_current_rung = 2
+	_current_rung = 5  # Continental
 	_snap_to_rung(_current_rung)
 	_target_theta = 0.0
 	_target_phi = PI * 0.35

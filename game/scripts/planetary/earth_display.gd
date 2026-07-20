@@ -1,30 +1,34 @@
 # earth_display.gd — HT2: single-level land mesh with viewport culling
 # Creates the Earth sphere, loads land mask, and renders visible land cells
 # based on the camera's sub-point on the sphere.
-# TIER 1c: Mesh pool — two pre-allocated MeshInstance3D nodes, swapped on rebuild.
+# TIER 1: Mesh pool — two pre-allocated MeshInstance3D nodes, swapped on rebuild.
+# TIER 2: Mesh cache — spatial cache of generated meshes + dynamic visible radius.
 extends Node3D
 
 const EARTH_RADIUS_KM := 6371.0
 const CELL_KM := 10.0
-const VISIBLE_RADIUS_KM := 500.0   # render cells within this radius of camera sub-point
 const REBUILD_FRAME_INTERVAL := 3   # throttle mesh rebuild
 const LAND_COLOR := Color(0.2, 0.7, 0.3, 1.0)   # green land
 const OCEAN_COLOR := Color(0.1, 0.3, 0.6, 1.0)  # blue ocean
-const MESH_NAME := "CellMesh"
 const POOL_SIZE := 2
+const MAX_CACHE_ENTRIES := 32
 
 var _earth_body: MeshInstance3D
 var _camera: Camera3D
 var _band_structure: Dictionary = {}
 var _land_loader: RefCounted = null  # LandMaskLoader instance
 var _frame_counter: int = 0
-var _last_sub_point: Vector3 = Vector3.ZERO
+var _last_cache_key: String = ""
 var _mesh_dirty: bool = true
 
 # Mesh pool — avoids queue_free() + MeshInstance3D.new() per rebuild
 var _mesh_pool: Array = []
 var _active_pool_idx: int = 0
 var _mat: StandardMaterial3D  # shared material, created once
+
+# TIER 2: Spatial mesh cache — keyed by rounded lat/lon/radius
+var _mesh_cache: Dictionary = {}  # String → ArrayMesh
+var _cache_keys: Array = []  # LRU access order
 
 
 func _ready() -> void:
@@ -99,13 +103,53 @@ func _process(_delta: float) -> void:
 	if sub_point.length() < 0.001:
 		return
 
-	# Skip rebuild if camera hasn't moved significantly
-	if not _mesh_dirty and sub_point.distance_squared_to(_last_sub_point) < 100.0 * 100.0:
+	# Compute visible radius from camera height (closer = smaller patch = fewer cells)
+	var cam_height_km: float = maxf(_camera.global_position.length() - EARTH_RADIUS_KM, 10.0)
+	var horizon_km: float = EARTH_RADIUS_KM * acos(EARTH_RADIUS_KM / (EARTH_RADIUS_KM + cam_height_km))
+	var visible_radius: float = minf(horizon_km, 1000.0)
+
+	# Compute cache key from rounded lat/lon + radius bucket
+	var lat: float = asin(clampf(sub_point.y / EARTH_RADIUS_KM, -1.0, 1.0))
+	var lon: float = atan2(-sub_point.z, sub_point.x)  # inverses negated-Z mesh
+	if lon < 0.0:
+		lon += TAU
+	var lat_deg: float = rad_to_deg(lat)
+	var lon_deg: float = rad_to_deg(lon) - 180.0
+	var radius_bucket: int = int(visible_radius / 100.0)  # 0-10
+	var lat_bucket: int = int(lat_deg / 3.0)  # ~330 km per bucket at equator
+	var lon_bucket: int = int(lon_deg / 5.0)  # ~550 km at equator
+	var cache_key: String = "%d_%d_%d" % [lat_bucket, lon_bucket, radius_bucket]
+
+	if not _mesh_dirty and cache_key == _last_cache_key:
 		return
 
-	_last_sub_point = sub_point
+	_last_cache_key = cache_key
 	_mesh_dirty = false
-	_rebuild_visible_land_mesh(sub_point)
+
+	# Check cache
+	if _mesh_cache.has(cache_key):
+		_swap_to_pool_mesh(_mesh_cache[cache_key])
+		_touch_cache(cache_key)
+		return
+
+	# Cache miss — rebuild
+	var tile_colors: Dictionary = _build_tile_colors(sub_point, visible_radius, lat_deg, lon_deg)
+	if tile_colors.is_empty():
+		return
+
+	var new_mi: MeshInstance3D = SphericalGridGenerator.generate_tint(
+		EARTH_RADIUS_KM,
+		_band_structure,
+		tile_colors,
+		_compute_band_start(sub_point, visible_radius, lat_deg),
+		_compute_band_end(sub_point, visible_radius, lat_deg) + 1,
+	)
+	if not new_mi or not new_mi.mesh:
+		return
+
+	# Store in cache and swap to pool
+	_store_cached(cache_key, new_mi.mesh)
+	_swap_to_pool_mesh(new_mi.mesh)
 
 
 func _setup_earth_body() -> void:
@@ -173,35 +217,20 @@ func _camera_to_sub_point() -> Vector3:
 	return cam_pos + dir * t
 
 
-## Rebuild the land mesh for cells within VISIBLE_RADIUS_KM of sub_point.
-## TIER 1c: swaps between pool nodes — no queue_free() / MeshInstance3D.new() per rebuild.
-func _rebuild_visible_land_mesh(sub_point: Vector3) -> void:
-	# Convert sub_point to lat/lon
-	var lat: float = asin(clampf(sub_point.y / EARTH_RADIUS_KM, -1.0, 1.0))
-	var lon: float = atan2(-sub_point.z, sub_point.x)  # inverses negated-Z mesh
-	if lon < 0.0:
-		lon += TAU
-	var lat_deg: float = rad_to_deg(lat)
-	var lon_deg: float = rad_to_deg(lon) - 180.0  # to -180..180
-
-	# Convert visible radius to angular spread (degrees)
-	var angular_radius_deg: float = rad_to_deg(VISIBLE_RADIUS_KM / EARTH_RADIUS_KM)
-
-	# Compute band range
+## Build tile_colors dict for cells within visible_radius of sub_point.
+func _build_tile_colors(sub_point: Vector3, visible_radius: float, lat_deg: float, lon_deg: float) -> Dictionary:
+	var angular_radius_deg: float = rad_to_deg(visible_radius / EARTH_RADIUS_KM)
 	var total_bands: int = _band_structure["total_bands"]
 	var band_segs: Array = _band_structure["band_segs"]
 	var bands_per_deg: float = float(total_bands) / 180.0
+	var lat: float = asin(clampf(sub_point.y / EARTH_RADIUS_KM, -1.0, 1.0))
 
 	var center_band: int = clampi(int((lat + PI * 0.5) / PI * float(total_bands)), 0, total_bands - 1)
 	var band_range: int = maxi(int(angular_radius_deg * bands_per_deg) + 1, 1)
 	var band_start: int = maxi(center_band - band_range, 0)
 	var band_end: int = mini(center_band + band_range, total_bands - 1)
 
-	# Build tile_colors dict for visible cells (land + ocean)
 	var tile_colors: Dictionary = {}
-	var visible_land: int = 0
-	var visible_ocean: int = 0
-
 	for b_idx in range(band_start, band_end + 1):
 		var segs_bot: int = band_segs[b_idx]
 		var segs_top: int = band_segs[b_idx + 1] if b_idx + 1 < band_segs.size() else segs_bot
@@ -220,33 +249,58 @@ func _rebuild_visible_land_mesh(sub_point: Vector3) -> void:
 			var tile_id: String = "B%d_%d" % [b_idx, wrapped_seg]
 			if _land_loader.is_land(b_idx, wrapped_seg):
 				tile_colors[tile_id] = LAND_COLOR
-				visible_land += 1
 			else:
 				tile_colors[tile_id] = OCEAN_COLOR
-				visible_ocean += 1
 
-	# Build new mesh via generate_tint
-	if tile_colors.is_empty():
-		return
+	return tile_colors
 
-	var new_mi: MeshInstance3D = SphericalGridGenerator.generate_tint(
-		EARTH_RADIUS_KM,
-		_band_structure,
-		tile_colors,
-		band_start,
-		band_end + 1,  # band_end is inclusive, generate_tint uses exclusive
-	)
-	if not new_mi or not new_mi.mesh:
-		return
 
-	# Swap pool: hide active, show inactive with new mesh
+func _compute_band_start(sub_point: Vector3, visible_radius: float, lat_deg: float) -> int:
+	var angular_radius_deg: float = rad_to_deg(visible_radius / EARTH_RADIUS_KM)
+	var total_bands: int = _band_structure["total_bands"]
+	var bands_per_deg: float = float(total_bands) / 180.0
+	var lat: float = asin(clampf(sub_point.y / EARTH_RADIUS_KM, -1.0, 1.0))
+	var center_band: int = clampi(int((lat + PI * 0.5) / PI * float(total_bands)), 0, total_bands - 1)
+	var band_range: int = maxi(int(angular_radius_deg * bands_per_deg) + 1, 1)
+	return maxi(center_band - band_range, 0)
+
+
+func _compute_band_end(sub_point: Vector3, visible_radius: float, lat_deg: float) -> int:
+	var angular_radius_deg: float = rad_to_deg(visible_radius / EARTH_RADIUS_KM)
+	var total_bands: int = _band_structure["total_bands"]
+	var bands_per_deg: float = float(total_bands) / 180.0
+	var lat: float = asin(clampf(sub_point.y / EARTH_RADIUS_KM, -1.0, 1.0))
+	var center_band: int = clampi(int((lat + PI * 0.5) / PI * float(total_bands)), 0, total_bands - 1)
+	var band_range: int = maxi(int(angular_radius_deg * bands_per_deg) + 1, 1)
+	return mini(center_band + band_range, total_bands - 1)
+
+
+## Swap the given mesh into the active pool slot.
+func _swap_to_pool_mesh(mesh: ArrayMesh) -> void:
 	var old_idx: int = _active_pool_idx
 	var new_idx: int = (old_idx + 1) % POOL_SIZE
 	_mesh_pool[old_idx].visible = false
-	_mesh_pool[new_idx].mesh = new_mi.mesh
+	_mesh_pool[new_idx].mesh = mesh
 	_mesh_pool[new_idx].visible = true
 	_active_pool_idx = new_idx
-	print_verbose("  Visible land mesh: %d cells in bands %d-%d" % [visible_land, band_start, band_end])
+
+
+## Mark a cache entry as recently used (LRU).
+func _touch_cache(key: String) -> void:
+	var idx: int = _cache_keys.find(key)
+	if idx >= 0:
+		_cache_keys.remove_at(idx)
+	_cache_keys.append(key)
+
+
+## Store a generated mesh in the cache, evicting oldest if full.
+func _store_cached(key: String, mesh: ArrayMesh) -> void:
+	_touch_cache(key)
+	_mesh_cache[key] = mesh
+	while _cache_keys.size() > MAX_CACHE_ENTRIES:
+		var old_key: String = _cache_keys[0]
+		_cache_keys.remove_at(0)
+		_mesh_cache.erase(old_key)
 
 
 ## Force mesh rebuild on next process frame.
