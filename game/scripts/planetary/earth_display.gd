@@ -149,12 +149,10 @@ func _process(delta: float) -> void:
 	# Show needed chunks, hide others
 	_show_chunks(needed)
 
-	# Idle preload: build neighboring chunks when camera is still
-	if _idle_timer > IDLE_PRELOAD_SEC:
-		_idle_timer = 0.0
+	# Auto-prefetch: start preloading neighbors immediately, always keep queue full
+	if _preload_queue.is_empty():
 		_build_preload_queue(needed)
-	elif not _preload_queue.is_empty():
-		_preload_one_chunk()
+	_preload_one_chunk()
 
 
 # ── Chunk visibility ──

@@ -170,6 +170,8 @@ func _build_chunk_mesh(chunk: Dictionary, lod: int) -> ArrayMesh:
 
 	var b0: int = chunk["band_start_0"]
 	var b1: int = chunk["band_end_0"]
+	var s0: int = chunk["seg_start_0"]
+	var s1: int = chunk["seg_end_0"]
 	var mega_bands: int = chunk["mega_bands"]
 	var mega_segs: int = chunk["mega_segs"]
 
@@ -178,6 +180,15 @@ func _build_chunk_mesh(chunk: Dictionary, lod: int) -> ArrayMesh:
 
 	if b0 >= b1:
 		return null
+
+	# Longitude range for this chunk: use center band's seg count
+	var center_b0: float = (float(b0) + float(b1)) * 0.5
+	var center_band: int = clampi(int(center_b0), 0, total_bands - 1)
+	var segs_bot_c: int = full_band_segs[center_band]
+	var segs_top_c: int = full_band_segs[center_band + 1] if center_band + 1 < full_band_segs.size() else segs_bot_c
+	var segs_at_center: int = maxi(segs_bot_c, segs_top_c)
+	var lon_start: float = TAU * float(s0) / float(maxi(segs_at_center, 1))
+	var lon_end: float = TAU * float(s1) / float(maxi(segs_at_center, 1))
 
 	# Build shared ring vertices — one ring per mega-band boundary
 	var ring_verts: Array = []  # PackedVector3Array per ring
@@ -189,7 +200,8 @@ func _build_chunk_mesh(chunk: Dictionary, lod: int) -> ArrayMesh:
 		var verts: PackedVector3Array = PackedVector3Array()
 		verts.resize(mega_segs)
 		for k in range(mega_segs):
-			var ring_lon: float = TAU * float(k) / float(mega_segs)
+			var frac: float = float(k) / float(maxi(mega_segs - 1, 1))
+			var ring_lon: float = lon_start + frac * (lon_end - lon_start)
 			verts[k] = Vector3(ring_r * cos(ring_lon), ring_y, -ring_r * sin(ring_lon))
 		ring_verts.append(verts)
 
