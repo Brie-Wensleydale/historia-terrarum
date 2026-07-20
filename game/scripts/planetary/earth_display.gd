@@ -21,10 +21,6 @@ var _camera: Camera3D
 var _band_structure: Dictionary = {}
 var _land_loader: RefCounted = null
 var _frame_counter: int = 0
-
-# Mesh pool — avoids queue_free() + MeshInstance3D.new() per rebuild
-var _mesh_pool: Array = []
-var _active_pool_idx: int = 0
 var _mat: StandardMaterial3D
 
 # Chunk cache: key = "R{row}_C{col}" → ArrayMesh
@@ -33,6 +29,8 @@ var _chunk_cache_order: Array = []  # LRU access order (String keys)
 
 # Currently visible chunk nodes: key → MeshInstance3D
 var _visible_chunks: Dictionary = {}
+# Idle recycled nodes (hidden chunks we can reuse)
+var _recycled_nodes: Array = []
 
 # Preload state: when camera is idle, build neighboring chunks
 var _last_cam_pos: Vector3 = Vector3.ZERO
@@ -74,15 +72,6 @@ func _ready() -> void:
 	_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	_mat.flags_unshaded = true
 	_mat.albedo_color = Color(1.0, 1.0, 1.0, 1.0)
-
-	_mesh_pool.resize(POOL_SIZE)
-	for i in range(POOL_SIZE):
-		var mi: MeshInstance3D = MeshInstance3D.new()
-		mi.name = "CellMesh_%d" % i
-		mi.material_override = _mat
-		mi.visible = false
-		add_child(mi)
-		_mesh_pool[i] = mi
 
 	print("HT2 EarthDisplay ready.")
 
@@ -168,10 +157,10 @@ func _process(delta: float) -> void:
 		_preload_one_chunk()
 
 
-# ── Chunk management ──
+# ── Chunk visibility ──
 
 func _show_chunks(needed: Dictionary) -> void:
-	# Hide chunks no longer needed
+	# Hide chunks no longer needed (recycle their nodes)
 	var to_hide: Array = []
 	for key in _visible_chunks:
 		if not needed.has(key):
@@ -180,14 +169,13 @@ func _show_chunks(needed: Dictionary) -> void:
 		var node: MeshInstance3D = _visible_chunks[key]
 		if is_instance_valid(node):
 			node.visible = false
+			_recycled_nodes.append(node)
 		_visible_chunks.erase(key)
 
 	# Show/generate needed chunks
 	for key in needed:
 		if _visible_chunks.has(key):
-			var node: MeshInstance3D = _visible_chunks[key]
-			if is_instance_valid(node) and not node.visible:
-				node.visible = true
+			# Already visible — nothing to do
 			continue
 
 		var info: Dictionary = needed[key]
@@ -195,14 +183,19 @@ func _show_chunks(needed: Dictionary) -> void:
 		if not mesh:
 			continue
 
-		# Use a pool slot
-		var old_idx: int = _active_pool_idx
-		var new_idx: int = (old_idx + 1) % POOL_SIZE
-		_mesh_pool[old_idx].visible = false
-		_mesh_pool[new_idx].mesh = mesh
-		_mesh_pool[new_idx].visible = true
-		_active_pool_idx = new_idx
-		_visible_chunks[key] = _mesh_pool[new_idx]
+		# Get or create a MeshInstance3D for this chunk
+		var node: MeshInstance3D
+		if not _recycled_nodes.is_empty():
+			node = _recycled_nodes.pop_back()
+		else:
+			node = MeshInstance3D.new()
+			node.material_override = _mat
+			add_child(node)
+
+		node.name = "Chunk_R%d_C%d" % [info["row"], info["col"]]
+		node.mesh = mesh
+		node.visible = true
+		_visible_chunks[key] = node
 
 
 func _get_or_build_chunk(row: int, col: int) -> ArrayMesh:
