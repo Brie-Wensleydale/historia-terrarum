@@ -12,6 +12,41 @@ const OCEAN_COLOR := Color(0.1, 0.3, 0.6, 1.0)
 const POOL_SIZE := 2
 const MAX_CACHED_CHUNKS := 128
 
+# Climate palette — 31 entries (index 0 = ocean/unclassified, 1-30 = Köppen)
+const CLIMATE_COLORS := [
+	Color(0.1, 0.3, 0.6, 1.0),   # 0: ocean/unclassified
+	Color(0.0, 0.4, 1.0, 1.0),   # 1: Af  Tropical rainforest
+	Color(0.0, 0.5, 0.8, 1.0),   # 2: Am  Tropical monsoon
+	Color(0.3, 0.6, 0.4, 1.0),   # 3: Aw  Tropical savanna
+	Color(1.0, 0.2, 0.2, 1.0),   # 4: BWh Hot desert
+	Color(0.9, 0.5, 0.3, 1.0),   # 5: BWk Cold desert
+	Color(1.0, 0.7, 0.2, 1.0),   # 6: BSh Hot semi-arid
+	Color(0.9, 0.8, 0.4, 1.0),   # 7: BSk Cold semi-arid
+	Color(0.2, 0.8, 0.2, 1.0),   # 8: Csa Hot-summer Mediterranean
+	Color(0.4, 0.8, 0.4, 1.0),   # 9: Csb Warm-summer Mediterranean
+	Color(0.3, 0.7, 0.3, 1.0),   # 10: Csc Cold-summer Mediterranean
+	Color(0.5, 0.9, 0.2, 1.0),   # 11: Cwa Subtropical (dry winter)
+	Color(0.5, 0.8, 0.3, 1.0),   # 12: Cwb Subtropical highland
+	Color(0.4, 0.7, 0.3, 1.0),   # 13: Cwc Cold subtropical highland
+	Color(0.0, 1.0, 0.0, 1.0),   # 14: Cfa Humid subtropical
+	Color(0.2, 0.9, 0.0, 1.0),   # 15: Cfb Oceanic
+	Color(0.3, 0.8, 0.0, 1.0),   # 16: Cfc Subpolar oceanic
+	Color(0.0, 0.7, 0.5, 1.0),   # 17: Dsa Continental (dry summer, hot)
+	Color(0.1, 0.7, 0.5, 1.0),   # 18: Dsb Continental (dry summer, warm)
+	Color(0.2, 0.6, 0.4, 1.0),   # 19: Dsc Subarctic (dry summer)
+	Color(0.1, 0.5, 0.3, 1.0),   # 20: Dsd Cold subarctic (dry summer)
+	Color(0.3, 0.7, 0.6, 1.0),   # 21: Dwa Continental (dry winter, hot)
+	Color(0.3, 0.6, 0.5, 1.0),   # 22: Dwb Continental (dry winter, warm)
+	Color(0.2, 0.5, 0.4, 1.0),   # 23: Dwc Subarctic (dry winter)
+	Color(0.1, 0.4, 0.3, 1.0),   # 24: Dwd Cold subarctic (dry winter)
+	Color(0.5, 0.7, 0.0, 1.0),   # 25: Dfa Continental (hot summer)
+	Color(0.5, 0.6, 0.0, 1.0),   # 26: Dfb Continental (warm summer)
+	Color(0.3, 0.5, 0.1, 1.0),   # 27: Dfc Subarctic
+	Color(0.2, 0.4, 0.1, 1.0),   # 28: Dfd Cold subarctic
+	Color(0.7, 0.8, 0.7, 1.0),   # 29: ET  Tundra
+	Color(0.9, 0.9, 0.9, 1.0),   # 30: EF  Ice cap
+]
+
 # Chunk grid dimensions in base cells (same as LOD system)
 const CHUNK_BANDS_0 := 64
 const CHUNK_SEGS_0 := 256
@@ -21,6 +56,8 @@ var _camera: Camera3D
 var _band_structure: Dictionary = {}
 var _land_loader: RefCounted = null
 var _terrain_loader: RefCounted = null
+var _climate_loader: RefCounted = null
+var _weather_loader: RefCounted = null
 var _frame_counter: int = 0
 var _display_mode: int = 1  # 0 = simple land/sea, 1 = elevation terrain palette
 var _mat: StandardMaterial3D
@@ -68,6 +105,22 @@ func _ready() -> void:
 		print("  Terrain data loaded: %d terrain types" % _terrain_loader.TERRAIN_NAMES.size())
 	else:
 		push_warning("HT2: terrain data not loaded — elevation mode unavailable")
+
+	# Climate loader for Köppen display mode (mode 2)
+	var cl_script: Script = load("res://scripts/data/climate_loader.gd")
+	_climate_loader = cl_script.new()
+	if _climate_loader.load():
+		print("  Climate data loaded: %d Köppen zones" % _climate_loader.CLIMATE_NAMES.size())
+	else:
+		push_warning("HT2: climate data not loaded — climate mode unavailable")
+
+	# Weather loader for temp/precip/wind/solar modes (modes 3-6)
+	var wl_script: Script = load("res://scripts/data/weather_loader.gd")
+	_weather_loader = wl_script.new()
+	if _weather_loader.load():
+		print("  Weather data loaded")
+	else:
+		push_warning("HT2: weather data not loaded — weather modes unavailable")
 
 	_camera = _find_camera()
 	if not _camera:
@@ -146,13 +199,11 @@ func _process(delta: float) -> void:
 			var row_lon: float = TAU * segs_center / float(max_segs)
 
 			# Check post-halving center if this row straddles a halving boundary
-			# (min_segs < max_segs means at least one band halved within the row)
 			var is_visible: bool = false
 			var lon_post: float = 0.0
 			var has_halving: bool = min_segs < max_segs
 			if has_halving:
 				lon_post = TAU * fmod(segs_center, float(min_segs)) / float(min_segs)
-				# Pre-compute chunk width using post-halving scale for margin below
 			else:
 				lon_post = row_lon  # unused, fall through to single check
 
@@ -346,11 +397,66 @@ func _build_chunk_mesh(row: int, col: int) -> ArrayMesh:
 					tile_colors[tid] = LAND_COLOR
 				else:
 					tile_colors[tid] = OCEAN_COLOR
-			elif _terrain_loader:
-				# Elevation palette (mode 1) and all future modes use terrain base
-				tile_colors[tid] = _terrain_loader.get_terrain_color(b_idx, land_seg)
+
+			elif _display_mode == 1:
+				# Elevation palette (11 terrain types)
+				if _terrain_loader:
+					tile_colors[tid] = _terrain_loader.get_terrain_color(b_idx, land_seg)
+				else:
+					tile_colors[tid] = OCEAN_COLOR
+
+			elif _display_mode == 2:
+				# Köppen climate zones (30 types)
+				if _climate_loader:
+					var code: int = _climate_loader.get_climate(b_idx, land_seg)
+					if code >= 0 and code < CLIMATE_COLORS.size():
+						tile_colors[tid] = CLIMATE_COLORS[code]
+					else:
+						tile_colors[tid] = OCEAN_COLOR
+				else:
+					tile_colors[tid] = OCEAN_COLOR
+
+			elif _display_mode == 3:
+				# Temperature heatmap (annual average)
+				if _weather_loader:
+					var t: float = _weather_loader.get_annual_temp(b_idx, land_seg)
+					tile_colors[tid] = _temp_color(t)
+				else:
+					tile_colors[tid] = OCEAN_COLOR
+
+			elif _display_mode == 4:
+				# Precipitation ramp (annual total)
+				if _weather_loader:
+					var p: float = _weather_loader.get_annual_precip(b_idx, land_seg)
+					tile_colors[tid] = _precip_color(p)
+				else:
+					tile_colors[tid] = OCEAN_COLOR
+
+			elif _display_mode == 5:
+				# Wind speed (annual average)
+				if _weather_loader:
+					var w: float = _weather_loader.get_annual_wind(b_idx, land_seg)
+					tile_colors[tid] = _wind_color(w)
+				else:
+					tile_colors[tid] = OCEAN_COLOR
+
+			elif _display_mode == 6:
+				# Solar radiation (annual average)
+				if _weather_loader:
+					var sval: float = _weather_loader.get_annual_srad(b_idx, land_seg)
+					tile_colors[tid] = _solar_color(sval)
+				else:
+					tile_colors[tid] = OCEAN_COLOR
+
+			elif _display_mode == 7:
+				# Slope (5 levels: flat → cliff)
+				if _terrain_loader:
+					var slope: int = _terrain_loader.get_slope(b_idx, land_seg)
+					tile_colors[tid] = _slope_color(slope)
+				else:
+					tile_colors[tid] = OCEAN_COLOR
+
 			else:
-				# Fallback if terrain not loaded
 				tile_colors[tid] = OCEAN_COLOR
 
 	if tile_colors.is_empty():
@@ -362,6 +468,53 @@ func _build_chunk_mesh(row: int, col: int) -> ArrayMesh:
 	if not mi or not mi.mesh:
 		return null
 	return mi.mesh
+
+
+# ── Colour ramp helpers ──
+
+func _temp_color(celsius: float) -> Color:
+	# Heatmap: blue (-20°C) → cyan (0°) → green (10°) → yellow (20°) → red (40°)
+	var t: float = clampf((celsius + 20.0) / 60.0, 0.0, 1.0)
+	if t < 0.33:
+		return Color(0.0, t * 3.0, 1.0, 1.0)  # blue → cyan
+	elif t < 0.5:
+		return Color(0.0, 1.0, 1.0 - (t - 0.33) * 6.0, 1.0)  # cyan → green
+	elif t < 0.67:
+		return Color((t - 0.5) * 6.0, 1.0, 0.0, 1.0)  # green → yellow
+	else:
+		return Color(1.0, 1.0 - (t - 0.67) * 3.0, 0.0, 1.0)  # yellow → red
+
+
+func _precip_color(mm: float) -> Color:
+	# Blue ramp: pale blue (0mm) → deep blue (3000mm)
+	var p: float = clampf(mm / 3000.0, 0.0, 1.0)
+	return Color(0.6 - p * 0.4, 0.7 - p * 0.5, 0.6 + p * 0.4, 1.0)
+
+
+func _wind_color(ms: float) -> Color:
+	# Grey → magenta (0 → 20 m/s)
+	var w: float = clampf(ms / 20.0, 0.0, 1.0)
+	return Color(0.4 + w * 0.6, 0.4 + w * 0.1, 0.4 + w * 0.6, 1.0)
+
+
+func _solar_color(kjm2: float) -> Color:
+	# Dark brown → orange → bright yellow (0 → 30 MJ/m²)
+	var s: float = clampf(kjm2 / 30.0, 0.0, 1.0)
+	return Color(0.2 + s * 0.8, 0.1 + s * 0.8, 0.0 + s * 0.2, 1.0)
+
+
+func _slope_color(slope: int) -> Color:
+	# Beige-yellow → pale purple (flat 0 → cliff 4)
+	var colors: Array = [
+		Color(0.85, 0.80, 0.55, 1.0),   # flat: beige-yellow
+		Color(0.80, 0.72, 0.60, 1.0),   # gentle
+		Color(0.70, 0.60, 0.70, 1.0),   # moderate
+		Color(0.60, 0.50, 0.78, 1.0),   # steep
+		Color(0.50, 0.40, 0.85, 1.0),   # cliff: pale purple
+	]
+	if slope >= 0 and slope < colors.size():
+		return colors[slope]
+	return Color.GRAY
 
 
 # ── Idle preload ──
