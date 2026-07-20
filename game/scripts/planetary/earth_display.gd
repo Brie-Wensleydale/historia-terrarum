@@ -128,7 +128,8 @@ func _setup_earth_body() -> void:
 		var tex: Texture2D = load(tex_path)
 		mat.albedo_texture = tex
 		mat.albedo_color = Color.WHITE
-		mat.uv1_offset.x = 0.25  # restore original; cell alignment to be calibrated once drag works
+		mat.uv1_scale.x = -1.0  # mirror texture horizontally (east/west flip)
+		mat.uv1_offset.x = 0.0  # no offset; scale handles the flip
 		print("  Earth texture loaded: %s" % tex_path)
 	else:
 		mat.albedo_color = Color(0.15, 0.25, 0.55)
