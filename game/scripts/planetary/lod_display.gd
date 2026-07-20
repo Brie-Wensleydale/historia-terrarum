@@ -54,17 +54,22 @@ func _ready() -> void:
 
 	# Load chunk metadata
 	if not _load_metadata():
-		return
+		print("  LoD: no atlas data — run generate_lod_terrain.py to build. Using EarthDisplay only.")
+		# Don't return; let _process handle graceful fallback
 
 	# Pre-build shared meshes + materials for LoD levels 1-4
-	for lod in range(1, 5):
-		_build_lod_mesh(lod)
+	if not _lod_metadata.is_empty():
+		for lod in range(1, 5):
+			_build_lod_mesh(lod)
 
 	print("LoD Display: ready (%d levels)" % _lod_metadata.size())
 
 
 func _process(_delta: float) -> void:
-	if not _camera:
+	if not _camera or _lod_metadata.is_empty():
+		# No LOD data — show earth_display and bail
+		if _earth_display:
+			_earth_display.visible = true
 		return
 
 	# Determine active LoD from camera distance
@@ -106,7 +111,7 @@ func _process(_delta: float) -> void:
 func _load_metadata() -> bool:
 	var path: String = DATA_DIR + METADATA_FILE
 	if not FileAccess.file_exists(path):
-		push_error("LoD: metadata not found at %s — run generate_lod_terrain.py first" % path)
+		push_warning("LoD: lod_chunks.json not found — run generate_lod_terrain.py to build atlases")
 		return false
 
 	var f: FileAccess = FileAccess.open(path, FileAccess.READ)
