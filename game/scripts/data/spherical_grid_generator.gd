@@ -217,13 +217,13 @@ static func generate_tint(
 		return null
 
 	# Build ArrayMesh directly from batched arrays (Godot 4: no SurfaceTool bulk setters)
-	var arrays := []
+	var arrays: Array = []
 	arrays.resize(Mesh.ARRAY_MAX)
 	arrays[Mesh.ARRAY_VERTEX] = all_verts
 	arrays[Mesh.ARRAY_COLOR] = all_colors
 	arrays[Mesh.ARRAY_INDEX] = all_indices
 
-	var mesh := ArrayMesh.new()
+	var mesh: ArrayMesh = ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 
 	var mi: MeshInstance3D = MeshInstance3D.new()

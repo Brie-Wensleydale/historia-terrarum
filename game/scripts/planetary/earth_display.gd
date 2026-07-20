@@ -22,7 +22,7 @@ var _last_sub_point: Vector3 = Vector3.ZERO
 var _mesh_dirty: bool = true
 
 # Mesh pool — avoids queue_free() + MeshInstance3D.new() per rebuild
-var _mesh_pool: Array[MeshInstance3D] = []
+var _mesh_pool: Array = []
 var _active_pool_idx: int = 0
 var _mat: StandardMaterial3D  # shared material, created once
 
@@ -76,7 +76,7 @@ func _ready() -> void:
 
 	_mesh_pool.resize(POOL_SIZE)
 	for i in range(POOL_SIZE):
-		var mi := MeshInstance3D.new()
+		var mi: MeshInstance3D = MeshInstance3D.new()
 		mi.name = "CellMesh_%d" % i
 		mi.material_override = _mat
 		mi.visible = false
@@ -128,7 +128,7 @@ func _setup_earth_body() -> void:
 		var tex: Texture2D = load(tex_path)
 		mat.albedo_texture = tex
 		mat.albedo_color = Color.WHITE
-		mat.uv1_offset.x = 0.0  # HT2 mesh: seg 0 at +X, default sphere UV should align
+		mat.uv1_offset.x = 0.25  # restore original; cell alignment to be calibrated once drag works
 		print("  Earth texture loaded: %s" % tex_path)
 	else:
 		mat.albedo_color = Color(0.15, 0.25, 0.55)
