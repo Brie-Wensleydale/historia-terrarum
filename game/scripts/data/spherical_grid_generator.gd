@@ -114,7 +114,9 @@ static func generate_tint(
 	band_struct: Dictionary,
 	tile_colors: Dictionary,
 	band_start: int = -1,
-	band_end: int = -1
+	band_end: int = -1,
+	seg_start: int = -1,
+	seg_end: int = -1
 ) -> MeshInstance3D:
 	var display_radius: float = radius_km * TINT_RADIUS_FACTOR  # compute directly at target scale
 	var total_bands: int = band_struct["total_bands"]
@@ -164,12 +166,19 @@ static func generate_tint(
 			continue
 
 		var cell_segs: int = mini(segs_bot, segs_top)  # mini → pentagons at halving bands
+
+		# Determine seg range for this band
+		var s_start: int = seg_start if seg_start >= 0 else 0
+		var s_end: int = seg_end if seg_end >= 0 else cell_segs
+		s_start = clampi(s_start, 0, cell_segs - 1)
+		s_end = clampi(s_end, 1, cell_segs)
+
 		var bot_verts: PackedVector3Array = ring_verts[b_idx - b_start]
 		var top_verts: PackedVector3Array = ring_verts[b_idx + 1 - b_start]
 		var bot_pole: bool = ring_is_pole[b_idx - b_start]
 		var top_pole: bool = ring_is_pole[b_idx + 1 - b_start]
 
-		for t in range(cell_segs):
+		for t in range(s_start, s_end):
 			var tile_id: String = "B%d_%d" % [b_idx, t]
 			var color: Color = tile_colors.get(tile_id, Color.TRANSPARENT)
 			if color.a < 0.01:
