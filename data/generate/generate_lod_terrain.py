@@ -191,48 +191,54 @@ def make_atlas_image(tiles_wide, tiles_high):
 def fill_tile(atlas, tile_col, tile_row, terrain_reader, band_start, band_end,
               seg_start, seg_end, stride):
     """
-    Fill one tile in the atlas with terrain colors from child cells.
+    Fill one tile with terrain colors from child cells.
     Tile = 32×32 data pixels + 1px border extending edge colors.
+    Uses bulk byte writes — ~100× faster than putpixel.
     """
-    x0 = tile_col * TILE_PX
-    y0 = tile_row * TILE_PX
-
     n_bands = band_end - band_start
     n_segs = seg_end - seg_start
-
     if n_bands == 0 or n_segs == 0:
         return
 
-    # Build data pixel array (32×32)
-    pixels = []
+    # Pre-sample all data pixels into a flat list of (R,G,B)
+    data_pixels = []
     for py in range(TILE_DATA):
         b_frac = py / TILE_DATA
         b_offset = int(b_frac * n_bands)
         base_band = band_start + b_offset
         if base_band >= terrain_reader.total_bands:
             base_band = terrain_reader.total_bands - 1
-
-        row_pixels = []
+        cell_segs = terrain_reader.cell_segs_per_band[base_band]
         for px in range(TILE_DATA):
+            if cell_segs <= 0:
+                data_pixels.append(0)
+                data_pixels.append(0)
+                data_pixels.append(0)
+                continue
             s_frac = px / TILE_DATA
             s_offset = int(s_frac * n_segs)
-            cell_segs = terrain_reader.cell_segs_per_band[base_band]
-            if cell_segs <= 0:
-                row_pixels.append(TERRAIN_COLORS_RGB[0] + (255,))
-                continue
             base_seg = (seg_start + s_offset) % cell_segs
-
             r, g, b = terrain_reader.get_terrain_color(base_band, base_seg)
-            row_pixels.append((r, g, b, 255))
-        pixels.append(row_pixels)
+            data_pixels.append(r)
+            data_pixels.append(g)
+            data_pixels.append(b)
 
-    # Write data + border (extend edge pixels outward)
+    # Build full tile with border: extend edge data outward
+    tile_bytes = bytearray(TILE_PX * TILE_PX * 4)  # RGBA
     for py in range(TILE_PX):
-        # Clamp data_y to valid range for border pixels
         data_y = max(0, min(py - PAD, TILE_DATA - 1))
         for px in range(TILE_PX):
             data_x = max(0, min(px - PAD, TILE_DATA - 1))
-            atlas.putpixel((x0 + px, y0 + py), pixels[data_y][data_x])
+            idx = (data_y * TILE_DATA + data_x) * 3
+            ti = (py * TILE_PX + px) * 4
+            tile_bytes[ti] = data_pixels[idx]
+            tile_bytes[ti + 1] = data_pixels[idx + 1]
+            tile_bytes[ti + 2] = data_pixels[idx + 2]
+            tile_bytes[ti + 3] = 255
+
+    # Paste tile into atlas via bulk Image.frombytes
+    tile_img = Image.frombytes("RGBA", (TILE_PX, TILE_PX), bytes(tile_bytes))
+    atlas.paste(tile_img, (tile_col * TILE_PX, tile_row * TILE_PX))
 
 
 def generate_lod_level(lod, terrain_reader, output_dir):
