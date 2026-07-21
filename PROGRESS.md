@@ -36,12 +36,17 @@
 - [x] weather_loader.gd — O(1) temp/precip/wind/srad lookup
 - [x] Wired into display modes 3-6 with color ramps
 
-## Phase 7: LoD System ✓ (partial — broken)
+## Phase 7: LoD System ✓ (partial — being fixed)
 - [x] generate_lod_terrain.py — pre-baked terrain atlases (LOD 1-4)
 - [x] lod_display.gd — textured sphere-surface chunk meshes
 - [x] Shared vertex rings, pole fan tris, mipmap filtering
 - [x] Pre-load all chunks at LOD switch
-- [ ] LOD system broken — needs investigation (likely source of lag)
+- [x] 32×32 atlas tiles with 1px border padding (was 16×16, no padding)
+- [x] Shared vertex rings per LOD row — eliminates chunk-boundary geometry gaps
+- [x] generate_lod_atlases.py — multi-mode atlas generator for all 8 display modes
+- [ ] Verify LOD visual quality in Godot — seam/banding fixes need in-engine confirmation
+- [ ] Wire multi-mode atlases into lod_display.gd — mode-aware texture selection
+- [ ] LOD 0 atlas migration — after LOD 1-4 quality confirmed
 
 ## Phase 8: Visual Modes ✓
 - [x] Mode 0: simple land/sea (green/blue) — key 0
@@ -67,8 +72,7 @@
 - [ ] Day/night cycle — after time system
 
 ## Issues
-- LOD system reportedly broken — needs investigation
-- LOD texture banding (CRT effect) — improved but not fully resolved
+- LOD texture banding (CRT effect) — improved with 32×32 tiles + 1px border padding, shared vertex rings; pending Godot verification
 - Chunk unloading near edges — improved with +300km margin, needs more tuning
 - No chunk preloading during fast camera movement
 - Mode switch causes lag — chunks rebuilt from scratch each time

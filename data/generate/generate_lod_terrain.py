@@ -58,7 +58,10 @@ TERRAIN_COLORS_RGB = [
 ]
 
 # ── Tile size in atlas ──
-TILE_PX = 16
+# Tile = DATA + 2×PAD border pixels to prevent texture-filter edge bleeding
+TILE_DATA = 32    # actual data pixels per tile
+PAD = 1           # border pixels on each side
+TILE_PX = TILE_DATA + 2 * PAD  # total pixels per tile (34)
 
 
 # ---------------------------------------------------------------------------
@@ -188,36 +191,31 @@ def make_atlas_image(tiles_wide, tiles_high):
 def fill_tile(atlas, tile_col, tile_row, terrain_reader, band_start, band_end,
               seg_start, seg_end, stride):
     """
-    Fill one 16×16 atlas tile with terrain colors from child cells.
-    Each tile represents one mega-cell at the given LoD stride.
+    Fill one tile in the atlas with terrain colors from child cells.
+    Tile = 32×32 data pixels + 1px border extending edge colors.
     """
     x0 = tile_col * TILE_PX
     y0 = tile_row * TILE_PX
 
-    # Sample child cells to fill the tile
-    # If stride == 1 (LOD 0), just use the single cell's color
-    # If stride > 1, average multiple cells
     n_bands = band_end - band_start
     n_segs = seg_end - seg_start
 
     if n_bands == 0 or n_segs == 0:
         return
 
-    # For each pixel in the tile, sample the corresponding child cell
+    # Build data pixel array (32×32)
     pixels = []
-    for py in range(TILE_PX):
-        # Map pixel row to band within the chunk
-        b_frac = py / TILE_PX
+    for py in range(TILE_DATA):
+        b_frac = py / TILE_DATA
         b_offset = int(b_frac * n_bands)
         base_band = band_start + b_offset
         if base_band >= terrain_reader.total_bands:
             base_band = terrain_reader.total_bands - 1
 
         row_pixels = []
-        for px in range(TILE_PX):
-            s_frac = px / TILE_PX
+        for px in range(TILE_DATA):
+            s_frac = px / TILE_DATA
             s_offset = int(s_frac * n_segs)
-            # The seg in the denser frame at this band
             cell_segs = terrain_reader.cell_segs_per_band[base_band]
             if cell_segs <= 0:
                 row_pixels.append(TERRAIN_COLORS_RGB[0] + (255,))
@@ -228,10 +226,13 @@ def fill_tile(atlas, tile_col, tile_row, terrain_reader, band_start, band_end,
             row_pixels.append((r, g, b, 255))
         pixels.append(row_pixels)
 
-    # Write pixels to atlas
+    # Write data + border (extend edge pixels outward)
     for py in range(TILE_PX):
+        # Clamp data_y to valid range for border pixels
+        data_y = max(0, min(py - PAD, TILE_DATA - 1))
         for px in range(TILE_PX):
-            atlas.putpixel((x0 + px, y0 + py), pixels[py][px])
+            data_x = max(0, min(px - PAD, TILE_DATA - 1))
+            atlas.putpixel((x0 + px, y0 + py), pixels[data_y][data_x])
 
 
 def generate_lod_level(lod, terrain_reader, output_dir):
@@ -310,6 +311,8 @@ def generate_lod_level(lod, terrain_reader, output_dir):
                 "mega_segs": mega_segs,
                 "atlas_width": mega_segs * TILE_PX,
                 "atlas_height": mega_bands * TILE_PX,
+                "tile_data": TILE_DATA,
+                "pad": PAD,
                 "filename": filename,
                 "lod": lod,
             })

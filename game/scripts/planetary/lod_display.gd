@@ -8,6 +8,14 @@ const EARTH_RADIUS_KM := 6371.0
 const DATA_DIR := "res://../data/output/grid_10km_ht2/lod/"
 const METADATA_FILE := "lod_chunks.json"
 
+# Atlas tile constants (must match generate_lod_terrain.py)
+const TILE_DATA := 32    # data pixels per atlas tile
+const PAD := 1           # border pixels on each side
+const TILE_PX := TILE_DATA + 2 * PAD  # total pixels per tile (34)
+
+# LoD aggregation stride (index 0 unused, 1-4 = stride for LOD 1-4)
+const LOD_STRIDE := [0, 4, 16, 64, 256]
+
 # LoD level → (max camera distance from Earth center to use this level, index)
 const LOD_THRESHOLDS := [
 	{"max_dist": 0.0,       "level": 0},   # LOD 0 = current system, unused here
@@ -85,6 +93,7 @@ func _process(_delta: float) -> void:
 
 	if new_lod != _active_lod and _active_lod > 0:
 		_hide_all_chunks()
+		_lod_row_rings.clear()  # free shared rings from old LOD level
 
 	if _active_lod <= 0 and _earth_display:
 		# Switching from LOD 0 to LOD 1+ — hide earth_display
@@ -161,60 +170,95 @@ func _load_metadata() -> bool:
 
 # ── Shared mesh builder ──
 # Builds a sphere-surface quad mesh for a specific chunk at a given LoD level.
-# Uses shared vertex rings (no gaps), polar fan triangulation, and proper UVs.
+# Uses globally-shared vertex rings (no gaps between chunks) and padded UVs.
+
+func _get_or_build_row_rings(lod: int, chunk_row: int, chunk: Dictionary, full_band_segs: Array, total_bands: int) -> Array:
+	var key: String = "L%d_R%d" % [lod, chunk_row]
+	if _lod_row_rings.has(key):
+		return _lod_row_rings[key]
+
+	var stride: int = LOD_STRIDE[lod]
+	var display_radius: float = EARTH_RADIUS_KM * SphericalGridGenerator.TINT_RADIUS_FACTOR
+	var b0: int = chunk["band_start_0"]
+	var b1: int = chunk["band_end_0"]
+	var mega_bands: int = chunk["mega_bands"]
+
+	var rings: Array = []
+	for ring_i in range(mega_bands + 1):
+		var base_band: int = b0 + ring_i * stride
+		if base_band > total_bands:
+			base_band = total_bands
+		if base_band >= full_band_segs.size():
+			base_band = full_band_segs.size() - 1
+
+		var ring_lat: float = -PI * 0.5 + PI * float(base_band) / float(total_bands)
+		var ring_r: float = display_radius * cos(ring_lat)
+		var ring_y: float = display_radius * sin(ring_lat)
+
+		# Full-ring segment count at this latitude (LOD-reduced)
+		var seg_count: int = maxi(1, full_band_segs[base_band] / stride)
+		var verts: PackedVector3Array = PackedVector3Array()
+		verts.resize(seg_count)
+		for k in range(seg_count):
+			var ring_lon: float = TAU * float(k) / float(seg_count)
+			verts[k] = Vector3(ring_r * cos(ring_lon), ring_y, -ring_r * sin(ring_lon))
+		rings.append(verts)
+
+	_lod_row_rings[key] = rings
+	return rings
+
 
 func _build_chunk_mesh(chunk: Dictionary, lod: int) -> ArrayMesh:
 	var full_band_segs: Array = _band_structure["band_segs"]
 	var total_bands: int = _band_structure["total_bands"]
-	var display_radius: float = EARTH_RADIUS_KM * SphericalGridGenerator.TINT_RADIUS_FACTOR
 
 	var b0: int = chunk["band_start_0"]
-	var b1: int = chunk["band_end_0"]
 	var s0: int = chunk["seg_start_0"]
-	var s1: int = chunk["seg_end_0"]
 	var mega_bands: int = chunk["mega_bands"]
 	var mega_segs: int = chunk["mega_segs"]
+	var chunk_row: int = chunk["chunk_row"]
 
-	if mega_bands <= 0 or mega_segs <= 0:
+	if mega_bands <= 0 or mega_segs <= 0 or b0 >= chunk["band_end_0"]:
 		return null
 
-	if b0 >= b1:
-		return null
+	# Get shared vertex rings for this row (built once, shared by all chunks in row)
+	var stride: int = LOD_STRIDE[lod]
+	var row_rings: Array = _get_or_build_row_rings(lod, chunk_row, chunk, full_band_segs, total_bands)
+	var start_idx: int = s0 / stride
 
-	# Longitude range for this chunk: use center band's seg count
-	var center_b0: float = (float(b0) + float(b1)) * 0.5
-	var center_band: int = clampi(int(center_b0), 0, total_bands - 1)
-	var segs_bot_c: int = full_band_segs[center_band]
-	var segs_top_c: int = full_band_segs[center_band + 1] if center_band + 1 < full_band_segs.size() else segs_bot_c
-	var segs_at_center: int = maxi(segs_bot_c, segs_top_c)
-	var lon_start: float = TAU * float(s0) / float(maxi(segs_at_center, 1))
-	var lon_end: float = TAU * float(s1) / float(maxi(segs_at_center, 1))
-
-	# Build shared ring vertices — one ring per mega-band boundary
-	var ring_verts: Array = []  # PackedVector3Array per ring
+	# Slice ring vertices for this chunk
+	var ring_verts: Array = []
 	for ring_i in range(mega_bands + 1):
-		var base_band_f: float = float(b0) + float(ring_i) / float(mega_bands) * float(b1 - b0)
-		var ring_lat: float = -PI * 0.5 + PI * base_band_f / float(total_bands)
-		var ring_r: float = display_radius * cos(ring_lat)
-		var ring_y: float = display_radius * sin(ring_lat)
-		var verts: PackedVector3Array = PackedVector3Array()
-		verts.resize(mega_segs)
+		var full_ring: PackedVector3Array = row_rings[ring_i]
+		var fsize: int = full_ring.size()
+		var slice: PackedVector3Array = PackedVector3Array()
+		slice.resize(mega_segs)
 		for k in range(mega_segs):
-			var frac: float = float(k) / float(maxi(mega_segs - 1, 1))
-			var ring_lon: float = lon_start + frac * (lon_end - lon_start)
-			verts[k] = Vector3(ring_r * cos(ring_lon), ring_y, -ring_r * sin(ring_lon))
-		ring_verts.append(verts)
+			var idx: int = (start_idx + k) % fsize
+			slice[k] = full_ring[idx]
+		ring_verts.append(slice)
 
 	# Determine which rings are poles (radius near zero) for fan triangulation
-	var ring_is_pole: Array = []  # bool per ring
+	var ring_is_pole: Array = []
 	for ring_i in range(mega_bands + 1):
-		var r: float = ring_verts[ring_i][0].length()  # XZ length of first vertex
-		ring_is_pole.append(r < 1.0)  # radius < 1km → treat as pole
+		var r: float = ring_verts[ring_i][0].length()
+		ring_is_pole.append(r < 1.0)
 
 	# Build mesh: one quad (or triangle fan for poles) per mega-cell
 	var vertices: PackedVector3Array = PackedVector3Array()
 	var uvs: PackedVector2Array = PackedVector2Array()
 	var indices: PackedInt32Array = PackedInt32Array()
+
+	# UV padding math: atlas = mega_segs × mega_bands tiles, each TILE_PX px
+	# Data region within each tile: [PAD, TILE_PX-PAD)
+	var atlas_w: int = mega_segs * TILE_PX
+	var atlas_h: int = mega_bands * TILE_PX
+	var uv_per_tile_u: float = 1.0 / float(mega_segs)
+	var uv_per_tile_v: float = 1.0 / float(mega_bands)
+	var uv_pad_u: float = float(PAD) / float(atlas_w)
+	var uv_pad_v: float = float(PAD) / float(atlas_h)
+	var uv_data_u: float = float(TILE_DATA) / float(atlas_w)
+	var uv_data_v: float = float(TILE_DATA) / float(atlas_h)
 
 	for row in range(mega_bands):
 		var bot_verts: PackedVector3Array = ring_verts[row]
@@ -223,43 +267,40 @@ func _build_chunk_mesh(chunk: Dictionary, lod: int) -> ArrayMesh:
 		var top_pole: bool = ring_is_pole[row + 1]
 
 		if bot_pole and top_pole:
-			continue  # fully polar — nothing to render
+			continue
 
 		for col in range(mega_segs):
 			var col_next: int = (col + 1) % mega_segs
 
-			# UV for this tile
-			var u0: float = float(col) / float(mega_segs)
-			var u1: float = float(col + 1) / float(mega_segs)
-			var v0: float = float(row) / float(mega_bands)
-			var v1: float = float(row + 1) / float(mega_bands)
+			# Padded UV: map to inner (data) region of each tile
+			var u0: float = float(col) * uv_per_tile_u + uv_pad_u
+			var u1: float = float(col) * uv_per_tile_u + uv_pad_u + uv_data_u
+			var v0: float = float(row) * uv_per_tile_v + uv_pad_v
+			var v1: float = float(row) * uv_per_tile_v + uv_pad_v + uv_data_v
 
 			if bot_pole:
-				# Fan triangle: one top vertex, two bottom (pole) → single point
 				var vi: int = vertices.size()
-				vertices.append(bot_verts[0])  # pole point
+				vertices.append(bot_verts[0])
 				vertices.append(top_verts[col_next])
 				vertices.append(top_verts[col])
-				uvs.append(Vector2(u0 + (u1 - u0) * 0.5, v0))  # center-bottom
+				uvs.append(Vector2(u0 + (u1 - u0) * 0.5, v0))
 				uvs.append(Vector2(u1, v1))
 				uvs.append(Vector2(u0, v1))
 				indices.append(vi)
 				indices.append(vi + 1)
 				indices.append(vi + 2)
 			elif top_pole:
-				# Fan triangle: one bottom vertex, two top (pole) → single point
 				var vi: int = vertices.size()
 				vertices.append(bot_verts[col])
 				vertices.append(bot_verts[col_next])
-				vertices.append(top_verts[0])  # pole point
+				vertices.append(top_verts[0])
 				uvs.append(Vector2(u0, v0))
 				uvs.append(Vector2(u1, v0))
-				uvs.append(Vector2(u0 + (u1 - u0) * 0.5, v1))  # center-top
+				uvs.append(Vector2(u0 + (u1 - u0) * 0.5, v1))
 				indices.append(vi)
 				indices.append(vi + 1)
 				indices.append(vi + 2)
 			else:
-				# Regular quad
 				var vi: int = vertices.size()
 				vertices.append(bot_verts[col])
 				vertices.append(bot_verts[col_next])
